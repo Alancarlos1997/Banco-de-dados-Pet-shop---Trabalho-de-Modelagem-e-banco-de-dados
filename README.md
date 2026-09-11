@@ -36,7 +36,7 @@ A diversidade de atividades realizadas pela organização torna o estabeleciment
 
 A existência da organização e o acesso para a realização da pesquisa de campo podem ser comprovados por meio das informações abaixo:
 
-- **Endereço:** https://maps.app.goo.gl/yea361WY7wQY4v9aA
+- **Endereço:** [Google Maps](https://maps.app.goo.gl/yea361WY7wQY4v9aA)
 - **Telefone:** (11) 93015-6713
 - **Responsável entrevistado:** Guilherme (Gerente)
 - **Imagens:** 
