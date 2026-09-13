@@ -40,3 +40,72 @@ A existência da organização e o acesso para a realização da pesquisa de cam
 - **Telefone:** (11) 93015-6713
 - **Responsável entrevistado:** Guilherme (Gerente)
 - **Imagens:** 
+
+
+
+
+
+## Modelagem Conceitual e Justificativa Técnica (DER)
+
+## Entidades, Atributos e Relacionamentos
+Com base no levantamento realizado no Mercadão Pet, foram modeladas 13 entidades principais para cobrir a venda de produtos, serviços de banho/tosa e atendimento veterinário.
+
+- **Cliente:** Tutor do animal (`id_cliente`, `nome`, `cpf`, `endereco`, `telefone`).
+- **Pet:** Animal de estimação (`id_pet`, `nome`, `especie`, `raca`, `peso`, `pelagem`, `idade`, `sexo`).
+- **Histórico:** Pontuário clínico e médico do pet (`id_historico`, `data`, `tipo_atendimento`, `descricao`, `observacoes`).
+- **Agendamento:** Marcação de banho, tosa e procedimentos (`id_agendamento`, `data`, `hora`, `endereco`, `observacoes`, `status`).
+- **Atendente:** Funcionário responsável pelos agendamentos e recepção (`id_funcionario`, `nome`, `cpf`, `cargo`, `telefone`).
+- **Funcionário:** Colaborador que executa os serviços operacionais (`id_funcionario`, `nome`, `cpf`, `cargo`, `telefone`).
+- **Serviço:** Catálogo de serviços prestados (`id_servico`, `nome`, `descricao`, `tipo`, `preco`).
+- **Venda:** Registro financeiro da compra ou atendimento (`id_venda`, `data`, `valor_total`, `forma_pagamento`).
+- **Item_Venda:** Entidade que associa produtos e serviços às vendas (`id_item_venda`, `quantidade`, `preco`, `desconto`).
+- **Produto:** Catálogo de produtos vendidos no petshop (`id_produto`, `ncm`, `codigo_barras`, `nome`, `descricao`, `preco_custo`, `preco_venda`, `unidade_medida`).
+- **Categoria_Produto:** Classificação dos itens da loja (`id_categoria`, `nome`, `descricao`).
+- **Estoque:** Controle em tempo real do volume físico (`id_estoque`, `quantidade_atual`, `quantidade_reservada`, `localizacao`, `custo`, `data_entrada`, `data_saida`).
+- **Fornecedor:** Cadastro de parceiros e distribuidores (`id_fornecedor`, `nome`, `telefone`, `email`, `endereco`).
+
+## Justificativa Técnica das Cardinalidades e Decisões de Modelagem
+
+**Decisões Estratégicas para Resolução dos Problemas Identificados**
+
+- **Solução da crise do estoque defasado:** Na pesquisa realizada de campo, constatou-se a utilização de dois sistemas não integrados (sistema Moura + sistema de estoque seperado). Para resolver esse problema, estabeleceu-se o relacionamento de 1 para 1 (`1,1`) possui (`1,1`) entre **Produto** e **Estoque**. Dessa forma, cada item vendido na entidade `Item_Venda` causa o abatimento em tempo real da `quantidade_atual` do estoque unificado.
+
+- **Integração dos Serviços ao Caixa:** Os agendamentos de banho e tosa relacionam-se com a entidade `Servico` (`1,n`) Relacionado (`1,n`), permitindo que atendimentos prestados gerem seus respectivos lançamentos em `Venda`, unificando o faturamento do balcão.
+
+- **Rastreabilidade e Atendimento:** A entidade `Pet` mantém cardinalidade (`1,1`) tem (`0,n`) com a entidade `Historico`, garantindo que todas as consultas e observações fiquem atreladas a um único animal ao longo do tempo.
+
+- **Fornecedores no Sistema:** Adicionou-se a entidade `Fornecedor` com relação (`0,n`) Fornece (`1,1`) `Produto` para suprir a falta de cadastro sistêmico de fornecedores identificada na entrevista.
+
+**Todas as Cardinalidades do DER**
+
+- **Cliente (0,n) — Possui — (1,1) Pet**
+Um cliente pode se cadastrar no sistema antes de ter um pet ativo ou registrar múltiplos animais (`0,n`). Por outro lado, para fins de responsabilidade financeira e legal no estabelecimento, cada pet cadastrado deve obrigatoriamente estar vinculado a exatamente um tutor responsável (`1,1`).
+
+- **Pet (1,1) — Tem — (0,n) Historico**
+Um pet recém-cadastrado pode ainda não ter nenhum registro clínico (`0,n`), acumulando prontuários conforme realiza atendimentos. Cada registro de histórico, porém, pertence exclusivamente a um único pet (`1,1`), impedindo que prontuários sejam misturados entre animais.
+
+- **Pet (1,1) — Possui — (0,n) Agendamento**
+Um pet pode ter zero ou vários agendamentos ao longo do tempo (`0,n`), mas cada agendamento é emitido exclusivamente para um único animal (`1,1`).
+
+- **Agendamento (1,1) — Realiza — (0,n) Atendente**
+Um atendente de recepção pode registrar múltiplos agendamentos ao longo do expediente (`0,n`). Para garantir o controle sobre quem marcou o horário, cada agendamento registra obrigatoriamente exatamente um atendente responsável (`1,1`).
+
+- **Agendamento (1,n) — Relacionado — (1,n) Servico**
+Um agendamento pode conter um ou mais serviços contratados simultaneamente (ex.: Banho + Tosa) (`1,n`), e um tipo de serviço do catálogo pode estar associado a múltiplos agendamentos no sistema (`1,n`).
+
+- **Funcionario (0,n) — Realiza — (0,n) Servico / Venda**
+Um funcionário da parte operacional realiza diversos serviços de banho/tosa ou vendas ao longo do dia (`0,n`), garantindo a prestação de serviços por colaboradores devidamente cadastrados.
+
+- **Cliente (1,n) — Realiza — (1,1) Venda**
+Um cliente cadastrado pode realizar diversas compras e pagamentos no balcão ao longo do tempo (`1,n`), enquanto cada cupom de venda emitido é atribuído obrigatoriamente a um cliente específico (`1,1`).
+
+- **Venda (1,n) — Inclui — (1,n) Item_Venda — (1,1) Refere-se — (0,n) Produto**
+Uma venda necessita obrigatoriamente de pelo menos um item registrado (`1,n`). A entidade associativa `Item_Venda` desmembra a transação, associando cada item a exatamente um produto (`1,1`), enquanto um produto cadastrado no catálogo pode constar em múltiplos itens de vendas emitidas (`0,n`).
+
+- **Produto (1,1) — Pertence — (0,n) Categoria_Produto**
+Todo produto cadastrado deve ter uma categoria associada (`1,1`) para organização da loja (ex: Rações, Brinquedos, Medicamentos). Uma categoria, por sua vez, pode agrupar diversos produtos (`0,n`).
+
+- **Produto (1,1) — Possui — (1,1) Estoque**
+Relacionamento unívoco (`1:1`) que garante que a quantidade disponível no estoque físico seja vinculada em tempo real ao cadastro do produto, eliminando discrepâncias entre o caixa e o estoque.
+
+![Diagrama Entidade-Relacionamento - Mercadão Pet](./DER_Petshop_png.png)
