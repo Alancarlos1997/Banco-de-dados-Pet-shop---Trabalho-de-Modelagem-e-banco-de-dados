@@ -40,10 +40,10 @@ A existência da organização e o acesso para a realização da pesquisa de cam
 - **Telefone:** (11) 93015-6713
 - **Responsável entrevistado:** Guilherme (Gerente)
 - **Imagens:** 
-![Mercadão Pet](./imagens/mercadao-pet-1.jpeg)
-![Mercadão Pet](./imagens/mercadao-pet-2.jpeg)
-![Mercadão Pet](./imagens/mercadao-pet-3.jpeg)
-![Mercadão Pet](./imagens/mercadao-pet-4.jpeg)
+![Mercadão Pet](./mercadao-pet-1.jpeg)
+![Mercadão Pet](./mercadao-pet-2.jpeg)
+![Mercadão Pet](./mercadao-pet-3.jpeg)
+![Mercadão Pet](./mercadao-pet-4.jpeg)
 
 ## Modelagem Conceitual e Justificativa Técnica (DER)
 
