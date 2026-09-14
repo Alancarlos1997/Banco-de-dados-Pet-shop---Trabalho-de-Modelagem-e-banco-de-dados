@@ -42,9 +42,9 @@ A existência da organização e o acesso para a realização da pesquisa de cam
 - **Imagens:** 
 <p align="center">
   <img src="./mercadao-pet-1.jpeg" width="350">
-  <img src="./mercadao-pet-2.jpeg" width="350">
-  <img src="./mercadao-pet-3.jpeg" width="350">
   <img src="./mercadao-pet-4.jpeg" width="350">
+  <img src="./mercadao-pet-3.jpeg" width="350">
+  <img src="./mercadao-pet-2.jpeg" width="350">
 </p>
 
 ## Modelagem Conceitual e Justificativa Técnica (DER)
