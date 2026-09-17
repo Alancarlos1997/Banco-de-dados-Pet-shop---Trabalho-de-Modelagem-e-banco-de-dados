@@ -47,8 +47,7 @@ A existência da organização e o acesso para a realização da pesquisa de cam
   <img src="./mercadao-pet-2.jpeg" width="350">
 </p>
 
-###Requisitos Funcionais (RF)
-
+### Requisitos Funcionais (RF)
 - **RF01 (Gestão de Clientes e Pets):** 
 Permite cadastrar, atualizar e consultar os dados dos clientes e seus respectivos pets vinculados.
 
