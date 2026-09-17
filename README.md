@@ -46,6 +46,71 @@ A existência da organização e o acesso para a realização da pesquisa de cam
   <img src="./mercadao-pet-3.jpeg" width="350">
   <img src="./mercadao-pet-2.jpeg" width="350">
 </p>
+### Requisitos Funcionais (RF)
+
+- **RF01 (Gestão de Clientes e Pets):** 
+Permite cadastrar, atualizar e consultar os dados dos clientes e seus respectivos pets vinculados.
+
+- **RF02 (Histórico e Prontuário):**
+Registra o histórico clínico, atendimentos e observações médicas vinculados ao pet.
+
+- **RF03 (Agendamento de Serviços):**
+Permite realizar o agendamento de banho, tosa e outros procedimentos, atrelado ao pet, o atendente e o serviço.
+
+- **RF04 (Gestão de Vendas no Balcão):**
+Permite emitir vendas unificadas no caixa, incluindo produtos do petshop e/ou serviços executados por meio do Item_Venda.
+
+- **RF05 (Baixa Automática de Estoque - Solução do Problema Identificado):**
+Realiza a baixa automática e em tempo real da quantidade_atual do estoque a cada item vendido em uma venda.
+
+- **RF06 (Gestão de Catálogo e Produtos):**
+Permite registrar e atualizar produtos contendo código de barras, NCM, preço de custo, preço de venda e sua respectiva categoria.
+
+- **RF07 (Cadastro de Fornecedores):**
+Permite cadastrar e consultar fornecedores e associá-los aos produtos fornecidos ao estabelecimento.
+
+
+---
+
+### Requisitos Não Funcionais (RNF)
+
+-**RNF01 (Integridade de Dados/Estoque):**
+O sistema deve processar a baixa no estoque em tempo real após a gravação de cada venda para evitar divergências.
+
+-**RNF02 (Segurança e Privacidade/LGPD):**
+O sistema deve restringir o acesso ao histórico médico dos pets e dados cadastrais dos clientes apenas a usuários autenticados e autorizados.
+
+-**RNF03 (Disponibilidade):**
+O módulo comercial (Caixa) e o módulo de agendamentos devem manter disponibilidade de operação durante todo o horário comercial.
+
+-**RNF04 (Usabilidade):** 
+A interface do caixa e de agendamento deve ser simples e intuitiva para permitir finalizações rápidas de atendimentos no balcão.
+
+
+---
+
+### Regras de Negócio (RN)
+
+-**RN01 (Venda/Estoque):**
+Uma venda de produto só pode ser finalizada no caixa se houver saldo suficiente na quantidade_atual da entidade Estoque.
+
+-**RN02 (Obrigatoriedade do Tutor):** 
+Todo Pet cadastrado no sistema deve possuir obrigatoriamente exatamente um Cliente (tutor) associado (1,1).
+
+-**RN03 (Padrão Fiscal do Cadastro):**
+Todo produto cadastrado deve conter obrigatoriamente um código NCM válido de 8 dígitos e preço de venda cadastrado
+
+-**RN04 (Unicidade do Estoque):**
+Cada produto cadastrado relaciona-se exclusivamente a um único registro de estoque unificado (1,1) para evitar duplicidade de saldo entre sistemas.
+
+-**RN05 (Responsabilidade nos Agendamentos):**
+Todo Agendamento cadastrado deve registrar obrigatoriamente o Atendente responsável pela marcação para fins de auditabilidade (1,1).
+
+-**RN06 (Histórico Inviolável):**
+O histórico clínico de um pet não pode ser alterado ou apagado após a emissão do atendimento médico, garantindo a rastreabilidade veterinária.
+
+-**RN07 (Capacidade Operacional de Banho e Tosa):**
+A quantidade de agendamentos para um mesmo horário não pode ultrapassar o número de funcionários operacionais disponíveis no expediente.
 
 ## Modelagem Conceitual e Justificativa Técnica (DER)
 
