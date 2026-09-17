@@ -199,8 +199,6 @@ Relacionamento unívoco (`1:1`) que garante que a quantidade disponível no esto
 | **Justificativa da escolha final** | O conteúdo e as informações apresentadas no README.md foram definidos pelo grupo com base na pesquisa de campo e nas orientações da disciplina. O ChatGPT foi utilizado somente como ferramenta de apoio para revisão textual, correção ortográfica e organização do conteúdo no formato Markdown. |
 | **Reflexão crítica** | A utilização da IA facilitou a identificação de erros de escrita e ajudou a organizar o conteúdo de maneira mais clara e adequada ao formato do GitHub. Entretanto, a ferramenta não foi utilizada para definir as informações do projeto ou tomar decisões sobre a modelagem do banco de dados. A revisão final foi realizada pelo grupo, que verificou se as alterações mantinham o conteúdo e as informações obtidas durante a pesquisa. |
 |-|-|
-| **Item** | **O que registrar** |
-| :--- | :--- |
 | **Ferramenta e etapa** | Gemini. Utilizado na etapa de elicitação, refinamento e validação dos Requisitos Funcionais (RF), Requisitos Não Funcionais (RNF) e Regras de Negócio (RN) para o sistema da clínica e petshop. |
 | **Motivação** | Garantir que a especificação do sistema estivesse completa, sem ambiguidades, cobrindo tanto as necessidades operacionais cotidianas (como vendas e agendamentos) quanto as restrições técnicas (segurança, LGPD e integridade de dados). |
 | **Prompt(s) utilizados** | "A partir da transcrição da entrevista com a clínica/petshop e do nosso DER modelado, ajude a estruturar de forma clara os Requisitos Funcionais, Não Funcionais e Regras de Negócio do sistema, garantindo alinhamento com o controle de estoque, histórico clínico e balcão de vendas." |
