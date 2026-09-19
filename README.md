@@ -1,10 +1,10 @@
 # Nome dos integrantes:
 
-* **Isabelly Pereira de França - **RGM:** 48163732**
-* **Giovanna Aparecida dos Santos - **RGM:** 47817518**
-* **Carla Daiane Mamani Choque - **RGM:** 48011762**
-* **Isabela Barbosa Pereira - **RGM:** 48693821**
 * **Alan Carlos Teixeira Marinho de Araujo - **RGM:** 48693871**
+* **Carla Daiane Mamani Choque - **RGM:** 48011762**
+* **Giovanna Aparecida dos Santos - **RGM:** 47817518**
+* **Isabela Barbosa Pereira - **RGM:** 48693821**
+* **Isabelly Pereira de França - **RGM:** 48163732**
 
 # Modelagem de Banco de Dados para Mercadão Pet
 
@@ -162,39 +162,39 @@ A definição de cardinalidades no modelo conceitual reflete diretamente as regr
 
 * **Fornecedores no Sistema:** Adicionou-se a entidade `Fornecedor` com relação `(0,n) Fornece (1,1) Produto` para suprir a falta de cadastro sistêmico de fornecedores identificada na entrevista.
 
-#### Defesa Integral de Todas as Cardinalidades do DER
+#### Todas as Cardinalidades do DER
 
-**Cliente (0,n) — Possui — (1,1) Pet**
+* **Cliente (0,n) — Possui — (1,1) Pet**
 Um cliente pode se cadastrar no sistema antes de ter um pet ativo ou registrar múltiplos animais (`0,n`). Por outro lado, para fins de responsabilidade financeira e legal no estabelecimento, cada pet cadastrado deve obrigatoriamente estar vinculado a exatamente um tutor responsável (`1,1`).
 
-**Pet (1,1) — Tem — (0,n) Historico**
+* **Pet (1,1) — Tem — (0,n) Historico**
 Um pet recém-cadastrado pode ainda não ter nenhum registro clínico (`0,n`), acumulando prontuários conforme realiza atendimentos. Cada registro de histórico, porém, pertence exclusivamente a um único pet (`1,1`), impedindo que prontuários sejam misturados entre animais.
 
-**Pet (1,1) — Possui — (0,n) Agendamento**
+* **Pet (1,1) — Possui — (0,n) Agendamento**
 Um pet pode ter zero ou vários agendamentos ao longo do tempo (`0,n`), mas cada agendamento é emitido exclusivamente para um único animal (`1,1`).
 
-**Agendamento (1,1) — Realiza — (0,n) Atendente**
+* **Agendamento (1,1) — Realiza — (0,n) Atendente**
 Um atendente de recepção pode registrar múltiplos agendamentos ao longo do expediente (`0,n`). Para garantir o controle sobre quem marcou o horário, cada agendamento registra obrigatoriamente exatamente um atendente responsável (`1,1`).
 
-**Agendamento (1,n) — Relacionado — (1,n) Servico**
+* **Agendamento (1,n) — Relacionado — (1,n) Servico**
 Um agendamento pode conter um ou mais serviços contratados simultaneamente (ex.: Banho + Tosa) (`1,n`), e um tipo de serviço do catálogo pode estar associado a múltiplos agendamentos no sistema (`1,n`).
 
-**Funcionario (0,n) — Realiza — (0,n) Servico / Venda**
+* **Funcionario (0,n) — Realiza — (0,n) Servico / Venda**
 Um funcionário da parte operacional realiza diversos serviços de banho/tosa ou vendas ao longo do dia (`0,n`), garantindo a prestação de serviços por colaboradores devidamente cadastrados.
 
-**Cliente (1,n) — Realiza — (1,1) Venda**
+* **Cliente (1,n) — Realiza — (1,1) Venda**
 Um cliente cadastrado pode realizar diversas compras e pagamentos no balcão ao longo do tempo (`1,n`), enquanto cada cupom de venda emitido é atribuído obrigatoriamente a um cliente específico (`1,1`).
 
-**Venda (1,n) — Contém — (1,n) Produto**
+* **Venda (1,n) — Contém — (1,n) Produto**
 Uma venda deve conter obrigatoriamente pelo menos um produto ou serviço comercializado (`1,n`). Da mesma forma, um produto cadastrado no catálogo pode constar em diversas vendas emitidas ao longo do tempo (`1,n`).
 
-**Produto (1,1) — Pertence — (0,n) Categoria_Produto**
+* **Produto (1,1) — Pertence — (0,n) Categoria_Produto**
 Todo produto cadastrado deve ter uma categoria associada (`1,1`) para organização da loja (ex.: Rações, Brinquedos, Medicamentos). Uma categoria, por sua vez, pode agrupar diversos produtos (`0,n`).
 
-**Produto (1,1) — Possui — (0,n) Lote**
+* **Produto (1,1) — Possui — (0,n) Lote**
 Cada lote registrado no sistema pertence unicamente a exatamente um produto (`1,1`). Um produto cadastrado no catálogo, por outro lado, pode não possuir lotes em estoque no momento do cadastro ou possuir múltiplos lotes simultâneos oriundos de diferentes remessas de recebimento (`0,n`).
 
-**Fornecedor (0,n) — Fornece — (1,1) Produto**
+* **Fornecedor (0,n) — Fornece — (1,1) Produto**
 Um fornecedor cadastrado pode abastecer a loja com diversos produtos (`0,n`), e cada produto possui a indicação de seu fornecedor principal (`1,1`).
 
 ---
