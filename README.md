@@ -1,3 +1,11 @@
+# Nome dos integrantes:
+
+- **Isabelly Pereira de França - 48163732**
+- **Giovanna Aparecida dos Santos - 47817518**
+- **Carla Daiane Mamani Choque - 48011762**
+- **Isabela Barbosa Pereira - 48693821**
+- **Alan Carlos Teixeira Marinho de Araujo - 48693871**
+
 # Modelagem de Banco de Dados para Mercadão Pet
 
 ## Introdução
@@ -113,23 +121,6 @@ O histórico clínico de um pet não pode ser alterado ou apagado após a emiss�
 A quantidade de agendamentos para um mesmo horário não pode ultrapassar o número de funcionários operacionais disponíveis no expediente.
 
 ## Modelagem Conceitual e Justificativa Técnica (DER)
-
-## Entidades, Atributos e Relacionamentos
-Com base no levantamento realizado no Mercadão Pet, foram modeladas 13 entidades principais para cobrir a venda de produtos, serviços de banho/tosa e atendimento veterinário.
-
-- **Cliente:** Tutor do animal (`id_cliente`, `nome`, `cpf`, `endereco`, `telefone`).
-- **Pet:** Animal de estimação (`id_pet`, `nome`, `especie`, `raca`, `peso`, `pelagem`, `idade`, `sexo`).
-- **Histórico:** Pontuário clínico e médico do pet (`id_historico`, `data`, `tipo_atendimento`, `descricao`, `observacoes`).
-- **Agendamento:** Marcação de banho, tosa e procedimentos (`id_agendamento`, `data`, `hora`, `endereco`, `observacoes`, `status`).
-- **Atendente:** Funcionário responsável pelos agendamentos e recepção (`id_funcionario`, `nome`, `cpf`, `cargo`, `telefone`).
-- **Funcionário:** Colaborador que executa os serviços operacionais (`id_funcionario`, `nome`, `cpf`, `cargo`, `telefone`).
-- **Serviço:** Catálogo de serviços prestados (`id_servico`, `nome`, `descricao`, `tipo`, `preco`).
-- **Venda:** Registro financeiro da compra ou atendimento (`id_venda`, `data`, `valor_total`, `forma_pagamento`).
-- **Item_Venda:** Entidade que associa produtos e serviços às vendas (`id_item_venda`, `quantidade`, `preco`, `desconto`).
-- **Produto:** Catálogo de produtos vendidos no petshop (`id_produto`, `ncm`, `codigo_barras`, `nome`, `descricao`, `preco_custo`, `preco_venda`, `unidade_medida`).
-- **Categoria_Produto:** Classificação dos itens da loja (`id_categoria`, `nome`, `descricao`).
-- **Estoque:** Controle em tempo real do volume físico (`id_estoque`, `quantidade_atual`, `quantidade_reservada`, `localizacao`, `custo`, `data_entrada`, `data_saida`).
-- **Fornecedor:** Cadastro de parceiros e distribuidores (`id_fornecedor`, `nome`, `telefone`, `email`, `endereco`).
 
 ## Justificativa Técnica das Cardinalidades e Decisões de Modelagem
 
