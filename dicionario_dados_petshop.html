@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dicionário de Dados — Sistema Petshop</title>
+<style>
+  :root{
+    --azul-escuro:#1b2a4a;
+    --azul:#2f4b7c;
+    --azul-claro:#eef2fb;
+    --cinza:#5a6472;
+    --borda:#d7dce6;
+    --pk:#b3261e;
+    --fk:#0f6e4f;
+  }
+  *{box-sizing:border-box;}
+  body{
+    font-family:"Segoe UI", Arial, Helvetica, sans-serif;
+    max-width:1000px;
+    margin:0 auto;
+    padding:40px 28px 80px;
+    color:#1f2430;
+    line-height:1.55;
+    background:#fcfdff;
+  }
+  header.doc-header{
+    border-bottom:3px solid var(--azul-escuro);
+    padding-bottom:18px;
+    margin-bottom:32px;
+  }
+  header.doc-header h1{
+    margin:0 0 6px;
+    color:var(--azul-escuro);
+    font-size:1.85em;
+  }
+  header.doc-header p{
+    margin:2px 0;
+    color:var(--cinza);
+    font-size:0.95em;
+  }
+  h2{
+    color:var(--azul-escuro);
+    border-left:6px solid var(--azul);
+    padding:6px 0 6px 12px;
+    margin-top:48px;
+    font-size:1.35em;
+  }
+  h3.entidade{
+    color:#fff;
+    background:var(--azul);
+    display:inline-block;
+    padding:6px 16px;
+    border-radius:4px;
+    margin:36px 0 4px;
+    font-size:1.05em;
+    letter-spacing:0.5px;
+  }
+  .subtitulo{
+    color:var(--cinza);
+    font-size:0.93em;
+    margin:2px 0 14px;
+  }
+  .notacao{
+    background:#0d1b2e;
+    color:#d7e3fc;
+    font-family:"Consolas","Courier New",monospace;
+    font-size:0.92em;
+    padding:14px 16px;
+    border-radius:6px;
+    overflow-x:auto;
+    margin:10px 0 6px;
+    white-space:pre-wrap;
+    word-break:break-word;
+  }
+  .leitura{
+    background:var(--azul-claro);
+    border-left:4px solid var(--azul);
+    padding:10px 14px;
+    font-size:0.92em;
+    color:#2c3550;
+    margin-bottom:14px;
+    border-radius:0 4px 4px 0;
+  }
+  table{
+    width:100%;
+    border-collapse:collapse;
+    margin:10px 0 8px;
+    font-size:0.92em;
+  }
+  caption{
+    text-align:left;
+    font-weight:600;
+    color:var(--azul-escuro);
+    padding-bottom:6px;
+  }
+  th, td{
+    border:1px solid var(--borda);
+    padding:8px 10px;
+    text-align:left;
+    vertical-align:top;
+  }
+  th{
+    background:var(--azul-escuro);
+    color:#fff;
+    font-weight:600;
+    font-size:0.9em;
+  }
+  tr:nth-child(even) td{
+    background:#f5f7fc;
+  }
+  .pk{ color:var(--pk); font-weight:700; }
+  .fk{ color:var(--fk); font-weight:700; }
+  .indices{
+    font-size:0.88em;
+    color:var(--cinza);
+    margin:4px 0 6px;
+  }
+  .indices b{color:#1f2430;}
+  .nota{
+    background:#fff8e6;
+    border:1px solid #f0dca0;
+    border-radius:6px;
+    padding:12px 16px;
+    font-size:0.9em;
+    margin:18px 0;
+    color:#5c4a12;
+  }
+  .simbolos td:first-child, .simbolos th:first-child{
+    width:130px;
+    font-family:"Consolas","Courier New",monospace;
+    text-align:center;
+  }
+  .prefixos td:first-child, .prefixos th:first-child{
+    width:90px;
+    font-family:"Consolas","Courier New",monospace;
+    font-weight:700;
+  }
+  .cardin td:nth-child(3), .cardin th:nth-child(3){
+    width:140px;
+  }
+  code{
+    background:#eef1f7;
+    padding:1px 5px;
+    border-radius:3px;
+    font-family:"Consolas","Courier New",monospace;
+  }
+  footer{
+    margin-top:60px;
+    padding-top:14px;
+    border-top:1px solid var(--borda);
+    color:var(--cinza);
+    font-size:0.85em;
+  }
+  .toc{
+    columns:2;
+    font-size:0.92em;
+    background:var(--azul-claro);
+    border-radius:6px;
+    padding:14px 24px;
+  }
+  .toc li{margin-bottom:4px;}
+</style>
+</head>
+<body>
+
+<header class="doc-header">
+  <h1>Dicionário de Dados</h1>
+  <p><strong>Sistema:</strong> Gestão de Petshop (cadastro de clientes, pets, serviços, agendamentos, vendas e estoque)</p>
+  <p><strong>Modelo de origem:</strong> Diagrama Entidade-Relacionamento conceitual "Petshop1" (brModelo)</p>
+  <p><strong>Versão:</strong> v1.0 — elaborado a partir do DER conceitual fornecido</p>
+</header>
+
+<h2>1. Modelo Conceitual — Entidades e Relacionamentos</h2>
+<p>O modelo descreve um petshop no qual clientes cadastram seus pets, que podem ter um histórico de atendimentos,
+ser levados a agendamentos de serviços realizados por funcionários, e cujos clientes também realizam vendas de
+produtos, controlados por estoque e fornecedores.</p>
+
+<table class="cardin">
+  <caption>Relacionamentos entre entidades (cardinalidade mínima,máxima)</caption>
+  <thead>
+    <tr><th>Entidade</th><th>Relaciona-se com</th><th>Losango (nome)</th><th>Cardinalidade</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>CLIENTE</td><td>PET</td><td>Possui</td><td>(0,n) — (1,1): um cliente possui vários pets; todo pet pertence a exatamente um cliente</td></tr>
+    <tr><td>PET</td><td>HISTORICO</td><td>Tem</td><td>(1,1) — (0,n): um pet tem vários registros de histórico; cada histórico pertence a um único pet</td></tr>
+    <tr><td>PET</td><td>AGENDAMENTO</td><td>Possui</td><td>(1,1) — (0,n): um pet pode ter vários agendamentos; cada agendamento é de um único pet</td></tr>
+    <tr><td>SERVICO</td><td>AGENDAMENTO</td><td>Relacionado</td><td>(0,n) — (1,n): um serviço pode estar em vários agendamentos e um agendamento pode envolver vários serviços</td></tr>
+    <tr><td>AGENDAMENTO</td><td>FUNCIONARIO</td><td>Realiza</td><td>(0,n) — (1,1): um funcionário realiza vários agendamentos; cada agendamento é realizado por um único funcionário</td></tr>
+    <tr><td>SERVICO</td><td>VENDA</td><td>Realiza</td><td>(0,n) — relaciona serviços prestados que também compõem uma venda</td></tr>
+    <tr><td>ATENDENTE</td><td>AGENDAMENTO</td><td>Realiza</td><td>(1,1) - (0,n) - relaciona atendentes aos agendamentos que também possui um cliente </td>
+    <tr><td>PRODUTO</td><td>CATEGORIA_PRODUTO</td><td>Pertence</td><td>(1,1) — (0,n): todo produto pertence a uma categoria; uma categoria agrupa vários produtos</td></tr>
+    <tr><td>PRODUTO</td><td>LOTE</td><td>Possui</td><td>(1,1) — (1,1): todo produto possui um registro de estoque correspondente</td></tr>
+    <tr><td>FORNECEDOR</td><td>LOTE</td><td>Fornece</td><td>(0,n) — (1,n): um fornecedor abastece vários lotes; cada lote de pode ter um ou mais fornecedores associados</td></tr>
+  </tbody>
+</table>
+
+  <h3>2. Fluxo de dados (visão de DFD)</h3>
+    <p>
+    O cliente chega ao petshop ou entra em contato para atendimento &rarr; 
+    realiza cadastro/consulta na entidade <strong>CLIENTE</strong>, com abertura ou atualização dos dados do <strong>PET</strong> vinculado via relacionamento <em>Possui</em> &rarr; 
+    o atendimento para banho, tosa ou serviços pode gerar um <strong>AGENDAMENTO</strong> registrado pelo <strong>BALCONISTA</strong> e associado a um <strong>SERVICO</strong> prestado por um <strong>FUNCIONARIO</strong> &rarr; 
+    durante ou após o atendimento clínico/estético, os dados da consulta, procedimentos e observações são gravados no <strong>HISTORICO</strong> vinculado diretamente ao <strong>PET</strong> &rarr; 
+    a aquisição de mercadorias ou a finalização dos serviços gera um registro na entidade <strong>VENDA</strong>, que contêm um ou mais itens da entidade <strong>PRODUTO</strong> (pertencente a uma <strong>CATEGORIA_PRODUTO</strong> e associado a seu respectivo <strong>LOTE</strong> e <strong>FORNECEDOR</strong>) &rarr; 
+    toda leitura ou escrita nessas entidades (Cliente, Pet, Histórico, Agendamento, Balconista, Funcionário, Serviço, Venda, Produto, Categoria, Lote e Fornecedor) é devidamente registrada pelo log de acesso e auditoria do SGBD, garantindo integridade das operações de estoque/caixa e total conformidade com as diretrizes da LGPD.
+    </p>
+
+<h2>3. Convenções do Dicionário</h2>
+<p><b>SGBD de referência:</b> MySQL 8 (mecanismo InnoDB) — responsável pela persistência dos dados, pelo log de
+transações e pela indexação primária clusterizada por chave.<br>
+<b>Codificação de caracteres:</b> utf8mb4 (collation utf8mb4_0900_ai_ci), para cobrir corretamente a acentuação do
+português em campos de nome, endereço e observações.</p>
+
+<table class="simbolos">
+  <caption>Notação formal usada neste dicionário</caption>
+  <thead><tr><th>Símbolo</th><th>Significado</th></tr></thead>
+  <tbody>
+    <tr><td>=</td><td>é composto de</td></tr>
+    <tr><td>+</td><td>e (conecta elementos obrigatórios)</td></tr>
+    <tr><td>( )</td><td>campo opcional</td></tr>
+    <tr><td>{ }, n{ }m</td><td>iteração, com limite mínimo n e máximo m</td></tr>
+    <tr><td>[ | ]</td><td>escolha obrigatória entre alternativas</td></tr>
+    <tr><td>/ /</td><td>rótulo de um grupo repetitivo</td></tr>
+    <tr><td>@</td><td>identificador (chave primária)</td></tr>
+    <tr><td>* *</td><td>comentário, fora da estrutura formal</td></tr>
+  </tbody>
+</table>
+
+<table class="prefixos">
+  <caption>Prefixos de nomenclatura dos atributos</caption>
+  <thead><tr><th>Prefixo</th><th>Significado</th></tr></thead>
+  <tbody>
+    <tr><td>ID_</td><td>identificador (não sofre operação matemática)</td></tr>
+    <tr><td>NM_</td><td>nome</td></tr>
+    <tr><td>DT_</td><td>data</td></tr>
+    <tr><td>CD_</td><td>código de domínio (ex.: CPF, CEP, telefone)</td></tr>
+    <tr><td>QT_</td><td>quantidade</td></tr>
+    <tr><td>TP_</td><td>tipo (categorização)</td></tr>
+    <tr><td>IN_</td><td>indicador booleano</td></tr>
+    <tr><td>DS_</td><td>descrição / texto livre</td></tr>
+    <tr><td>VL_</td><td>valor monetário</td></tr>
+    <tr><td>IN_</td><td>indicador booleano</td></tr>
+  </tbody>
+</table>
+
+<h2>4. Dicionário de Dados por Entidade</h2>
+
+<!-- ============ CLIENTE ============ -->
+<h3 class="entidade">CLIENTE</h3>
+<p class="subtitulo">Pessoa física proprietária de um ou mais pets cadastrados no petshop.</p>
+<div class="notacao">CLIENTE = @ID_CLIENTE + NM_CLIENTE + DS_ENDERECO + CD_TELEFONE + IN_ATIVO</div>
+<div class="leitura"><b>Leitura:</b> @ID_CLIENTE é o identificador único; os quatros campos seguintes são
+obrigatórios e conectados por +.</div>
+<table>
+  <thead><tr><th>Nome do Campo</th><th>Tipo Físico</th><th>Obrigatório</th><th>Descrição / Relevância</th><th>Restrição / Chave</th></tr></thead>
+  <tbody>
+    <tr><td>ID_CLIENTE</td><td>interger</td><td>Sim</td><td>Código de localização do regsitro, não sofre operação matemática</td><td class="pk">Chave Primária (PK)</td></tr>
+    <tr><td>NM_CLIENTE</td><td>varchar(120)</td><td>Sim</td><td>Nome completo, podendo ser o nome social bastando ser declarado ou o nome civil. Identifica o cliente a seus respectivos pets e comprovantes de vendas.</td><td>Not Null</td></tr>
+    <tr><td>DS_ENDERECO</td><td>varchar(200)</td><td>Sim</td><td>Endereço completo, podendo ser utilizado em entregas. identifica o logradouro do cliente.</td><td>Not Null</td></tr>
+    <tr><td>CD_TELEFONE</td><td>varchar(11)</td><td>Sim</td><td>Telefone de contato para confirmação de agendamentos ou aviso para qualquer urgência.</td><td>Not Null</td></tr>
+    <tr><td>IN_ATIVO</td><td>boolean</td><td>Sim</td><td>Indica se o cliente está ativo; cliente inativo some da tela de vendas sem perder o pet.</td><td>Not Null</td></tr>
+  </tbody>
+</table>
+<p class="indices"><b>Índices:</b> PK ID_CLIENTE (clusterizado);índice secundáro em NM_CLIENTE (busca por nome no balcão).</p>
+
+<!-- ============ PET ============ -->
+<h3 class="entidade">PET</h3>
+<p class="subtitulo">Animal de estimação vinculado a um cliente, alvo dos atendimentos e serviços do petshop.</p>
+<div class="notacao">PET = @ID_PET + ID_CLIENTE + NM_PET + DS_ESPECIE + DS_RACA + QT_PESO + DS_PELAGEM + DT_NASCIMENTO + [TP_MACHO | TP_FEMEA]</div>
+<div class="leitura"><b>Leitura:</b>ID_PET é o identificador único; ID_CLIENTE é a chave estrangeira que garante que todo pet pertence a exatamente
+um cliente; [TP_MACHO | TP_FEMEA] exige escolher exatamente um sexo para o animal.</div>
+<table>
+  <thead><tr><th>Nome do Campo</th><th>Tipo Físico</th><th>Obrigatório</th><th>Descrição / Relevância</th><th>Restrição / Chave</th></tr></thead>
+  <tbody>
+    <tr><td>ID_PET</td><td>integer</td><td>Sim</td><td>Identificador único do pet, usado para evitar cadastros duplicados e identificar de maneira inequívoca o pet.</td><td class="pk">Chave Primária (PK)</td></tr>
+    <tr><td>ID_CLIENTE</td><td>integer</td><td>Sim</td><td>Referência ao cliente tutor do pet: por ser único, garante a unicidade de 1:1.</td><td class="fk">Chave Estrangeira (FK) → CLIENTE</td></tr>
+    <tr><td>NM_PET</td><td>varchar(60)</td><td>Sim</td><td>Nome do animal, usado na ficha de atendimento e no agendamento.</td><td>Not Null</td></tr>
+    <tr><td>DS_ESPECIE</td><td>varchar(30)</td><td>Sim</td><td>Espécie do animal (ex.: cão, gato, ave).</td><td>Not Null</td></tr>
+    <tr><td>DS_RACA</td><td>varchar(50)</td><td>Não</td><td>Raça do animal; orienta cuidados específicos de tosa e saúde.</td><td>—</td></tr>
+    <tr><td>QT_PESO</td><td>decimal(5,2)</td><td>Não</td><td>Peso em quilogramas; usado para dosagem de produtos e serviços de banho/tosa.</td><td>Domínio: &gt; 0</td></tr>
+    <tr><td>DS_PELAGEM</td><td>varchar(40)</td><td>Não</td><td>Tipo e cor da pelagem; orienta o serviço de banho/tosa contratado. Ex:(Cachorro com alergia; exige shampoo para alergia)</td><td>—</td></tr>
+    <tr><td>DT_NASCIMENTO</td><td>date</td><td>Sim</td><td>Data no qual o pet nasceu. Permiti calcular a idade no momento do atendimento e restringi por faixa etária </td><td>Not Null</td></tr>
+    <tr><td>TP_MACHO&nbsp;|&nbsp;TP_FEMEA</td><td>caracter (M, F)</td><td>Sim</td><td>Sexo biológico do animal. Ex: (M,F)</td><td>Escolha obrigatória</td></tr>
+  </tbody>
+</table>
+<p class="indices"><b>Índices:</b> PK ID_PET; índice em ID_CLIENTE (listar pets de um cliente).</p>
+
+<!-- ============ HISTORICO ============ -->
+<h3 class="entidade">HISTORICO</h3>
+<p class="subtitulo">Registro acumulado dos atendimentos anteriores de um pet.</p>
+<div class="notacao">HISTORICO = @ID_HISTORICO + ID_PET + DT_ATENDIMENTO + TP_ATENDIMENTO + DS_DESCRICAO + (DS_OBSERVACAO)</div>
+<div class="leitura"><b>Leitura:</b> ID_PET conecta o histórico ao pet que originou o registro; (DS_OBSERVACAO) fica
+entre parênteses porque nem todo atendimento gera uma observação adicional.</div>
+<table>
+  <thead><tr><th>Nome do Campo</th><th>Tipo Físico</th><th>Obrigatório</th><th>Descrição / Relevância</th><th>Restrição / Chave</th></tr></thead>
+  <tbody>
+    <tr><td>ID_HISTORICO</td><td>integer</td><td>Sim</td><td>Identificador único do registro de histórico.</td><td class="pk">Chave Primária (PK)</td></tr>
+    <tr><td>ID_PET</td><td>integer</td><td>Sim</td><td>Referencia o pet a qual histórico pertence. A unicidade é o que garante o 1:1</td><td class="fk">Chave Estrangeira (FK) → PET</td></tr>
+    <tr><td>DT_ATENDIMENTO</td><td>date</td><td>Sim</td><td>Data em que o atendimento ocorreu.</td><td>Not Null</td></tr>
+    <tr><td>TP_ATENDIMENTO</td><td>varchar(30)</td><td>Sim</td><td>Tipo de atendimento registrado (ex.: banho, vacina, consulta).</td><td>Not Null</td></tr>
+    <tr><td>DS_DESCRICAO</td><td>text(200)</td><td>Sim</td><td>Descrição do que foi realizado no atendimento.</td><td>Not Null</td></tr>
+    <tr><td>DS_OBSERVACAO</td><td>text(200)</td><td>Não</td><td>Observações complementares (ex.: reações do animal).</td><td>—</td></tr>
+  </tbody>
+</table>
+<p class="indices"><b>Índices:</b> PK ID_HISTORICO; índice em ID_PET (abrir histórico completo de um pet).</p>
+
+<!-- ============ SERVICO ============ -->
+<h3 class="entidade">SERVICO</h3>
+<p class="subtitulo">Serviço oferecido pelo petshop (banho, tosa, consulta, hospedagem etc.).</p>
+<div class="notacao">SERVICO = @ID_SERVICO + NM_SERVICO + DS_DESCRICAO + TP_SERVICO + VL_PRECO</div>
+<div class="leitura"><b>Leitura:</b> todos os campos são obrigatórios e conectados por +; não há grupos opcionais
+nesta entidade.</div>
+<table>
+  <thead><tr><th>Nome do Campo</th><th>Tipo Físico</th><th>Obrigatório</th><th>Descrição / Relevância</th><th>Restrição / Chave</th></tr></thead>
+  <tbody>
+    <tr><td>ID_SERVICO</td><td>integer</td><td>Sim</td><td>Identificador único do serviço.</td><td class="pk">Chave Primária (PK)</td></tr>
+    <tr><td>NM_SERVICO</td><td>varchar(60)</td><td>Sim</td><td>Nome do serviço (ex.: "Banho e Tosa","consulta", "vacina").</td><td>Not Null</td></tr>
+    <tr><td>DS_DESCRICAO</td><td>varchar(200)</td><td>Sim</td><td>Descrição detalhada do que o serviço inclui.</td><td>Not Null</td></tr>
+    <tr><td>TP_SERVICO</td><td>varchar(30)</td><td>Sim</td><td>Categoria do serviço no qual o estabelecimento oferece (ex.: banho, tosa, veterinário, vacina).</td><td>Not Null</td></tr>
+    <tr><td>VL_PRECO</td><td>decimal(10,2)</td><td>Sim</td><td>Valor cobrado pelo serviço.</td><td>Domínio: ≥ 0</td></tr>
+  </tbody>
+</table>
+<p class="indices"><b>Índices:</b> PK ID_SERVICO.</p>
+
+<!-- ============ AGENDAMENTO ============ -->
+<h3 class="entidade">AGENDAMENTO</h3>
+<p class="subtitulo">Entidade associativa que registra a marcação de um serviço para um pet, executado por um funcionário.</p>
+<div class="notacao">AGENDAMENTO = @ID_AGENDAMENTO + ID_PET + ID_SERVICO + ID_FUNCIONARIO + DT_AGENDAMENTO + HR_AGENDAMENTO + DS_ENDERECO + (DS_OBSERVACAO) + TP_STATUS</div>
+<div class="leitura"><b>Leitura:</b> ID_PET, ID_SERVICO e ID_FUNCIONARIO ligam o agendamento às três entidades
+envolvidas no atendimento; (DS_OBSERVACAO) é opcional, os demais campos são obrigatórios.</div>
+<table>
+  <thead><tr><th>Nome do Campo</th><th>Tipo Físico</th><th>Obrigatório</th><th>Descrição / Relevância</th><th>Restrição / Chave</th></tr></thead>
+  <tbody>
+    <tr><td>ID_AGENDAMENTO</td><td>integer</td><td>Sim</td><td>Identificador único do agendamento.</td><td class="pk">Chave Primária (PK)</td></tr>
+    <tr><td>ID_PET</td><td>integer</td><td>Sim</td><td>Pet para o qual o serviço foi agendado.</td><td class="fk">Chave Estrangeira (FK) → PET</td></tr>
+    <tr><td>ID_SERVICO</td><td>integer</td><td>Sim</td><td>Serviço o qual foi agendado.</td><td class="fk">Chave Estrangeira (FK) → SERVICO</td></tr>
+    <tr><td>ID_FUNCIONARIO</td><td>integer</td><td>Sim</td><td>Funcionário responsável por realizar o atendimento.</td><td class="fk">Chave Estrangeira (FK) → FUNCIONARIO</td></tr>
+    <tr><td>DT_AGENDAMENTO</td><td>date</td><td>Sim</td><td>Data marcada para o atendimento do serviço solicitado.</td><td>Not Null</td></tr>
+    <tr><td>HR_AGENDAMENTO</td><td>time</td><td>Sim</td><td>Horário marcado para o atendimento do serviço solicitado.</td><td>Not Null</td></tr>
+    <tr><td>DS_ENDERECO</td><td>varchar(200)</td><td>Sim</td><td>Endereço de atendimento (loja ou domicílio, no caso de busca/entrega). Podendo ser o mesmo declarado na </td><td>Not Null</td></tr>
+    <tr><td>DS_OBSERVACAO</td><td>text</td><td>Não</td><td>Observações sobre o agendamento peculiaridades solicitadas pelo cliente ex.:("Apos realizar banho e tosa no meu pet, favor entregá-lo entre: 12h00min e 12h30min").</td><td>—</td></tr>
+    <tr><td>TP_STATUS</td><td>varchar(20)</td><td>Sim</td><td>Situação do agendamento (ex.: agendado, concluído, cancelado).</td><td>Not Null</td></tr>
+  </tbody>
+</table>
+<p class="indices"><b>Índices:</b> PK ID_AGENDAMENTO; índices em ID_PET, ID_SERVICO e ID_FUNCIONARIO (agenda por pet/serviço/funcionário).</p>
+
+<!-- ============ FUNCIONARIO ============ -->
+<h3 class="entidade">FUNCIONARIO</h3>
+<p class="subtitulo">Pessoa contratada pelo petshop responsável por executar os serviços agendados.</p>
+<div class="notacao">FUNCIONARIO = @ID_FUNCIONARIO + NM_FUNCIONARIO + CD_CPF + DS_CARGO + CD_TELEFONE</div>
+<div class="leitura"><b>Leitura:</b> estrutura simples, sem campos opcionais; ID_FUNCIONARIO é único para evitar
+duplicidade de cadastro.</div>
+<table>
+  <thead><tr><th>Nome do Campo</th><th>Tipo Físico</th><th>Obrigatório</th><th>Descrição / Relevância</th><th>Restrição / Chave</th></tr></thead>
+  <tbody>
+    <tr><td>ID_FUNCIONARIO</td><td>integer</td><td>Sim</td><td>Documento de identificação civl do funcionário.</td><td class="pk">Chave Primária (PK)</td></tr>
+    <tr><td>NM_FUNCIONARIO</td><td>varchar(120)</td><td>Sim</td><td>Nome completo do funcionário.</td><td>Not Null</td></tr>
+    <tr><td>DS_CARGO</td><td>varchar(40)</td><td>Sim</td><td>Função exercida (ex.: tosador, banahdo, veterinário, balconista).</td><td>Not Null</td></tr>
+    <tr><td>CD_TELEFONE</td><td>varchar(15)</td><td>Sim</td><td>Telefone de contato do funcionário.</td><td>Not Null</td></tr>
+  </tbody>
+</table>
+<p class="indices"><b>Índices:</b> PK ID_FUNCIONARIO; índice único em CD_CPF.</p>
+
+<!-- ============ BALCONISTA ============ -->
+<h3 class="entidade">BALCONISTA</h3>
+<p class="subtitulo">Pessoa contratada pelo petshop responsável para agendar os serviços.</p>
+<div class="notacao">BALCONISTA = @ID_BALCONISTA + NM_BALCONISTA + DS_CARGO + CD_TELEFONE</div>
+<div class="leitura"><b>Leitura:</b> estrutura simples, sem campos opcionais; ID_BALCONISTA é único para evitar
+duplicidade de cadastro.</div>
+<table>
+  <thead><tr><th>Nome do Campo</th><th>Tipo Físico</th><th>Obrigatório</th><th>Descrição / Relevância</th><th>Restrição / Chave</th></tr></thead>
+  <tbody>
+    <tr><td>ID_BALCONISTA</td><td>integer</td><td>Sim</td><td>Documento de identificação civl do funcionário. Não sofre operação matemática.</td><td class="pk">Chave Primária (PK)</td></tr>
+    <tr><td>NM_FUNCIONARIO</td><td>varchar(120)</td><td>Sim</td><td>Nome completo do balconista.</td><td>Not Null</td></tr>
+    <tr><td>CD_TELEFONE</td><td>varchar(15)</td><td>Sim</td><td>Telefone de contato do funcionário.</td><td>Not Null</td></tr>
+  </tbody>
+</table>
+<p class="indices"><b>Índices:</b> PK ID_BALCONISTA.</p>
+
+
+<!-- ============ VENDA ============ -->
+<h3 class="entidade">VENDA</h3>
+<p class="subtitulo">Registro de uma transação de venda de produtos e/ou serviços a um cliente.</p>
+<div class="notacao">VENDA = @ID_VENDA + ID_CLIENTE + DT_VENDA + HR_VENDA + VL_TOTAL + TP_FORMA_PAGAMENTO</div>
+<div class="leitura"><b>Leitura:</b> ID_CLIENTE conecta a venda ao cliente que a realizou; todos os campos
+são obrigatórios.</div>
+<table>
+  <thead><tr><th>Nome do Campo</th><th>Tipo Físico</th><th>Obrigatório</th><th>Descrição / Relevância</th><th>Restrição / Chave</th></tr></thead>
+  <tbody>
+    <tr><td>ID_VENDA</td><td>integer</td><td>Sim</td><td>Identificador único da venda.</td><td class="pk">Chave Primária (PK)</td></tr>
+    <tr><td>ID_CLIENTE</td><td>integer</td><td>Sim</td><td>Cliente que realizou a compra.</td><td class="fk">Chave Estrangeira (FK) → CLIENTE</td></tr>
+    <tr><td>DT_VENDA</td><td>date</td><td>Sim</td><td>Data em que a venda foi efetuada.</td><td>Not Null</td></tr>
+    <tr><td>HR_VENDA</td><td>time</td><td>Sim</td><td>Horário em produto ou serviço foi vendido.</td><td>Not Null</td></tr>
+    <tr><td>VL_TOTAL</td><td>decimal(10,2)</td><td>Sim</td><td>Valor total da venda, soma dos itens vendidos.</td><td>Domínio: ≥ 0</td></tr>
+    <tr><td>TP_FORMA_PAGAMENTO</td><td>varchar(20)</td><td>Sim</td><td>Meio de pagamento utilizado (ex.: dinheiro, cartão, pix).</td><td>Not Null</td></tr>
+  </tbody>
+</table>
+<p class="indices"><b>Índices:</b> PK ID_VENDA; índice em ID_CLIENTE (histórico de compras do cliente).</p>
+
+
+<!-- ============ PRODUTO ============ -->
+<h3 class="entidade">PRODUTO</h3>
+<p class="subtitulo">Item comercializado pelo petshop (ração, brinquedo, medicamento etc.), vinculado a uma categoria e a um registro de lote.</p>
+<div class="notacao">PRODUTO = @ID_PRODUTO + ID_CATEGORIA + NM_PRODUTO + DS_DESCRICAO + CD_BARRAS + VL_PRECO_VENDA + VL_PRECO_CUSTO + DS_UNIDADE_MEDIDA</div>
+<div class="leitura"><b>Leitura:</b> ID_CATEGORIA conecta o produto à sua categoria; CD_BARRAS é único, pois
+identifica o produto fisicamente no ponto de venda.</div>
+<table>
+  <thead><tr><th>Nome do Campo</th><th>Tipo Físico</th><th>Obrigatório</th><th>Descrição / Relevância</th><th>Restrição / Chave</th></tr></thead>
+  <tbody>
+    <tr><td>ID_PRODUTO</td><td>integer</td><td>Sim</td><td>Identificador único do produto.</td><td class="pk">Chave Primária (PK)</td></tr>
+    <tr><td>ID_NCM</td><td>varchar(8)</td><td>Sim</td><td>Nomenclatura comum do mercosul. Identifica qual tipo de tributação incide sobre o produto</td><td>Not Null</td></tr>
+    <tr><td>ID_CATEGORIA</td><td>integer</td><td>Sim</td><td>Categoria a qual o produto pertence.</td><td class="fk">Chave Estrangeira (FK) → CATEGORIA_PRODUTO</td></tr>
+    <tr><td>NM_PRODUTO</td><td>varchar(100)</td><td>Sim</td><td>Nome do produto exibido ao cliente.</td><td>Not Null</td></tr>
+    <tr><td>DS_DESCRICAO</td><td>varchar(200)</td><td>Não</td><td>Descrição detalhada do produto.</td><td>—</td></tr>
+    <tr><td>CD_BARRAS</td><td>varchar(20)</td><td>Sim</td><td>Código de barras usado na leitura no caixa.</td><td>Único</td></tr>
+    <tr><td>VL_PRECO_VENDA</td><td>decimal(10,2)</td><td>Sim</td><td>Preço de venda ao cliente.</td><td>Domínio: ≥ 0</td></tr>
+    <tr><td>VL_PRECO_CUSTO</td><td>decimal(10,2)</td><td>Sim</td><td>Preço de custo do produto, usado no cálculo de margem.</td><td>Domínio: ≥ 0</td></tr>
+    <tr><td>DS_UNIDADE_MEDIDA</td><td>varchar(10)</td><td>Sim</td><td>Unidade de venda do produto (ex.: un, kg, l).</td><td>Not Null</td></tr>
+  </tbody>
+</table>
+<p class="indices"><b>Índices:</b> PK ID_PRODUTO; índice único em CD_BARRAS; índice em ID_CATEGORIA.</p>
+
+<!-- ============ CATEGORIA_PRODUTO ============ -->
+<h3 class="entidade">CATEGORIA_PRODUTO</h3>
+<p class="subtitulo">Agrupamento de produtos por finalidade (ex.: ração, higiene, brinquedos).</p>
+<div class="notacao">CATEGORIA_PRODUTO = @ID_CATEGORIA + NM_CATEGORIA + (DS_DESCRICAO)</div>
+<div class="leitura"><b>Leitura:</b> (DS_DESCRICAO) é opcional; os demais campos são obrigatórios.</div>
+<table>
+  <thead><tr><th>Nome do Campo</th><th>Tipo Físico</th><th>Obrigatório</th><th>Descrição / Relevância</th><th>Restrição / Chave</th></tr></thead>
+  <tbody>
+    <tr><td>ID_CATEGORIA</td><td>integer</td><td>Sim</td><td>Identificador único da categoria.</td><td class="pk">Chave Primária (PK)</td></tr>
+    <tr><td>NM_CATEGORIA</td><td>varchar(60)</td><td>Sim</td><td>Nome da categoria de produtos.</td><td>Not Null</td></tr>
+    <tr><td>DS_DESCRICAO</td><td>varchar(200)</td><td>Não</td><td>Descrição do que a categoria abrange.</td><td>—</td></tr>
+  </tbody>
+</table>
+<p class="indices"><b>Índices:</b> PK ID_CATEGORIA.</p>
+
+<!-- ============ FORNECEDOR ============ -->
+<h3 class="entidade">FORNECEDOR</h3>
+<p class="subtitulo">Empresa responsável por abastecer o lote de produtos do petshop.</p>
+<div class="notacao">FORNECEDOR = @ID_FORNECEDOR + NM_FORNECEDOR + CD_TELEFONE + CD_EMAIL + DS_ENDERECO</div>
+<div class="leitura"><b>Leitura:</b> estrutura simples, sem campos opcionais.</div>
+<table>
+  <thead><tr><th>Nome do Campo</th><th>Tipo Físico</th><th>Obrigatório</th><th>Descrição / Relevância</th><th>Restrição / Chave</th></tr></thead>
+  <tbody>
+    <tr><td>ID_FORNECEDOR</td><td>integer</td><td>Sim</td><td>Identificador único do fornecedor.</td><td class="pk">Chave Primária (PK)</td></tr>
+    <tr><td>NM_FORNECEDOR</td><td>varchar(120)</td><td>Sim</td><td>Razão social ou nome do fornecedor.</td><td>Not Null</td></tr>
+    <tr><td>CD_TELEFONE</td><td>varchar(15)</td><td>Sim</td><td>Telefone de contato comercial.</td><td>Not Null</td></tr>
+    <tr><td>CD_EMAIL</td><td>varchar(120)</td><td>Sim</td><td>E-mail de contato comercial.</td><td>Not Null</td></tr>
+    <tr><td>DS_ENDERECO</td><td>varchar(200)</td><td>Sim</td><td>Endereço do fornecedor.</td><td>Not Null</td></tr>
+  </tbody>
+</table>
+<p class="indices"><b>Índices:</b> PK ID_FORNECEDOR.</p>
+
+<!-- ============ LOTE ============ -->
+<h3 class="entidade">LOTE</h3>
+<p class="subtitulo">Controle da quantidade disponível de cada produto, incluindo dados de localização e de entrada/saída.</p>
+<div class="notacao">LOTE = @ID_LOTE + ID_PRODUTO + ID_FORNECEDOR + QT_RESERVADA + DS_LOCALIZACAO + VL_CUSTO + DT_ENTRADA + (DT_SAIDA)</div>
+<div class="leitura"><b>Leitura:</b> ID_PRODUTO garante o vínculo 1:1 com PRODUTO; ID_FORNECEDOR identifica quem
+abasteceu aquele lote; (DT_SAIDA) é opcional, pois só é preenchida quando o lote se esgota.</div>
+<table>
+  <thead><tr><th>Nome do Campo</th><th>Tipo Físico</th><th>Obrigatório</th><th>Descrição / Relevância</th><th>Restrição / Chave</th></tr></thead>
+  <tbody>
+    <tr><td>ID_LOTE</td><td>integer</td><td>Sim</td><td>Identificador único do registro de lote.</td><td class="pk">Chave Primária (PK)</td></tr>
+    <tr><td>ID_PRODUTO</td><td>integer</td><td>Sim (único)</td><td>Produto ao qual este lote se refere; a unicidade garante o vínculo 1:1 com PRODUTO.</td><td class="fk">Chave Estrangeira (FK) → PRODUTO</td></tr>
+    <tr><td>ID_FORNECEDOR</td><td>integer</td><td>Sim</td><td>Fornecedor responsável pelo abastecimento deste lote.</td><td class="fk">Chave Estrangeira (FK) → FORNECEDOR</td></tr>
+    <tr><td>QT_ATUAL</td><td>integer</td><td>Sim</td><td>Quantidade atualmente disponível em lote.</td><td>Domínio: ≥ 0</td></tr>
+    <tr><td>DS_LOCALIZACAO</td><td>varchar(60)</td><td>Sim</td><td>Local físico onde o produto está armazenado (ex.: corredor, prateleira).</td><td>Not Null</td></tr>
+    <tr><td>VL_CUSTO</td><td>decimal(10,2)</td><td>Sim</td><td>Custo de aquisição deste lote.</td><td>Domínio: ≥ 0</td></tr>
+    <tr><td>DT_ENTRADA</td><td>date</td><td>Sim</td><td>Data em que o lote entrou no lote.</td><td>Not Null</td></tr>
+    <tr><td>DT_SAIDA</td><td>date</td><td>Não</td><td>Data em que o lote se esgotou/saiu do lote.</td><td>—</td></tr>
+  </tbody>
+</table>
+<p class="indices"><b>Índices:</b> PK ID_LOTE; índice único em ID_PRODUTO (garante o 1:1); índice em ID_FORNECEDOR.</p>
+
+<table>
+<h2>5. Log de acesso (metadado operacional)</h2>
+<p>As quatro tabelas ficam sob o mesmo mecanismo de auditoria do SGBD: o
+  plugin audit_log do MySQL, configurado para gravar em formato JSON no
+  caminho definido por audit_log_file (variável de sistema, sob $HOME neste ambiente —
+  nunca sob /tmp, pelas mesmas razões que valem para LibreOffice/ffmpeg). Na ausência
+  do plugin, a alternativa é o log geral (general_log=ON, log_output=TABLE), consultável
+  em mysql.general_log. Retenção e rotação do log seguem política própria, independente
+  da retenção dos dados de negócio.</p>
+</table>
+<h2>6. Acesso por operação e conformidade com a LGPD
+  (metadado administrativo)</h2>
+<table>
+  <thead><tr><th>Tabela</th><th>LER</th><th>INSERIR</th><th>ATUALIZAR</th><th>APAGAR</th></tr></thead>
+  <tr><td>CLIENTE</td><td>Balconista</td><td>Balconista</td><td>Balconista</td><td>Após dois anos sem interação ou atividade no sistema, fica inativo.</td></tr>
+  <tr><td>PET</td><td>Balconista,<br>Veterinário,<br>Tosador/Banhador</td><td>Balconista</td><td>Balconista,<br>Veterinário,<br>Tosador/Banhador</td><td>Nenhum papel - mesma regra do cliente.</td></tr>
+    <tr><td>HISTORICO</td><td>Balconista,<br>Veterinário,<br>Tosador/Banhador</td><td>Balconista,<br>Veterinário,<br>Tosador/Banhador</td><td>Balconista,<br>Veterinário,<br>Tosador/Banhador</td><td>Nenhum papel - mesma regra do cliente.</td></tr>
+    <tr><td>SERVICO</td><td>Balconista,<br>Veterinário,<br>Tosador/Banhador</td><td>Veterinário,<br>Tosador/Banhador</td><td>Veterinário,<br>Tosador/Banhador</td><td>Nenhum papel - mesma regra do cliente.</td></tr>
+    <tr><td>AGENDAMENTO</td><td>Balconista,<br>Veterinário,<br>Tosador/Banhador</td><td>Balconista</td><td>Balconista</td><td>Nenhum papel - mesma regra do cliente.</td></tr>
+    <tr><td>FUNCIONARIO</td><td>RH/Administrativo</td><td>RH/Administrativo</td><td>RH/Administrativo</td><td>RH/Administrativo (desligamento)</td></tr>
+    <tr><td>BALCONISTA</td><td>RH/Administrativo</td><td>RH/Administrativo</td><td>RH/Administrativo</td><td>RH/Administrativo (desligamento)</td></tr>
+    <tr><td>VENDA</td><td>Balconista</td><td>Balconista</td><td>Balconista</td><td>Nenhum papel - mesma regra do cliente.</td></tr>
+    <tr><td>PRODUTO</td><td>Estoquista/balconista,<br>Administrativo,<br>Departamento de compras</td><td>Administrativo,<br>Departamento de compras</td><td>Administrativo,<br>Departamento de compras</td><td>Nenhum papel - mesma regra do cliente.</td></tr>
+    <tr><td>CATEGORIA_PRODUTO</td><td>date</td><td>Não</td><td>Data em que o lote se esgotou/saiu.</td><td>—</td></tr>
+    <tr><td>FORNECEDOR</td><td>Administrativo,<br>Departamento de compras</td><td>Administrativo,<br>Departamento de compras</td><td>Administrativo,<br>Departamento de compras</td><td>Nenhum papel - mesma regra do cliente.</td></tr>
+    <tr><td>LOTE</td><td>Veterinário,<br>Balconista,<br>Estoquista,<br>Administrativo,<br> Departamento de compras</td><td>Administrativo,<br>Departamento de compras</td><td>Administrativo,<br> Departamento de compras</td><td>Nenhum papel - mesma regra do cliente.</td></tr>
+</table>
+  
+</body>
+</html>
