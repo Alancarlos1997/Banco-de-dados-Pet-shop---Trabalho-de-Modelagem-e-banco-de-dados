@@ -55,6 +55,46 @@ A existência da organização e o acesso para a realização da pesquisa de cam
   <img src="./mercadao-pet-2.jpeg" width="350">
 </p>
 
+## Processos de Negócio
+
+Durante a entrevista com a gerência do Mercadão Pet, identificamos três processos principais que acontecem no dia a dia do estabelecimento:
+
+- **Atendimento e agendamento de serviços (banho, tosa e clínica):** o pet chega, o serviço é marcado, o profissional executa e, se for consulta, fica registrado no histórico do animal.
+- **Venda de produtos e serviços no caixa:** o cliente compra produtos ou paga por um serviço, e o estoque é atualizado na hora.
+- **Controle de estoque e compras:** quando chega mercadoria do fornecedor, ela é conferida e cadastrada, atualizando o estoque disponível para venda.
+
+Abaixo detalhamos o passo a passo de cada um.
+
+### 1. Atendimento e agendamento de serviços
+
+1. O cliente entra em contato ou chega ao estabelecimento com o pet.
+2. O atendente verifica se o cliente e o pet já têm cadastro. Se não tiverem, o cadastro é feito na hora.
+3. O atendente escolhe o serviço desejado (banho, tosa ou consulta) e confere se tem horário disponível.
+4. É criado o agendamento, ligando o pet, o horário e o funcionário responsável.
+5. No dia marcado, o profissional atende o pet.
+6. Se for uma consulta veterinária, o atendimento é registrado no histórico do pet.
+7. Depois do atendimento, o valor é enviado para o caixa, virando uma venda.
+
+### 2. Venda de produtos e serviços no balcão
+
+1. O cliente vai até o caixa com produtos ou para pagar um serviço já feito.
+2. O atendente passa o código de barras dos produtos ou puxa o serviço já agendado.
+3. O sistema busca o preço de cada produto ou serviço.
+4. O atendente informa o valor total e registra a forma de pagamento (dinheiro, cartão ou PIX).
+5. Antes de fechar a venda, o sistema confere se o lote do produto tem quantidade suficiente e se não está vencido.
+6. O pagamento é confirmado, o comprovante é emitido, e a quantidade do lote correspondente é atualizada automaticamente.
+7. Venda finalizada e estoque em dia.
+
+### 3. Controle de estoque e compras
+
+1. Chega uma entrega de mercadorias enviada pelo fornecedor.
+2. O funcionário confere os itens recebidos com a nota fiscal.
+3. Ele procura o produto no cadastro e confere o código de barras e o código NCM.
+   - Se o produto for novo, é cadastrado com preço de custo, preço de venda e código de barras.
+   - Se já existir, só é selecionado no sistema.
+4. É registrado um novo lote para esse produto, com a quantidade recebida, o custo, a data de fabricação e a data de validade.
+5. O estoque fica atualizado na hora, já separado por lote, mostrando o que está disponível e dentro da validade para venda.
+
 ### Requisitos Funcionais (RF)
 - **RF01 (Gestão de Clientes e Pets):** 
 Permite cadastrar, atualizar e consultar os dados dos clientes e seus respectivos pets vinculados.
