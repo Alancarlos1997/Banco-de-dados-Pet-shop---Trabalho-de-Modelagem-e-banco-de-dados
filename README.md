@@ -135,7 +135,7 @@ No Diagrama Entidade-Relacionamento (DER) ajustado para o Mercadão Pet, foram m
 - **Pet:** Animal de estimação atendido na clínica ou no banho e tosa.
 - **Historico:** Prontuário de atendimentos e histórico clínico do pet.
 - **Agendamento:** Registro de horário e data para prestação de serviços.
-- **Atendente:** Funcionário responsável pela recepção e marcação de agendamentos.
+- **Balconista:** Funcionário responsável pela recepção e marcação de agendamentos.
 - **Funcionario:** Colaborador operacional que executa os serviços prestados.
 - **Servico:** Catálogo de serviços oferecidos pelo estabelecimento (ex: Banho, Tosa, Consulta).
 - **Venda:** Registro comercial e financeiro da transação no caixa.
@@ -173,8 +173,8 @@ Um pet recém-cadastrado pode ainda não ter nenhum registro clínico (`0,n`), a
 * **Pet (1,1) — Possui — (0,n) Agendamento**
 Um pet pode ter zero ou vários agendamentos ao longo do tempo (`0,n`), mas cada agendamento é emitido exclusivamente para um único animal (`1,1`).
 
-* **Agendamento (1,1) — Realiza — (0,n) Atendente**
-Um atendente de recepção pode registrar múltiplos agendamentos ao longo do expediente (`0,n`). Para garantir o controle sobre quem marcou o horário, cada agendamento registra obrigatoriamente exatamente um atendente responsável (`1,1`).
+* **Agendamento (1,1) — Realiza — (0,n) Balconista**
+Um balconista de recepção pode registrar múltiplos agendamentos ao longo do expediente (`0,n`). Para garantir o controle sobre quem marcou o horário, cada agendamento registra obrigatoriamente exatamente um balconista responsável (`1,1`).
 
 * **Agendamento (1,n) — Relacionado — (1,n) Servico**
 Um agendamento pode conter um ou mais serviços contratados simultaneamente (ex.: Banho + Tosa) (`1,n`), e um tipo de serviço do catálogo pode estar associado a múltiplos agendamentos no sistema (`1,n`).
@@ -201,7 +201,7 @@ Um fornecedor cadastrado pode abastecer a loja com diversos produtos (`0,n`), e 
 
 ### Diagrama Entidade-Relacionamento (DER)
 
-![Diagrama Entidade-Relacionamento - Mercadão Pet](./DER_MercadaoPet.png)
+![Diagrama Entidade-Relacionamento - Mercadão Pet](./DER_MercadaoPet_alterado.png)
 
 ### Uso de Inteligência Artificial
 
