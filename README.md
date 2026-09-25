@@ -68,8 +68,8 @@ Abaixo detalhamos o passo a passo de cada um.
 ### 1. Atendimento e agendamento de serviços
 
 1. O cliente entra em contato ou chega ao estabelecimento com o pet.
-2. O atendente verifica se o cliente e o pet já têm cadastro. Se não tiverem, o cadastro é feito na hora.
-3. O atendente escolhe o serviço desejado (banho, tosa ou consulta) e confere se tem horário disponível.
+2. O balconista verifica se o cliente e o pet já têm cadastro. Se não tiverem, o cadastro é feito na hora.
+3. O balconista escolhe o serviço desejado (banho, tosa ou consulta) e confere se tem horário disponível.
 4. É criado o agendamento, ligando o pet, o horário e o funcionário responsável.
 5. No dia marcado, o profissional atende o pet.
 6. Se for uma consulta veterinária, o atendimento é registrado no histórico do pet.
@@ -78,9 +78,9 @@ Abaixo detalhamos o passo a passo de cada um.
 ### 2. Venda de produtos e serviços no balcão
 
 1. O cliente vai até o caixa com produtos ou para pagar um serviço já feito.
-2. O atendente passa o código de barras dos produtos ou puxa o serviço já agendado.
+2. O balconista passa o código de barras dos produtos ou puxa o serviço já agendado.
 3. O sistema busca o preço de cada produto ou serviço.
-4. O atendente informa o valor total e registra a forma de pagamento (dinheiro, cartão ou PIX).
+4. O balconista informa o valor total e registra a forma de pagamento (dinheiro, cartão ou PIX).
 5. Antes de fechar a venda, o sistema confere se o lote do produto tem quantidade suficiente e se não está vencido.
 6. O pagamento é confirmado, o comprovante é emitido, e a quantidade do lote correspondente é atualizada automaticamente.
 7. Venda finalizada e estoque em dia.
