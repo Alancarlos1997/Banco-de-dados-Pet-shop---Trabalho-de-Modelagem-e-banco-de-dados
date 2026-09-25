@@ -445,7 +445,7 @@ identifica o produto fisicamente no ponto de venda.</div>
   <tbody>
     <tr><td>ID_FORNECEDOR</td><td>integer</td><td>Sim</td><td>Identificador único do fornecedor.</td><td class="pk">Chave Primária (PK)</td></tr>
     <tr><td>NM_FORNECEDOR</td><td>varchar(120)</td><td>Sim</td><td>Razão social ou nome do fornecedor.</td><td>Not Null</td></tr>
-    <tr><td>CD_TELEFONE</td><td>varchar(15)</td><td>Sim</td><td>Telefone de contato comercial.</td><td>Not Null</td></tr>
+    <tr><td>CD_TELEFONE</td><td>varchar(11)</td><td>Sim</td><td>Telefone de contato comercial.</td><td>Not Null</td></tr>
     <tr><td>CD_EMAIL</td><td>varchar(120)</td><td>Sim</td><td>E-mail de contato comercial.</td><td>Not Null</td></tr>
     <tr><td>DS_ENDERECO</td><td>varchar(200)</td><td>Sim</td><td>Endereço do fornecedor.</td><td>Not Null</td></tr>
   </tbody>
@@ -496,7 +496,7 @@ abasteceu aquele lote; (DT_SAIDA) é opcional, pois só é preenchida quando o l
     <tr><td>BALCONISTA</td><td>RH/Administrativo</td><td>RH/Administrativo</td><td>RH/Administrativo</td><td>RH/Administrativo (desligamento)</td></tr>
     <tr><td>VENDA</td><td>Balconista</td><td>Balconista</td><td>Balconista</td><td>Nenhum papel - mesma regra do cliente.</td></tr>
     <tr><td>PRODUTO</td><td>Estoquista/balconista,<br>Administrativo,<br>Departamento de compras</td><td>Administrativo,<br>Departamento de compras</td><td>Administrativo,<br>Departamento de compras</td><td>Nenhum papel - mesma regra do cliente.</td></tr>
-    <tr><td>CATEGORIA_PRODUTO</td><td>date</td><td>Não</td><td>Data em que o lote se esgotou/saiu.</td><td>—</td></tr>
+    <tr><td>CATEGORIA_PRODUTO</td><td>Estoquista/balconista,<br>Administrativo,<br>Departamento de compras</td><td>Administrativo,<br>Departamento de compras</td><td>Administrativo,<br>Departamento de compras</td><td>Nenhum papel - mesma regra do cliente.</td></tr>
     <tr><td>FORNECEDOR</td><td>Administrativo,<br>Departamento de compras</td><td>Administrativo,<br>Departamento de compras</td><td>Administrativo,<br>Departamento de compras</td><td>Nenhum papel - mesma regra do cliente.</td></tr>
     <tr><td>LOTE</td><td>Veterinário,<br>Balconista,<br>Estoquista,<br>Administrativo,<br> Departamento de compras</td><td>Administrativo,<br>Departamento de compras</td><td>Administrativo,<br> Departamento de compras</td><td>Nenhum papel - mesma regra do cliente.</td></tr>
 </table>
