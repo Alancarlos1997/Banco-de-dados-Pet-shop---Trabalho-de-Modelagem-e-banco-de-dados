@@ -55,6 +55,24 @@ A existência da organização e o acesso para a realização da pesquisa de cam
   <img src="./mercadao-pet-2.jpeg" width="350">
 </p>
 
+### Levantamento de Campo
+
+- **Responsáveis pelo levantamento:** Alan Carlos Teixeira Marinho de Araújo e Isabelly Pereira de França.
+
+- **Quando e onde:** 14/08/2026.
+
+- **Comprovação:** A visita técnica será comprovada por meio de uma fotografia da entrevista realizada presencialmente, em formato JPG ou PNG, disponibilizada no repositório do projeto.
+
+- **Resumo do levantamento:** Durante a pesquisa de campo, foram levantadas informações sobre as principais atividades do estabelecimento, incluindo venda de produtos, serviços de banho e tosa e atendimento em clínica veterinária vinculada. A organização realiza aproximadamente 400 atendimentos de banho e tosa por semana, mantém cadastros de clientes e pets e utiliza o Sistema Moura para o controle de estoque.
+
+  Também foi identificada a utilização de sistemas separados para o gerenciamento das atividades do pet shop e da clínica veterinária, sem integração entre eles. Essa limitação dificulta o compartilhamento de informações de clientes, animais e atendimentos. Além disso, a gestão de fornecedores ocorre de maneira informal, por meio de anotações manuais e mensagens, sem um cadastro estruturado no sistema.
+
+  O levantamento identificou ainda que o cadastro de produtos e a entrada de mercadorias são realizados manualmente, com registro de informações como preço de custo, NCM e código de barras. Os agendamentos de banho e tosa incluem o horário, os dados do pet, o endereço quando há necessidade de transporte e a identificação do funcionário responsável. O estabelecimento também mantém um histórico dos serviços prestados aos animais e comercializa produtos a granel.
+
+- **Observação presencial:** Durante a visita técnica, observamos que o contato com fornecedores e o recebimento de mercadorias ocorrem de maneira informal, utilizando anotações manuais e mensagens, sem uma rotina estruturada de registro e rastreamento das compras. Também identificamos a falta de integração entre o sistema do pet shop e o da clínica veterinária, o que dificulta a centralização das informações e a consulta unificada dos históricos de atendimento.
+
+- **Arquivo completo:** O levantamento detalhado está organizado no arquivo [`levantamento/levantamento.md`](levantamento/levantamento.md), que reúne as informações obtidas na entrevista, as observações presenciais e os ajustes realizados em relação à Entrega 1.
+
 ## Processos de Negócio
 
 Durante a entrevista com a gerência do Mercadão Pet, identificamos três processos principais que acontecem no dia a dia do estabelecimento:
