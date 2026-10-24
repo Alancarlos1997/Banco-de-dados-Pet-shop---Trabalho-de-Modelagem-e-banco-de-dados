@@ -259,7 +259,7 @@ Um fornecedor cadastrado pode abastecer a loja com diversos produtos (`0,n`), e 
 
 ### Diagrama Entidade-Relacionamento (DER)
 
-![Diagrama Entidade-Relacionamento - Mercadão Pet](./DER_MercadaoPet_alterado.png)
+![Diagrama Entidade-Relacionamento - Mercadão Pet](./Alteracoes_definitivas_DER.png)
 
 ### Uso de Inteligência Artificial
 
