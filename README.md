@@ -194,13 +194,17 @@ No Diagrama Entidade-Relacionamento (DER) ajustado para o Mercadão Pet, foram m
 - **Historico:** Prontuário de atendimentos e histórico clínico do pet.
 - **Agendamento:** Registro de horário e data para prestação de serviços.
 - **Balconista:** Funcionário responsável pela recepção e marcação de agendamentos.
-- **Funcionario:** Colaborador operacional que executa os serviços prestados.
+- **Funcionario:** Colaborador responsável pela execução dos serviços, identificado pelo atributo cargo Banho e Tosa.
 - **Servico:** Catálogo de serviços oferecidos pelo estabelecimento (ex: Banho, Tosa, Consulta).
 - **Venda:** Registro comercial e financeiro da transação no caixa.
 - **Produto:** Cadastro dos itens comercializados na loja ou utilizados nos serviços.
 - **Categoria_Produto:** Classificação catalográfica dos produtos da loja.
-- **Lote:** Controle físico de estoque por remessas, registradas com data de validade, fabricação, custo e saldo físico.
+- **Lote:** Controle de estoque por remessas, contendo número do lote, data de fabricação, data de validade, custo e quantidade disponível.
 - **Fornecedor:** Cadastro dos distribuidores e parceiros comerciais.
+- **Pagamento:** Registro dos pagamentos realizados nas vendas, incluindo forma de pagamento, valor, data e status.
+- **Compra:** Registro das aquisições de mercadorias realizadas junto aos fornecedores.
+- **Transporte:** Registro do serviço de busca e devolução dos animais para atendimentos de banho e tosa.
+- **Entrega:** Registro da entrega de produtos adquiridos pelos clientes, como rações e outros itens comercializados pelo pet shop.
 
 ---
 
@@ -210,15 +214,17 @@ A definição de cardinalidades no modelo conceitual reflete diretamente as regr
 
 #### Decisões Estratégicas para Resolução dos Problemas Identificados
 
-* **Eliminação da Entidade Associativa no Modelo Conceitual:** Em conformidade com as diretrizes do Modelo Conceitual (DER) de nivelamento acadêmico, a entidade associativa/intermediária `Item_Venda` foi removida nesta etapa. A relação comercial entre vendas e mercadorias é expressa diretamente pelo relacionamento de muitos-para-muitos `(1,n) Contém (1,n)` entre as entidades **Venda** e **Produto**.
+* **Relacionamento entre Venda e Produto:** Foi mantido o relacionamento CONTÉM entre VENDA e PRODUTO, sem a inclusão da entidade ITEM_VENDA, conforme orientação do professor. A cardinalidade foi ajustada para `(0,n)`, permitindo vendas que contenham apenas serviços, sem a obrigatoriedade de produtos.
 
-* **Gestão de Validade e Rastreabilidade por Lote (Solução da Crise do Estoque):** Para resolver o problema do estoque separado/defasado e atender à exigência de rastreabilidade de mercadorias perecíveis (como rações e medicamentos), a entidade `Estoque` foi convertida em **Lote**. Cada produto pode ter zero ou vários lotes ativos no sistema `Produto (1,1) --- Possui --- (0,n) Lote`, permitindo o acompanhamento individualizado de datas de fabricação, expiração de validade e saldos por remessa.
+* **Gestão de Validade e Rastreabilidade por Lote:** O controle de estoque permanece centralizado em LOTE, com a inclusão dos atributos número do lote, data de fabricação e data de validade. O atributo `quantidade_estoque` foi removido de PRODUTO para evitar duplicidade de informações.
 
 * **Integração dos Serviços ao Caixa:** Os agendamentos de banho e tosa relacionam-se com a entidade `Servico` `(1,n) Relacionado (1,n)`, permitindo que atendimentos prestados gerem seus respectivos lançamentos em `Venda`, unificando o faturamento do balcão.
 
 * **Rastreabilidade e Atendimento Médico:** A entidade `Pet` mantém cardinalidade `(1,1) Tem (0,n)` com a entidade `Historico`, garantindo que todas as consultas e observações fiquem atreladas a um único animal ao longo do tempo.
 
-* **Fornecedores no Sistema:** Adicionou-se a entidade `Fornecedor` com relação `(0,n) Fornece (1,1) Produto` para suprir a falta de cadastro sistêmico de fornecedores identificada na entrevista.
+* **Fornecedores e Compras:** Foi adicionada a entidade COMPRA, relacionada a FORNECEDOR e LOTE, permitindo registrar as aquisições de mercadorias e identificar os lotes recebidos de cada fornecedor.
+
+* **Transporte e Entrega:** Foram adicionadas as entidades TRANSPORTE e ENTREGA, ambas relacionadas a AGENDAMENTO, para representar os serviços oferecidos pelo estabelecimento. TRANSPORTE permite registrar a busca e devolução dos animais para atendimentos de banho e tosa, enquanto ENTREGA permite registrar a entrega de produtos adquiridos pelos clientes, como rações e outros itens comercializados pelo pet shop.
 
 #### Todas as Cardinalidades do DER
 
@@ -232,19 +238,19 @@ Um pet recém-cadastrado pode ainda não ter nenhum registro clínico (`0,n`), a
 Um pet pode ter zero ou vários agendamentos ao longo do tempo (`0,n`), mas cada agendamento é emitido exclusivamente para um único animal (`1,1`).
 
 * **Agendamento (1,1) — Realiza — (0,n) Balconista**
-Um balconista de recepção pode registrar múltiplos agendamentos ao longo do expediente (`0,n`). Para garantir o controle sobre quem marcou o horário, cada agendamento registra obrigatoriamente exatamente um balconista responsável (`1,1`).
+Um funcionário responsável pelo balcão pode registrar vários agendamentos, enquanto cada agendamento possui um responsável pelo registro.
 
 * **Agendamento (1,n) — Relacionado — (1,n) Servico**
 Um agendamento pode conter um ou mais serviços contratados simultaneamente (ex.: Banho + Tosa) (`1,n`), e um tipo de serviço do catálogo pode estar associado a múltiplos agendamentos no sistema (`1,n`).
 
-* **Funcionario (0,n) — Realiza — (0,n) Servico / Venda**
-Um funcionário da parte operacional realiza diversos serviços de banho/tosa ou vendas ao longo do dia (`0,n`), garantindo a prestação de serviços por colaboradores devidamente cadastrados.
+* **Funcionario (0,n) — Realiza — (0,n) Servico
+Um funcionário responsável pelo banho e tosa pode executar diferentes serviços, enquanto um mesmo tipo de serviço pode ser realizado por diferentes funcionários.
 
-* **Cliente (1,n) — Realiza — (1,1) Venda**
-Um cliente cadastrado pode realizar diversas compras e pagamentos no balcão ao longo do tempo (`1,n`), enquanto cada cupom de venda emitido é atribuído obrigatoriamente a um cliente específico (`1,1`).
+* **Cliente (0,n) — Realiza — (1,1) Venda**
+Um cliente pode estar cadastrado sem realizar compras ou realizar várias vendas ao longo do tempo. Cada venda pertence obrigatoriamente a um único cliente.
 
-* **Venda (1,n) — Contém — (1,n) Produto**
-Uma venda deve conter obrigatoriamente pelo menos um produto ou serviço comercializado (`1,n`). Da mesma forma, um produto cadastrado no catálogo pode constar em diversas vendas emitidas ao longo do tempo (`1,n`).
+* **Venda (0,n) — Contém — (0,n) Produto**
+Uma venda pode não conter produtos quando estiver relacionada apenas a serviços. Um produto pode estar cadastrado sem ter sido vendido ou participar de várias vendas.
 
 * **Produto (1,1) — Pertence — (0,n) Categoria_Produto**
 Todo produto cadastrado deve ter uma categoria associada (`1,1`) para organização da loja (ex.: Rações, Brinquedos, Medicamentos). Uma categoria, por sua vez, pode agrupar diversos produtos (`0,n`).
@@ -252,8 +258,23 @@ Todo produto cadastrado deve ter uma categoria associada (`1,1`) para organizaç
 * **Produto (1,1) — Possui — (0,n) Lote**
 Cada lote registrado no sistema pertence unicamente a exatamente um produto (`1,1`). Um produto cadastrado no catálogo, por outro lado, pode não possuir lotes em estoque no momento do cadastro ou possuir múltiplos lotes simultâneos oriundos de diferentes remessas de recebimento (`0,n`).
 
-* **Fornecedor (0,n) — Fornece — (1,1) Produto**
-Um fornecedor cadastrado pode abastecer a loja com diversos produtos (`0,n`), e cada produto possui a indicação de seu fornecedor principal (`1,1`).
+* **Fornecedor (1,1) — Atende — (0,n) Compra:**
+Um fornecedor pode atender várias compras, enquanto cada compra está vinculada a um único fornecedor.
+
+* **Compra (1,1) — Registra — (1,n) Lote:**
+Uma compra pode registrar vários lotes de mercadorias, enquanto cada lote recebido pertence a uma única compra.
+
+* **Venda (1,1) — Possui — (0,n) Pagamento:**
+Uma venda pode não possuir pagamentos registrados ou apresentar vários pagamentos. Cada pagamento pertence a uma única venda.
+
+* **Agendamento (1,1) — Possui — (0,1) Transporte:** 
+Um agendamento pode não solicitar transporte ou possuir um registro de retirada do animal. Cada transporte pertence a um único agendamento.
+
+* **Agendamento (1,1) — Possui — (0,1) Entrega:** 
+Um agendamento pode não solicitar entrega ou possuir um registro de devolução do animal. Cada entrega pertence a um único agendamento.
+
+* **Venda (0,n) — Realiza — (0,n) Servico:**
+Uma venda pode não conter serviços quando estiver relacionada apenas à comercialização de produtos. Um serviço pode estar associado a diferentes vendas ou ainda não ter sido comercializado.
 
 ---
 
