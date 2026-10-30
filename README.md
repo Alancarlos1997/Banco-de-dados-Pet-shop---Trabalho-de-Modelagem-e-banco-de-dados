@@ -187,7 +187,7 @@ A quantidade de agendamentos para um mesmo horário não pode ultrapassar o núm
 ## Modelagem Conceitual e Justificativa Técnica (DER)
 
 ### Entidades Reconhecidas
-No Diagrama Entidade-Relacionamento (DER) ajustado para o Mercadão Pet, foram modeladas 12 entidades principais.
+No Diagrama Entidade-Relacionamento (DER) ajustado para o Mercadão Pet, foram modeladas 16 entidades principais.
 
 - **Cliente:** Tutor responsável pelo cadastro e pelos pets.
 - **Pet:** Animal de estimação atendido na clínica ou no banho e tosa.
@@ -214,7 +214,7 @@ A definição de cardinalidades no modelo conceitual reflete diretamente as regr
 
 #### Decisões Estratégicas para Resolução dos Problemas Identificados
 
-* **Relacionamento entre Venda e Produto:** Foi mantido o relacionamento CONTÉM entre VENDA e PRODUTO, sem a inclusão da entidade ITEM_VENDA, conforme orientação do professor. A cardinalidade foi ajustada para `(0,n)`, permitindo vendas que contenham apenas serviços, sem a obrigatoriedade de produtos.
+* **Relacionamento entre Venda e Produto:** Foi mantido o relacionamento CONTÉM entre VENDA e PRODUTO, sem a inclusão da entidade `ITEM_VENDA`, conforme orientação do professor. A cardinalidade foi ajustada para `(0,n)`, permitindo vendas que contenham apenas serviços, sem a obrigatoriedade de produtos.
 
 * **Gestão de Validade e Rastreabilidade por Lote:** O controle de estoque permanece centralizado em LOTE, com a inclusão dos atributos número do lote, data de fabricação e data de validade. O atributo `quantidade_estoque` foi removido de PRODUTO para evitar duplicidade de informações.
 
@@ -243,7 +243,7 @@ Um funcionário responsável pelo balcão pode registrar vários agendamentos, e
 * **Agendamento (1,n) — Relacionado — (1,n) Servico**
 Um agendamento pode conter um ou mais serviços contratados simultaneamente (ex.: Banho + Tosa) (`1,n`), e um tipo de serviço do catálogo pode estar associado a múltiplos agendamentos no sistema (`1,n`).
 
-* **Funcionario (0,n) — Realiza — (0,n) Servico
+* **Funcionario (0,n) — Realiza — (0,n) Servico**
 Um funcionário responsável pelo banho e tosa pode executar diferentes serviços, enquanto um mesmo tipo de serviço pode ser realizado por diferentes funcionários.
 
 * **Cliente (0,n) — Realiza — (1,1) Venda**
