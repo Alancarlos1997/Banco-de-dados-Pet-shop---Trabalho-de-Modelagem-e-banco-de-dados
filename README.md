@@ -80,6 +80,11 @@ Durante a entrevista com a gerência do Mercadão Pet, identificamos três proce
 - **Atendimento e agendamento de serviços (banho, tosa e clínica):** o pet chega, o serviço é marcado, o profissional executa e, se for consulta, fica registrado no histórico do animal.
 - **Venda de produtos e serviços no caixa:** o cliente compra produtos ou paga por um serviço, e o estoque é atualizado na hora.
 - **Controle de estoque e compras:** quando chega mercadoria do fornecedor, ela é conferida e cadastrada, atualizando o estoque disponível para venda.
+- **Pedido de compra:** a solicitação é feita a um fornecedor com os produtos necessários, e o recebimento é conferido com a nota fiscal.
+- **Consumo de insumos:** os materiais usados nos serviços são registrados e baixados do estoque.
+- **Transporte petshop:** a busca e a devolução do pet são vinculadas ao agendamento.
+- **Cancelamento de agendamento:** o cancelamento é registrado com o motivo e o status do agendamento é atualizado.
+- **Fechamento de caixa:** as vendas, os pagamentos e os valores recebidos são conferidos ao final do expediente.
 
 Abaixo detalhamos o passo a passo de cada um.
 
@@ -113,6 +118,42 @@ Abaixo detalhamos o passo a passo de cada um.
 4. É registrado um novo lote para esse produto, com a quantidade recebida, o custo, a data de fabricação e a data de validade.
 5. O estoque fica atualizado na hora, já separado por lote, mostrando o que está disponível e dentro da validade para venda.
 
+### 4. Pedido de compra
+
+1. O funcionário identifica a necessidade de reposição e registra a solicitação de compra.
+2. Seleciona o fornecedor cadastrado e os produtos a serem solicitados.
+3. A compra é registrada vinculada ao fornecedor, com o status inicial da compra.
+4. Quando a mercadoria chega, o funcionário confere os itens recebidos com a nota fiscal e registra o número da nota fiscal na compra.
+5. Os lotes recebidos são registrados vinculados à compra e o status da compra é atualizado.
+
+### 5. Consumo de insumos
+
+1. Durante a execução de um serviço, o funcionário identifica os materiais utilizados (insumos).
+2. Registra o produto e a quantidade consumida.
+3. O sistema seleciona o lote com a validade mais próxima que esteja dentro do prazo e com saldo suficiente (FEFO).
+4. A `quantidade_atual` do lote é reduzida automaticamente e o estoque fica atualizado.
+
+### 6. Transporte petshop
+
+1. Ao criar o agendamento, o balconista verifica se o cliente precisa de transporte para o pet.
+2. Se precisar, o transporte é registrado vinculado ao agendamento, com endereço, tipo (busca ou devolução), data e hora.
+3. No dia marcado, a busca do pet é realizada e o status do transporte é atualizado.
+4. Após o atendimento, a devolução do pet é realizada e o status do transporte é atualizado.
+
+### 7. Cancelamento de agendamento
+
+1. O cliente solicita o cancelamento e o balconista localiza o agendamento.
+2. O cancelamento é registrado com o motivo informado.
+3. O status do agendamento é atualizado para cancelado, liberando o horário. O registro não é apagado.
+4. Se houver transporte vinculado ao agendamento, o status do transporte também é atualizado.
+
+### 8. Fechamento de caixa
+
+1. Ao final do expediente, o responsável lista as vendas realizadas no período.
+2. Confere os pagamentos registrados, por forma de pagamento (dinheiro, cartão ou PIX), com o valor total das vendas.
+3. Compara os valores recebidos com os valores registrados no sistema e verifica eventuais divergências.
+4. O fechamento é registrado, encerrando o movimento do caixa.
+
 ### Requisitos Funcionais (RF)
 - **RF01 (Gestão de Clientes e Pets):** 
 Permite cadastrar, atualizar e consultar os dados dos clientes e seus respectivos pets vinculados.
@@ -137,6 +178,27 @@ Permite cadastrar e consultar os lotes das mercadorias, controlando a quantidade
 
 - **RF08 (Cadastro de Fornecedores):**
 Permite cadastrar e consultar fornecedores, associando-os aos produtos fornecidos ao estabelecimento.
+
+- **RF09 (Pedidos de Compra):**
+Permite registrar pedidos de compra vinculados a um fornecedor, com data, valor total e status da compra.
+
+- **RF10 (Recebimento e Conferência de Mercadorias):**
+Permite registrar o recebimento da mercadoria, informar o número da nota fiscal, conferir os itens recebidos e registrar os lotes vinculados à compra.
+
+- **RF11 (Pagamentos e Formas de Pagamento):**
+Permite registrar um ou mais pagamentos por venda, informando forma de pagamento (dinheiro, cartão ou PIX), valor, data e status.
+
+- **RF12 (Cancelamento de Agendamentos):**
+Permite cancelar um agendamento, registrando o motivo e atualizando o seu status, sem excluir o registro.
+
+- **RF13 (Transporte de Pets):**
+Permite registrar a busca e a devolução do pet vinculadas ao agendamento, com endereço, tipo, data, hora e status.
+
+- **RF14 (Fechamento de Caixa):**
+Permite consultar as vendas e os pagamentos do período e conferir os valores recebidos para o fechamento do caixa.
+
+- **RF15 (Consumo de Insumos e Controle FEFO):**
+Permite registrar os insumos consumidos nos serviços, dando baixa na `quantidade_atual` do lote e selecionando primeiro o lote com a menor data de validade (FEFO).
 
 
 ---
@@ -183,6 +245,24 @@ O histórico clínico de um pet não pode ser alterado ou apagado após a emiss�
 
 - **RN08 (Capacidade Operacional de Banho e Tosa):**
 A quantidade de agendamentos para um mesmo horário não pode ultrapassar o número de funcionários operacionais disponíveis no expediente.
+
+- **RN09 (FEFO):**
+Na venda ou no consumo de um produto, deve ser utilizado primeiro o lote com a menor data de validade que ainda esteja dentro do prazo e com saldo disponível (First Expired, First Out).
+
+- **RN10 (Medicamentos com Receita):**
+A venda de medicamento que exige receita só pode ser finalizada com a apresentação da receita.
+
+- **RN11 (Identificação do Veterinário):**
+O veterinário responsável por um atendimento clínico deve ser identificado obrigatoriamente pelo número do CRMV.
+
+- **RN12 (Cancelamento de Agendamentos):**
+O cancelamento de um agendamento deve registrar o motivo e atualizar o seu status, sem excluir o registro. Um agendamento cancelado libera o horário.
+
+- **RN13 (Formas de Pagamento):**
+Todo pagamento deve conter forma de pagamento (dinheiro, cartão ou PIX), valor, data e status. Uma venda só pode ser finalizada quando o total dos pagamentos confirmados for igual ao valor da venda.
+
+- **RN14 (Conferência de Nota Fiscal):**
+Toda compra recebida deve ter o número da nota fiscal registrado e os itens conferidos antes de seus lotes ficarem disponíveis para venda.
 
 ## Modelagem Conceitual e Justificativa Técnica (DER)
 
