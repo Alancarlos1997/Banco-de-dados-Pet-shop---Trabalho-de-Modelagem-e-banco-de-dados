@@ -375,6 +375,8 @@ Uma venda pode não conter serviços quando estiver relacionada apenas à comerc
 |**Justificativa da escolha final**|Todas as entidades, atributos e relacionamentos foram desenhados manualmente pelo grupo no software brModelo. A IA serviu estritamente para apontar gaps de lógica; a tomada de decisão final levou em consideração a real necessidade da empresa entrevistada.|
 |**Reflexão crítica**|A IA às vezes dá soluções muito genéricas ou simples demais, que não mostram como as coisas funcionam na prática no dia a dia da clínica e do petshop (como o controle de estoque e as fichas de atendimento). Por isso, o nosso olhar foi essencial para pegar a teoria do banco de dados e ajustar do jeito que a empresa realmente precisa.|
 |-|-|
+| **Item** | **O que registrar** |
+|---|---|
 | **Ferramenta e etapa** | ChatGPT. Utilizado na etapa de revisão textual e formatação do README.md do projeto. |
 | **Motivação** | Revisar a ortografia e a gramática do texto elaborado pelo grupo, além de auxiliar na organização das informações de acordo com a estrutura solicitada para o README.md no GitHub. |
 | **Prompt(s) utilizados** | "Revise a ortografia e a gramática deste texto sem alterar sua essência. Organize o conteúdo considerando que ele será utilizado no README.md de um projeto de modelagem de banco de dados." <br /><br /> "Leve em conta este exemplo de estrutura solicitado pelo professor e ajuste o nosso texto para atender aos requisitos de Introdução, Desenvolvimento, Caracterização da Organização, Problemas e Necessidades, Justificativa da Escolha e Evidências da Organização." |
@@ -384,6 +386,8 @@ Uma venda pode não conter serviços quando estiver relacionada apenas à comerc
 | **Justificativa da escolha final** | O conteúdo e as informações apresentadas no README.md foram definidos pelo grupo com base na pesquisa de campo e nas orientações da disciplina. O ChatGPT foi utilizado somente como ferramenta de apoio para revisão textual, correção ortográfica e organização do conteúdo no formato Markdown. |
 | **Reflexão crítica** | A utilização da IA facilitou a identificação de erros de escrita e ajudou a organizar o conteúdo de maneira mais clara e adequada ao formato do GitHub. Entretanto, a ferramenta não foi utilizada para definir as informações do projeto ou tomar decisões sobre a modelagem do banco de dados. A revisão final foi realizada pelo grupo, que verificou se as alterações mantinham o conteúdo e as informações obtidas durante a pesquisa. |
 |-|-|
+| **Item** | **O que registrar** |
+|---|---|
 | **Ferramenta e etapa** | Gemini. Utilizado na etapa de elicitação, refinamento e validação dos Requisitos Funcionais (RF), Requisitos Não Funcionais (RNF) e Regras de Negócio (RN) para o sistema da clínica e petshop. |
 | **Motivação** | Garantir que a especificação do sistema estivesse completa, sem ambiguidades, cobrindo tanto as necessidades operacionais cotidianas (como vendas e agendamentos) quanto as restrições técnicas (segurança, LGPD e integridade de dados). |
 | **Prompt(s) utilizados** | "A partir da transcrição da entrevista com a clínica/petshop e do nosso DER modelado, ajude a estruturar de forma clara os Requisitos Funcionais, Não Funcionais e Regras de Negócio do sistema, garantindo alinhamento com a substituição do estoque unificado pela entidade Lote e a remoção da entidade associativa Item_Venda no modelo conceitual." |
@@ -393,6 +397,8 @@ Uma venda pode não conter serviços quando estiver relacionada apenas à comerc
 | **Justificativa da escolha final** | Os requisitos e regras finais foram selecionados e adaptados para refletirem fielmente as prioridades do petshop, garantindo que o sistema atenda tanto a parte fiscal e o controle de validade por lote quanto a agilidade no atendimento de balcão e clínico |
 | **Reflexão crítica** | A IA ajuda a organizar e padronizar o formato dos requisitos e tabelas de software. No entanto, a definição exata de quais restrições são vitais para o negócio, como o rastreamento individual de validades de medicamentos via Lote ou a capacidade operacional de banho e tosa, exigiu a percepção crítica e a tomada de decisão do grupo frente à realidade da empresa. |
 |-|-|
+| **Item** | **O que registrar** |
+|---|---|
 | **Ferramenta e etapa** | Claude. Utilizado na etapa de elaboração e revisão dos Processos de Negócio do projeto. |
 | **Motivação** | Entender o conceito de fluxo de processos de negócio (sequência de passos, decisões e atores) e usar esse entendimento para estruturar e revisar o texto dos três processos mapeados na entrevista, garantindo coerência com o DER final do grupo. |
 | **Prompt(s) utilizados** | "Me  explique sobre processos de negócio e me ajude a mapear eles." <br /><br /> "Confira se esses processos estão de acordo com este readme." |
