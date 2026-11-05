@@ -1,6 +1,6 @@
 # Nome dos integrantes:
 
-* **Alan Carlos Teixeira Marinho de Araujo - **RGM:** 48693871**
+* **Alan Carlos Teixeira Marinho de Araujo - **RGM:** 48693871** - 
 * **Carla Daiane Mamani Choque - **RGM:** 48011762**
 * **Giovanna Aparecida dos Santos - **RGM:** 47817518**
 * **Isabela Barbosa Pereira - **RGM:** 48693821**
