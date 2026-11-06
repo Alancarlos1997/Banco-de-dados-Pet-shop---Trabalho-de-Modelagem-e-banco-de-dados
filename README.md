@@ -29,11 +29,14 @@ O grupo escolheu o Mercadão Pet, um estabelecimento do setor pet que atua com a
 A organização possui diferentes áreas de atuação, envolvendo a comercialização de produtos e a prestação de serviços para animais. Entre as atividades realizadas, destaca-se o serviço de banho e tosa, que apresenta um volume aproximado de 400 atendimentos por semana. A organização conta com 20 funcionários envolvidos em suas atividades.
 
 **Problemas e necessidades identificados:**  
-Durante a pesquisa de campo, foi identificado que a organização utiliza dois sistemas separados para gerenciar as vendas e o estoque. Como esses sistemas não são integrados, as informações relacionadas às vendas e à movimentação do estoque não são atualizadas de forma conjunta.
+Durante a pesquisa de campo, foram identificados quatro problemas de gestão de informações:
 
-Essa falta de integração pode dificultar o acompanhamento da quantidade de produtos disponíveis, exigindo maior controle por parte dos funcionários e tornando o gerenciamento do estoque menos eficiente.
+- **P1 — Vendas e estoque em sistemas separados:** as vendas e o estoque são controlados em dois sistemas que não se integram. A movimentação dos produtos não é atualizada junto com as vendas, o que dificulta saber a quantidade disponível de cada item e quais lotes estão perto do vencimento.
+- **P2 — Cadastro manual de produtos e mercadorias:** o cadastro de produtos e a entrada de mercadorias são feitos manualmente, com registro de preço de custo, NCM e código de barras, sem uma visão organizada de custo, preço de venda e margem.
+- **P3 — Pet shop e clínica veterinária sem integração:** os sistemas do pet shop e da clínica veterinária vinculada não compartilham os dados de clientes, animais e atendimentos, o que impede a consulta unificada do histórico de cada pet.
+- **P4 — Fornecedores e compras sem registro estruturado:** o contato com fornecedores e o recebimento de mercadorias são feitos por anotações manuais e mensagens, sem cadastro de fornecedores nem rastreio dos pedidos de compra e das notas fiscais.
 
-Também foi observado que o cadastro de produtos é realizado manualmente, sendo registradas informações como preço de custo, NCM e código de barras. Diante disso, uma das principais necessidades identificadas é a integração entre as informações de vendas e estoque, permitindo um controle mais organizado e eficiente dos produtos e de suas movimentações.
+Diante disso, a principal necessidade é reunir em um único banco de dados as informações de clientes, pets, atendimentos, vendas, estoque por lote, fornecedores e compras.
 
 **Justificativa da escolha:**  
 O Mercadão Pet foi escolhido por apresentar uma variedade de processos de negócio e um volume significativo de informações relacionadas a clientes, pets, funcionários, serviços, atendimentos, produtos, vendas e estoque.
@@ -75,16 +78,15 @@ A existência da organização e o acesso para a realização da pesquisa de cam
 
 ## Processos de Negócio
 
-Durante a entrevista com a gerência do Mercadão Pet, identificamos oito processos principais que acontecem no dia a dia do estabelecimento:
+Durante a entrevista com a gerência do Mercadão Pet, identificamos sete processos principais que acontecem no dia a dia do estabelecimento:
 
 - **Atendimento e agendamento de serviços (banho, tosa e clínica):** o pet chega, o serviço é marcado, o profissional executa e, se for consulta, fica registrado no histórico do animal.
-- **Venda de produtos e serviços no caixa:** o cliente compra produtos ou paga por um serviço, e o estoque é atualizado na hora.
+- **Venda de produtos e serviços no caixa:** o cliente compra produtos ou paga por um serviço, e é dada baixa no lote de onde o produto saiu.
 - **Controle de estoque e compras:** quando chega mercadoria do fornecedor, ela é conferida e cadastrada, atualizando o estoque disponível para venda.
 - **Pedido de compra:** a solicitação é feita a um fornecedor com os produtos necessários, e o recebimento é conferido com a nota fiscal.
-- **Consumo de insumos:** os materiais usados nos serviços são registrados e baixados do estoque.
-- **Transporte petshop:** a busca e a devolução do pet são vinculadas ao agendamento.
-- **Cancelamento de agendamento:** o cancelamento é registrado com o motivo e o status do agendamento é atualizado.
-- **Fechamento de caixa:** as vendas, os pagamentos e os valores recebidos são conferidos ao final do expediente.
+- **Transporte petshop:** a busca do pet (transporte) e a devolução do pet (entrega) são vinculadas ao agendamento.
+- **Cancelamento de agendamento:** o status do agendamento passa para cancelado, o motivo fica registrado nas observações e o transporte e a entrega vinculados também são cancelados.
+- **Fechamento de caixa:** os pagamentos recebidos em cada forma de pagamento são conferidos com as vendas ao final do expediente.
 
 Abaixo detalhamos o passo a passo de cada um.
 
@@ -93,9 +95,10 @@ Abaixo detalhamos o passo a passo de cada um.
 1. O cliente entra em contato ou chega ao estabelecimento com o pet.
 2. O balconista verifica se o cliente e o pet já têm cadastro. Se não tiverem, o cadastro é feito na hora.
 3. O balconista escolhe o serviço desejado (banho, tosa ou consulta) e confere se tem horário disponível.
-4. É criado o agendamento, ligando o pet, o horário e o funcionário responsável.
-5. No dia marcado, o profissional atende o pet.
-6. Se for uma consulta veterinária, o atendimento é registrado no histórico do pet.
+4. É criado o agendamento com data, hora, pet, funcionário responsável pelo atendimento e um ou mais serviços (ex.: Banho + Tosa). Ele começa com o status AGENDADO.
+   - Se houver transporte, o endereço é registrado no agendamento.
+5. No dia marcado, o profissional atende o pet e o status do agendamento passa para CONCLUIDO.
+6. O atendimento é registrado no histórico do pet, com data, tipo de atendimento, descrição e observações.
 7. Depois do atendimento, o valor é enviado para o caixa, virando uma venda.
 
 ### 2. Venda de produtos e serviços no balcão
@@ -103,113 +106,120 @@ Abaixo detalhamos o passo a passo de cada um.
 1. O cliente vai até o caixa com produtos ou para pagar um serviço já feito.
 2. O balconista passa o código de barras dos produtos ou puxa o serviço já agendado.
 3. O sistema busca o preço de cada produto ou serviço.
-4. O balconista informa o valor total e registra a forma de pagamento (dinheiro, cartão ou PIX).
-5. Antes de fechar a venda, o sistema confere se o lote do produto tem quantidade suficiente e se não está vencido.
-6. O pagamento é confirmado, o comprovante é emitido, e a quantidade do lote correspondente é atualizada automaticamente.
-7. Venda finalizada e estoque em dia.
+4. A venda é registrada com data, cliente e valor total, e cada produto com quantidade (inclusive fracionada, para itens a granel) e preço unitário praticado.
+5. É escolhido o lote de onde o produto sai: o de menor data de validade, dentro do prazo e com saldo suficiente (FEFO).
+6. São registrados um ou mais pagamentos (dinheiro, cartão ou PIX), com valor, data e status. Quando os pagamentos confirmados somam o valor da venda, ela passa para FINALIZADA.
+7. É dada baixa na quantidade do lote utilizado.
 
 ### 3. Controle de estoque e compras
 
 1. Chega uma entrega de mercadorias enviada pelo fornecedor.
 2. O funcionário confere os itens recebidos com a nota fiscal.
 3. Ele procura o produto no cadastro e confere o código de barras e o código NCM.
-   - Se o produto for novo, é cadastrado com preço de custo, preço de venda e código de barras.
+   - Se o produto for novo, é cadastrado com NCM, nome, código de barras, preço de custo, preço de venda, unidade de medida e categoria.
    - Se já existir, só é selecionado no sistema.
-4. É registrado um novo lote para esse produto, com a quantidade recebida, o custo, a data de fabricação e a data de validade.
+4. É registrado um novo lote para esse produto, vinculado à compra, com número do lote, quantidade recebida, custo, data de fabricação e data de validade.
 5. O estoque fica atualizado na hora, já separado por lote, mostrando o que está disponível e dentro da validade para venda.
 
 ### 4. Pedido de compra
 
 1. O funcionário identifica a necessidade de reposição e registra a solicitação de compra.
-2. Seleciona o fornecedor cadastrado e os produtos a serem solicitados.
-3. A compra é registrada vinculada ao fornecedor, com o status inicial da compra.
-4. Quando a mercadoria chega, o funcionário confere os itens recebidos com a nota fiscal e registra o número da nota fiscal na compra.
-5. Os lotes recebidos são registrados vinculados à compra e o status da compra é atualizado.
+2. Seleciona o fornecedor cadastrado e faz o pedido a ele.
+3. A compra é registrada vinculada ao fornecedor, com data, valor total e status SOLICITADA. Os produtos não são registrados no pedido: eles entram no sistema quando a mercadoria chega, como lotes da compra.
+4. Quando a mercadoria chega, o funcionário confere os itens com a nota fiscal, registra o número da nota na compra e muda o status para RECEBIDA.
+5. Os lotes recebidos são registrados vinculados à compra (processo 3). Se o pedido não for atendido, o status passa para CANCELADA.
 
-### 5. Consumo de insumos
-
-1. Durante a execução de um serviço, o funcionário identifica os materiais utilizados (insumos).
-2. Registra o produto e a quantidade consumida.
-3. O sistema seleciona o lote com a validade mais próxima que esteja dentro do prazo e com saldo suficiente (FEFO).
-4. A `quantidade_atual` do lote é reduzida automaticamente e o estoque fica atualizado.
-
-### 6. Transporte petshop
+### 5. Transporte petshop
 
 1. Ao criar o agendamento, o balconista verifica se o cliente precisa de transporte para o pet.
-2. Se precisar, o transporte é registrado vinculado ao agendamento, com endereço, tipo (busca ou devolução), data e hora.
-3. No dia marcado, a busca do pet é realizada e o status do transporte é atualizado.
-4. Após o atendimento, a devolução do pet é realizada e o status do transporte é atualizado.
+2. Se precisar, a busca é registrada como transporte vinculado ao agendamento, com endereço de origem, endereço de destino, tipo, data, hora e status PENDENTE.
+3. A devolução do pet é registrada como entrega vinculada ao mesmo agendamento, com endereço, data, hora e status PENDENTE.
+4. Cada agendamento tem no máximo um transporte e uma entrega. Quando a busca ou a devolução é feita, o status correspondente passa para REALIZADO.
 
-### 7. Cancelamento de agendamento
+### 6. Cancelamento de agendamento
 
 1. O cliente solicita o cancelamento e o balconista localiza o agendamento.
-2. O cancelamento é registrado com o motivo informado.
-3. O status do agendamento é atualizado para cancelado, liberando o horário. O registro não é apagado.
-4. Se houver transporte vinculado ao agendamento, o status do transporte também é atualizado.
+2. O motivo informado pelo cliente é registrado no campo de observações do agendamento.
+3. O status do agendamento passa para CANCELADO, liberando o horário. O registro não é apagado.
+4. Se houver transporte ou entrega pendentes vinculados ao agendamento, o status deles também passa para CANCELADO.
 
-### 8. Fechamento de caixa
+### 7. Fechamento de caixa
 
-1. Ao final do expediente, o responsável lista as vendas realizadas no período.
-2. Confere os pagamentos registrados, por forma de pagamento (dinheiro, cartão ou PIX), com o valor total das vendas.
-3. Compara os valores recebidos com os valores registrados no sistema e verifica eventuais divergências.
-4. O fechamento é registrado, encerrando o movimento do caixa.
+1. Ao final do expediente, o responsável consulta os pagamentos confirmados do dia, separados por forma de pagamento (dinheiro, cartão ou PIX).
+2. Confere o faturamento e o ticket médio das vendas finalizadas no dia.
+3. Verifica se alguma venda finalizada tem total de pagamentos confirmados diferente do valor da venda e corrige as divergências.
+
+### Processos prováveis não incluídos
+
+- **Consumo de insumos nos serviços:** os materiais usados no banho, na tosa e na clínica (shampoo, medicamentos etc.) não são registrados por atendimento nesta versão do modelo. Eles são controlados como produtos em estoque, por lote, como as demais mercadorias.
+- **Doações para ONG:** a loja apenas arrecada doações e as repassa a uma ONG parceira, sem controle no sistema da loja.
+- **Feiras de adoção e lar temporário:** a organização não realiza essas atividades, conforme confirmado na entrevista.
 
 ### Requisitos Funcionais (RF)
-- **RF01 (Gestão de Clientes e Pets):** 
-Permite cadastrar, atualizar e consultar os dados dos clientes e seus respectivos pets vinculados.
+
+- **RF01 (Gestão de Clientes e Pets):**
+O sistema deve permitir cadastrar, atualizar e consultar clientes com nome, CPF (11 dígitos numéricos, único), endereço e telefone. Para cada cliente, deve permitir cadastrar um ou mais pets com nome, espécie, raça, peso, pelagem, data de nascimento e sexo (M ou F). Todos esses dados são obrigatórios, e todo pet fica vinculado a exatamente um cliente (tutor).
 
 - **RF02 (Histórico e Prontuário):**
-Registra o histórico clínico, atendimentos e observações médicas vinculados ao pet.
+O sistema deve permitir registrar no histórico do pet cada atendimento realizado, com data, tipo de atendimento, descrição e observações (opcional), e consultar o histórico completo de um pet.
 
 - **RF03 (Agendamento de Serviços):**
-Permite realizar o agendamento de banho, tosa e outros procedimentos, atrelado ao pet, o atendente e o serviço.
+O sistema deve permitir agendar atendimentos com data, hora, pet, funcionário responsável e um ou mais serviços do catálogo (ex.: Banho + Tosa). O agendamento pode ter endereço (quando há transporte) e observações. Ele começa com o status AGENDADO e pode passar para CONCLUIDO ou CANCELADO.
 
 - **RF04 (Gestão de Vendas no Balcão):**
-Permite emitir vendas no caixa unificado, associando os produtos do petshop e/ou os serviços prestados diretamente à venda.
+O sistema deve permitir registrar uma venda com data, cliente, valor total e status (ABERTA, FINALIZADA ou CANCELADA; padrão ABERTA). Para cada produto vendido, registra a quantidade (aceita valores fracionados, para produtos a granel) e o preço unitário praticado. A mesma venda pode incluir os serviços prestados, unificando produtos e serviços no caixa.
 
-- **RF05 (Baixa Automática por Lote - Solução do Problema Identificado):**
-Realiza a baixa automática da `quantidade_atual` do lote correspondente no estoque a cada produto comercializado em uma venda.
+- **RF05 (Baixa de Estoque por Lote - Solução do Problema Identificado):**
+O sistema deve permitir dar baixa na quantidade do lote a cada produto vendido, retirando primeiro do lote dentro da validade com a menor data de validade e só quando houver saldo suficiente.
 
 - **RF06 (Gestão de Catálogo e Produtos):**
-Permite registrar e atualizar produtos contendo código de barras, NCM, preço de custo, preço de venda e sua respectiva categoria.
+O sistema deve permitir cadastrar e atualizar categorias de produto (nome e descrição) e produtos com NCM (8 dígitos), nome, descrição, código de barras (único), preço de custo, preço de venda, unidade de medida e categoria. Também deve permitir reajustar o preço de venda dos produtos de uma categoria.
 
 - **RF07 (Gestão de Lotes e Validades):**
-Permite cadastrar e consultar os lotes das mercadorias, controlando a quantidade física, número do lote, data de fabricação e data de validade de cada remessa.
+O sistema deve permitir cadastrar e consultar lotes com número do lote, data de fabricação, data de validade (igual ou posterior à de fabricação), quantidade disponível, custo, produto e compra de origem. Deve permitir consultar os lotes que vencem nos próximos dias e os lotes vencidos que ainda têm saldo.
 
 - **RF08 (Cadastro de Fornecedores):**
-Permite cadastrar e consultar fornecedores, associando-os aos produtos fornecidos ao estabelecimento.
+O sistema deve permitir cadastrar e consultar fornecedores com nome, telefone e endereço. Os produtos fornecidos por cada fornecedor são identificados pelas compras e pelos lotes recebidos dele.
 
 - **RF09 (Pedidos de Compra):**
-Permite registrar pedidos de compra vinculados a um fornecedor, com data, valor total e status da compra.
+O sistema deve permitir registrar pedidos de compra vinculados a um fornecedor, com data da compra, valor total e status (SOLICITADA, RECEBIDA ou CANCELADA; padrão SOLICITADA), e consultar os pedidos ainda não recebidos e há quantos dias estão em aberto.
 
 - **RF10 (Recebimento e Conferência de Mercadorias):**
-Permite registrar o recebimento da mercadoria, informar o número da nota fiscal, conferir os itens recebidos e registrar os lotes vinculados à compra.
+O sistema deve permitir registrar o recebimento de uma compra, alterando seu status para RECEBIDA, informando o número da nota fiscal e registrando os lotes recebidos vinculados a essa compra.
 
 - **RF11 (Pagamentos e Formas de Pagamento):**
-Permite registrar um ou mais pagamentos por venda, informando forma de pagamento (dinheiro, cartão ou PIX), valor, data e status.
+O sistema deve permitir registrar um ou mais pagamentos por venda, cada um com forma de pagamento (DINHEIRO, CARTAO ou PIX), valor (maior que zero), data e status (PENDENTE, CONFIRMADO ou ESTORNADO; padrão PENDENTE), e atualizar o status do pagamento quando ele for confirmado.
 
 - **RF12 (Cancelamento de Agendamentos):**
-Permite cancelar um agendamento, registrando o motivo e atualizando o seu status, sem excluir o registro.
+O sistema deve permitir cancelar um agendamento alterando seu status para CANCELADO, sem excluir o registro, e registrar o motivo no campo de observações. Ao cancelar, o transporte e a entrega pendentes vinculados ao agendamento também passam para CANCELADO.
 
 - **RF13 (Transporte de Pets):**
-Permite registrar a busca e a devolução do pet vinculadas ao agendamento, com endereço, tipo, data, hora e status.
+O sistema deve permitir registrar no máximo um transporte por agendamento, com endereço de origem, endereço de destino, tipo (BUSCA ou DEVOLUCAO), data, hora e status (PENDENTE, REALIZADO ou CANCELADO; padrão PENDENTE).
 
 - **RF14 (Fechamento de Caixa):**
-Permite consultar as vendas e os pagamentos do período e conferir os valores recebidos para o fechamento do caixa.
+O sistema deve permitir consultar, por dia, o valor recebido em cada forma de pagamento, o faturamento e o ticket médio das vendas finalizadas, e identificar vendas finalizadas cujo total de pagamentos confirmados difere do valor da venda.
 
-- **RF15 (Consumo de Insumos e Controle FEFO):**
-Permite registrar os insumos consumidos nos serviços, dando baixa na `quantidade_atual` do lote e selecionando primeiro o lote com a menor data de validade (FEFO).
+- **RF15 (Controle FEFO):**
+O sistema deve permitir consultar os lotes disponíveis de um produto (com saldo e dentro da validade) ordenados pela menor data de validade, junto da compra, do fornecedor e da nota fiscal de origem, para indicar de qual lote a saída deve ser feita.
 
+- **RF16 (Catálogo de Serviços):**
+O sistema deve permitir cadastrar e consultar serviços com nome, descrição, tipo (BANHO, TOSA, ESTETICA ou CLINICA) e preço (maior ou igual a zero).
+
+- **RF17 (Gestão de Funcionários):**
+O sistema deve permitir cadastrar funcionários com nome, CPF (11 dígitos numéricos, único), cargo e telefone, e registrar quais serviços do catálogo cada funcionário executa.
+
+- **RF18 (Entrega - Devolução do Pet):**
+O sistema deve permitir registrar no máximo uma entrega (devolução do pet ao cliente) por agendamento, com endereço, data, hora e status (PENDENTE, REALIZADO ou CANCELADO; padrão PENDENTE).
 
 ---
 
 ### Requisitos Não Funcionais (RNF)
 
 - **RNF01 (Integridade de Dados/Estoque por Lote):**
-O sistema deve processar a baixa no lote correspondente em tempo real após a gravação de cada venda para evitar divergências e impedir a venda de itens esgotados.
+O banco de dados deve impedir, por meio de restrições de integridade, que o saldo de um lote fique negativo (`quantidade` maior ou igual a zero) ou que um lote tenha data de validade anterior à de fabricação. Toda venda, pagamento, lote e compra deve referenciar registros existentes (chaves estrangeiras com `ON DELETE RESTRICT`), evitando divergências entre vendas e estoque.
 
 - **RNF02 (Segurança e Privacidade/LGPD):**
-O sistema deve restringir o acesso ao histórico médico dos pets e dados cadastrais dos clientes apenas a usuários autenticados e autorizados.
+O sistema deve restringir o acesso ao histórico clínico dos pets e aos dados cadastrais dos clientes (CPF, endereço e telefone) apenas a usuários autenticados e autorizados, com permissões definidas por perfil de acesso. Os perfis operacionais (balcão, banho e tosa, clínica) podem apenas registrar e consultar o histórico, sem permissão para alterá-lo ou apagá-lo, o que garante a RN07.
 
 - **RNF03 (Disponibilidade):**
 O módulo comercial (Caixa) e o módulo de agendamentos devem manter disponibilidade de operação durante todo o horário comercial do estabelecimento.
@@ -223,7 +233,7 @@ A interface do caixa e de agendamento deve ser simples e intuitiva para permitir
 ### Regras de Negócio (RN)
 
 - **RN01 (Venda/Lote):**
-Uma venda de produto só pode ser finalizada no caixa se houver saldo suficiente na `quantidade_atual` do Lote selecionado do produto
+A saída de um produto só pode ser feita de um lote com saldo suficiente em `quantidade`, que nunca pode ficar negativa.
 
 - **RN02 (Obrigatoriedade do Tutor):** 
 Todo Pet cadastrado no sistema deve possuir obrigatoriamente exatamente um Cliente associado `(1,1)`.
@@ -238,10 +248,10 @@ Todo lote registrado deve estar atrelado obrigatoriamente a exatamente um único
 Não é permitida a venda ou saída no caixa de produtos pertencentes a um lote com data de validade vencida.
 
 - **RN06 (Responsabilidade nos Agendamentos):**
-Todo Agendamento cadastrado deve registrar obrigatoriamente o Atendente responsável pela marcação para fins de auditabilidade `(1,1)`.
+Todo agendamento deve registrar obrigatoriamente o funcionário responsável pelo atendimento `(1,1)`, para fins de auditabilidade e de controle da capacidade por horário (RN08).
 
 - **RN07 (Histórico Inviolável):**
-O histórico clínico de um pet não pode ser alterado ou apagado após a emissão do atendimento médico, garantindo a rastreabilidade veterinária.
+O histórico clínico de um pet não pode ser alterado ou apagado após o registro do atendimento, garantindo a rastreabilidade veterinária. A regra é garantida pela permissão de acesso (RNF02): os usuários operacionais podem apenas inserir e consultar registros na tabela `historico`. Correções são feitas com um novo registro, mantendo o original.
 
 - **RN08 (Capacidade Operacional de Banho e Tosa):**
 A quantidade de agendamentos para um mesmo horário não pode ultrapassar o número de funcionários operacionais disponíveis no expediente.
@@ -249,20 +259,21 @@ A quantidade de agendamentos para um mesmo horário não pode ultrapassar o núm
 - **RN09 (FEFO):**
 Na venda ou no consumo de um produto, deve ser utilizado primeiro o lote com a menor data de validade que ainda esteja dentro do prazo e com saldo disponível (First Expired, First Out).
 
-- **RN10 (Medicamentos com Receita):**
-A venda de medicamento que exige receita só pode ser finalizada com a apresentação da receita.
-
-- **RN11 (Identificação do Veterinário):**
-O veterinário responsável por um atendimento clínico deve ser identificado obrigatoriamente pelo número do CRMV.
-
 - **RN12 (Cancelamento de Agendamentos):**
-O cancelamento de um agendamento deve registrar o motivo e atualizar o seu status, sem excluir o registro. Um agendamento cancelado libera o horário.
+O cancelamento de um agendamento deve registrar o motivo no campo de observações e mudar o status para CANCELADO, sem excluir o registro. O transporte e a entrega pendentes vinculados também passam para CANCELADO. Um agendamento cancelado libera o horário.
 
 - **RN13 (Formas de Pagamento):**
 Todo pagamento deve conter forma de pagamento (dinheiro, cartão ou PIX), valor, data e status. Uma venda só pode ser finalizada quando o total dos pagamentos confirmados for igual ao valor da venda.
 
 - **RN14 (Conferência de Nota Fiscal):**
 Toda compra recebida deve ter o número da nota fiscal registrado e os itens conferidos antes de seus lotes ficarem disponíveis para venda.
+
+#### Regras prováveis não incluídas
+
+Os códigos abaixo foram mantidos para não alterar a numeração das demais regras.
+
+- **RN10 (Medicamentos com Receita):** a venda de medicamento que exige receita só deveria ser finalizada com a apresentação da receita. Não foi implementada nesta versão: o cadastro de produtos não identifica quais medicamentos exigem receita.
+- **RN11 (Identificação do Veterinário):** o veterinário responsável por um atendimento clínico deveria ser identificado pelo CRMV. Não foi implementada nesta versão: o atendimento clínico é feito pela clínica veterinária vinculada, e o banco registra o atendimento no histórico do pet, mas não o cadastro profissional do veterinário.
 
 ## Modelagem Conceitual e Justificativa Técnica (DER)
 
@@ -284,7 +295,7 @@ No Diagrama Entidade-Relacionamento (DER) ajustado para o Mercadão Pet, foram m
 - **Pagamento:** Registro dos pagamentos realizados nas vendas, incluindo forma de pagamento, valor, data e status.
 - **Compra:** Registro das aquisições de mercadorias realizadas junto aos fornecedores.
 - **Transporte:** Registro do serviço de busca e devolução dos animais para atendimentos de banho e tosa.
-- **Entrega:** Registro da entrega de produtos adquiridos pelos clientes, como rações e outros itens comercializados pelo pet shop.
+- **Entrega:** Registro da devolução do pet ao endereço do cliente após o atendimento, vinculada ao agendamento.
 
 ---
 
@@ -304,7 +315,7 @@ A definição de cardinalidades no modelo conceitual reflete diretamente as regr
 
 * **Fornecedores e Compras:** Foi adicionada a entidade COMPRA, relacionada a FORNECEDOR e LOTE, permitindo registrar as aquisições de mercadorias e identificar os lotes recebidos de cada fornecedor.
 
-* **Transporte e Entrega:** Foram adicionadas as entidades TRANSPORTE e ENTREGA, ambas relacionadas a AGENDAMENTO, para representar os serviços oferecidos pelo estabelecimento. TRANSPORTE permite registrar a busca e devolução dos animais para atendimentos de banho e tosa, enquanto ENTREGA permite registrar a entrega de produtos adquiridos pelos clientes, como rações e outros itens comercializados pelo pet shop.
+* **Transporte e Entrega:** Foram adicionadas as entidades TRANSPORTE e ENTREGA, ambas relacionadas a AGENDAMENTO, para representar os serviços oferecidos pelo estabelecimento. TRANSPORTE registra a busca do animal para o atendimento, enquanto ENTREGA registra a devolução do animal ao endereço do cliente depois do atendimento.
 
 #### Todas as Cardinalidades do DER
 
@@ -362,7 +373,282 @@ Uma venda pode não conter serviços quando estiver relacionada apenas à comerc
 
 ![Diagrama Entidade-Relacionamento - Mercadão Pet](./Alteracoes_definitivas_DER.png)
 
-### Uso de Inteligência Artificial
+## 1.2 Conversão do Modelo Conceitual para o Modelo Lógico
+
+O modelo lógico foi implementado no MySQL e está no script [`docs/script.sql`](docs/script.sql). O DER gerou 19 tabelas: 15 vindas das entidades e 4 tabelas associativas vindas dos relacionamentos N:N.
+
+### Entidades → Tabelas
+
+| Entidade no DER | Tabela no modelo lógico |
+|---|---|
+| Cliente | `cliente` |
+| Pet | `pet` |
+| Historico | `historico` |
+| Agendamento | `agendamento` |
+| Servico | `servico` |
+| Funcionario (banho e tosa) e Funcionário (balconista) | `funcionario` (uma única tabela, com a coluna `cargo`) |
+| Venda | `venda` |
+| Pagamento | `pagamento` |
+| Produto | `produto` |
+| Categoria_produto | `categoria_produto` |
+| Lote | `lote` |
+| Fornecedor | `fornecedor` |
+| Compra | `compra` |
+| Transporte | `transporte` |
+| Entrega | `entrega` |
+
+### Atributos → Colunas
+
+Cada atributo simples virou uma coluna, com o tipo escolhido pelo uso do dado:
+
+- **Identificadores** (`id_cliente`, `id_pet` etc.): `INT AUTO_INCREMENT`, usados como chave primária.
+- **CPF** (`CHAR(11)`) e **NCM** (`CHAR(8)`): tamanho fixo e guardados como texto, porque são códigos e não números de cálculo. Assim, um CPF iniciado por zero não perde o primeiro dígito.
+- **Telefone** (`VARCHAR(11)`) e **código de barras** (`VARCHAR(20)`): também texto, pelo mesmo motivo.
+- **Valores em dinheiro** (preços, custos, totais e pagamentos): `DECIMAL(10,2)`, que guarda os centavos sem erro de arredondamento.
+- **Peso do pet**: `DECIMAL(5,2)`.
+- **Quantidades de lote e de item vendido**: `DECIMAL(10,3)`, para aceitar produtos a granel vendidos em quilos (ex.: 1,250 kg de ração).
+- **Datas e horas**: `DATE` e `TIME`.
+- **Status e tipos**: `VARCHAR`, com a lista de valores permitidos controlada por `CHECK`.
+- **Sexo do pet**: `CHAR(1)`, com os valores M ou F.
+
+Alguns atributos foram ajustados na conversão:
+
+- Os atributos "banho e tosa" e "balconista" das duas entidades de funcionário viraram os valores da coluna `cargo`.
+- Em Transporte, os dois atributos de endereço viraram `endereco_origem` e `endereco_destino`.
+- Em Entrega, a data e a hora ficaram em colunas separadas (`data_entrega` e `hora_entrega`).
+- Em Lote, foi incluída a coluna `custo`, com o custo de cada remessa recebida.
+
+### Relacionamentos → Chaves
+
+- **Relacionamentos 1:N:** a chave primária do lado 1 virou chave estrangeira no lado N:
+  - Cliente–Pet (`pet.id_cliente`);
+  - Pet–Historico (`historico.id_pet`);
+  - Pet–Agendamento (`agendamento.id_pet`);
+  - Funcionário–Agendamento (`agendamento.id_funcionario`);
+  - Cliente–Venda (`venda.id_cliente`);
+  - Venda–Pagamento (`pagamento.id_venda`);
+  - Categoria_produto–Produto (`produto.id_categoria`);
+  - Produto–Lote (`lote.id_produto`);
+  - Fornecedor–Compra (`compra.id_fornecedor`);
+  - Compra–Lote (`lote.id_compra`).
+- **Relacionamentos 1:1 opcionais (1,1)–(0,1):** Agendamento–Transporte e Agendamento–Entrega. A chave `id_agendamento` foi colocada em `transporte` e em `entrega` com a restrição `UNIQUE`, o que garante no máximo um transporte e uma entrega por agendamento.
+- **Relacionamentos N:N:** cada um virou uma tabela associativa, com chave primária composta pelas duas chaves estrangeiras:
+  - Agendamento–Servico → `agendamento_servico`;
+  - Funcionario–Servico → `funcionario_servico`;
+  - Venda–Produto (Contém) → `item_venda`, que recebeu também a quantidade vendida e o preço unitário praticado;
+  - Venda–Servico → `venda_servico`.
+
+### Cardinalidades
+
+- **Cardinalidade mínima 1 no lado que recebe a FK:** a coluna é `NOT NULL`. Exemplos: todo pet tem tutor, toda venda tem cliente e todo lote tem produto e compra.
+- **Cardinalidade máxima 1 no lado oposto:** quando ela precisa ser garantida, a FK recebe `UNIQUE`, como em `transporte.id_agendamento` e `entrega.id_agendamento`.
+- **Cardinalidade mínima 0 (ex.: cliente sem pet, produto sem lote):** não exige restrição, porque basta não existir nenhuma linha relacionada.
+- **Relacionamento entre cliente e venda:** foi convertido como Cliente (0,n)–(1,1) Venda, como descrito nas cardinalidades acima. O pagamento se liga ao cliente por meio da venda.
+
+### Generalização/especialização
+
+O DER não tem generalização formal. As duas entidades de funcionário (banho e tosa e balconista) têm os mesmos atributos (nome, CPF e telefone), por isso foram convertidas pela estratégia de **tabela única**: uma tabela `funcionario` com a coluna `cargo` (Banho e Tosa, Balconista, Veterinario, Motorista, Estoquista, Administrativo e Gerente). Com isso:
+
+- um único cadastro atende a todos os cargos;
+- um funcionário pode mudar de função sem trocar de tabela;
+- a consulta de capacidade por horário (RN08) conta os funcionários pelo cargo.
+
+## 1.3 Definição de Chaves Primárias e Estrangeiras
+
+| Tabela | Chave primária (PK) | Chaves estrangeiras (FK) |
+|---|---|---|
+| `cliente` | `id_cliente` | — |
+| `pet` | `id_pet` | `id_cliente` → `cliente` |
+| `historico` | `id_historico` | `id_pet` → `pet` |
+| `servico` | `id_servico` | — |
+| `funcionario` | `id_funcionario` | — |
+| `agendamento` | `id_agendamento` | `id_pet` → `pet`; `id_funcionario` → `funcionario` |
+| `agendamento_servico` | (`id_agendamento`, `id_servico`) | `id_agendamento` → `agendamento`; `id_servico` → `servico` |
+| `funcionario_servico` | (`id_funcionario`, `id_servico`) | `id_funcionario` → `funcionario`; `id_servico` → `servico` |
+| `transporte` | `id_transporte` | `id_agendamento` → `agendamento` (UNIQUE) |
+| `entrega` | `id_entrega` | `id_agendamento` → `agendamento` (UNIQUE) |
+| `categoria_produto` | `id_categoria` | — |
+| `produto` | `id_produto` | `id_categoria` → `categoria_produto` |
+| `fornecedor` | `id_fornecedor` | — |
+| `compra` | `id_compra` | `id_fornecedor` → `fornecedor` |
+| `lote` | `id_lote` | `id_produto` → `produto`; `id_compra` → `compra` |
+| `venda` | `id_venda` | `id_cliente` → `cliente` |
+| `pagamento` | `id_pagamento` | `id_venda` → `venda` |
+| `item_venda` | (`id_venda`, `id_produto`) | `id_venda` → `venda`; `id_produto` → `produto` |
+| `venda_servico` | (`id_venda`, `id_servico`) | `id_venda` → `venda`; `id_servico` → `servico` |
+
+Todas as chaves estrangeiras são criadas com nome (ex.: `fk_pet_cliente`) e com `ON UPDATE CASCADE ON DELETE RESTRICT`.
+
+## 1.4 Processo de Normalização (1FN, 2FN e 3FN)
+
+### 1FN: eliminação de grupos repetitivos e atributos multivalorados
+
+Uma tabela está na 1FN quando cada coluna guarda um único valor e não há listas dentro de um campo. No Mercadão Pet, os dados que se repetem foram levados para tabelas próprias:
+
+- Um agendamento pode ter vários serviços (ex.: Banho + Tosa). Em vez de uma coluna com a lista de serviços, cada serviço do agendamento é uma linha de `agendamento_servico`.
+- Uma venda pode ter vários produtos. Cada produto vendido é uma linha de `item_venda`, com sua quantidade e seu preço.
+- Uma venda pode ser paga em partes (ex.: parte em PIX e parte em dinheiro). Cada pagamento é uma linha de `pagamento`.
+- Um funcionário pode executar vários serviços. Cada par funcionário–serviço é uma linha de `funcionario_servico`.
+- Um produto pode ter várias remessas com validades diferentes. Cada remessa é uma linha de `lote`, em vez de colunas como "validade 1" e "validade 2" no produto.
+
+O endereço é guardado em uma única coluna (logradouro, número e bairro). A decisão foi tratá-lo como valor atômico, porque no sistema ele serve apenas para contato e para o transporte do pet, e nenhum processo ou consulta filtra por bairro ou CEP. Se a loja passar a fazer consultas por região, o endereço pode ser dividido em colunas sem afetar as demais tabelas.
+
+### 2FN: eliminação de dependências parciais
+
+A 2FN só pode ser violada em tabelas com chave primária composta, onde uma coluna dependeria de apenas parte da chave. No modelo, essas tabelas são as quatro associativas:
+
+- Em `item_venda` (chave `id_venda` + `id_produto`), a quantidade e o preço unitário dependem da chave inteira, porque dizem quanto daquele produto saiu naquela venda e por qual preço. Dados que dependem só do produto, como nome, NCM e categoria, ficam em `produto`. Dados que dependem só da venda, como data e cliente, ficam em `venda`.
+- `agendamento_servico`, `funcionario_servico` e `venda_servico` têm apenas as duas chaves, sem outras colunas, então não há dependência parcial possível.
+
+As demais tabelas têm chave primária simples e, por isso, já estão na 2FN.
+
+### 3FN: eliminação de dependências transitivas
+
+A 3FN exige que nenhuma coluna dependa de outra coluna que não seja a chave. No modelo:
+
+- Os dados do tutor (nome, CPF, telefone) ficam só em `cliente`. `pet` e `venda` guardam apenas `id_cliente`.
+- O nome da categoria fica em `categoria_produto`, e não em cada produto.
+- Os dados do fornecedor ficam em `fornecedor`. O lote não guarda o fornecedor diretamente: ele é obtido pela compra (`lote` → `compra` → `fornecedor`). Isso evita a dependência transitiva lote → compra → fornecedor.
+- O estoque não é guardado no produto. O antigo atributo `quantidade_estoque` foi removido, e o saldo de cada produto é calculado pela soma das quantidades dos seus lotes.
+- O preço unitário em `item_venda` não é uma cópia de `produto.preco_venda`. Ele é o preço praticado no momento da venda, que continua correto mesmo depois de um reajuste no catálogo.
+
+O `valor_total` de `venda` é a única coluna calculável a partir de outras tabelas (soma dos itens e dos serviços). Ele foi mantido de propósito, porque registra o valor efetivamente cobrado no caixa e é comparado com os pagamentos no fechamento (consulta A01).
+
+### Justificativa do processo
+
+- A 1FN foi necessária porque o atendimento e o caixa da loja são naturalmente múltiplos: um pet recebe vários serviços no mesmo horário, uma venda tem vários produtos e várias formas de pagamento, e um produto chega em várias remessas com validades diferentes. Sem tabelas separadas, seria preciso limitar o número de serviços, produtos ou pagamentos por registro.
+- A 2FN foi necessária na venda de produtos: sem separar `item_venda` de `produto` e de `venda`, o nome e o NCM do produto se repetiriam em cada venda, e a data e o cliente se repetiriam em cada item.
+- A 3FN resolve o problema central da loja (P1). Guardar o estoque no produto e também nos lotes criaria dois valores que podem divergir, que é exatamente o que acontece hoje com os dois sistemas separados. Com o saldo vindo só dos lotes, existe um único lugar onde o estoque é atualizado.
+
+## 1.5 Justificativas Técnicas das Decisões
+
+### Chaves primárias
+
+Todas as tabelas de entidade usam uma chave substituta (`INT AUTO_INCREMENT`), e não um dado do negócio:
+
+- O CPF poderia identificar o cliente, mas é um dado pessoal protegido pela LGPD (RNF02) e não deve se espalhar pelas outras tabelas como chave estrangeira.
+- O CPF também pode ter sido digitado errado e precisar de correção, o que exigiria alterar todas as tabelas relacionadas.
+- Pets, agendamentos, vendas e lotes não têm um identificador natural único.
+
+Nas tabelas associativas, a chave primária é composta pelas duas FKs. Assim, o mesmo serviço não pode aparecer duas vezes no mesmo agendamento, e o mesmo produto não aparece duas vezes na mesma venda: a quantidade é que aumenta.
+
+### Chaves estrangeiras
+
+Cada FK implementa um relacionamento do DER (ver seção 1.3). Todas usam:
+
+- **`ON DELETE RESTRICT`:** impede apagar um registro que tem dependentes. Um cliente com pets ou vendas não pode ser excluído, nem um produto com lotes ou vendas. Isso preserva o histórico de atendimentos e vendas (RN07 e RN12) e evita registros sem dono.
+- **`ON UPDATE CASCADE`:** se uma chave for alterada, a alteração é repassada às tabelas relacionadas.
+
+### Restrições e regras de negócio
+
+| Restrição | Onde | Regra que implementa |
+|---|---|---|
+| `NOT NULL` em `id_cliente` | `pet` | RN02: todo pet tem exatamente um tutor |
+| `CHECK` NCM com 8 dígitos; `NOT NULL` e `CHECK >= 0` no preço de venda | `produto` | RN03: padrão fiscal do cadastro |
+| `NOT NULL` em `id_produto` | `lote` | RN04: todo lote pertence a um produto |
+| `CHECK quantidade >= 0` | `lote` | RN01: o saldo do lote nunca fica negativo |
+| `CHECK data_validade >= data_fabricacao` | `lote` | RN05 e RF07: validade coerente com a fabricação |
+| `NOT NULL` em `id_funcionario` | `agendamento` | RN06: todo agendamento tem um funcionário responsável |
+| `CHECK` status em (AGENDADO, CONCLUIDO, CANCELADO); `DEFAULT 'AGENDADO'` | `agendamento` | RN12: o cancelamento muda o status e não apaga o registro |
+| `CHECK` status em (PENDENTE, REALIZADO, CANCELADO); `DEFAULT 'PENDENTE'` | `transporte`, `entrega` | RN12: transporte e entrega cancelados junto com o agendamento |
+| `UNIQUE` em `id_agendamento` | `transporte`, `entrega` | Cardinalidade (0,1): no máximo um por agendamento |
+| `CHECK` tipo em (BUSCA, DEVOLUCAO) | `transporte` | RF13 |
+| `CHECK` forma em (DINHEIRO, CARTAO, PIX); `CHECK valor > 0`; `CHECK` status em (PENDENTE, CONFIRMADO, ESTORNADO); `DEFAULT 'PENDENTE'` | `pagamento` | RN13: todo pagamento tem forma, valor, data e status |
+| `CHECK` status em (ABERTA, FINALIZADA, CANCELADA); `DEFAULT 'ABERTA'`; `CHECK valor_total >= 0` | `venda` | RN13: a venda só passa a FINALIZADA depois dos pagamentos |
+| `CHECK` status em (SOLICITADA, RECEBIDA, CANCELADA); `DEFAULT 'SOLICITADA'`; nota fiscal opcional | `compra` | RN14: a nota fiscal é registrada no recebimento, e não no pedido |
+| `CHECK quantidade > 0` e `CHECK preco_unitario >= 0` | `item_venda` | RF04: todo item vendido tem quantidade e preço válidos |
+| `UNIQUE` e `CHECK` de 11 dígitos no CPF | `cliente`, `funcionario` | RF01 e RF17: cada pessoa é cadastrada uma única vez |
+| `UNIQUE` no código de barras | `produto` | RF06: cada código de barras identifica um único produto |
+| `CHECK` sexo em (M, F); `CHECK peso > 0`; `NOT NULL` em raça, peso e pelagem | `pet` | RF01: dados obrigatórios do cadastro do pet |
+| `CHECK` tipo em (BANHO, TOSA, ESTETICA, CLINICA); `CHECK preco >= 0` | `servico` | RF16 |
+
+Algumas regras envolvem mais de uma tabela ou dependem da data atual, então não podem ser garantidas por um `CHECK`:
+
+- Elas são verificadas pelas consultas de auditoria do script:
+  - RN13: A01 e A07;
+  - RN14: A02 e A03;
+  - RN08: A04;
+  - RN05: A05;
+  - RN12: A06.
+- A RN09 (FEFO) é aplicada na escolha do lote: a consulta de lotes disponíveis ordena pela menor validade, e a baixa de estoque usa o lote de menor validade.
+- A RN07 (histórico inviolável) é garantida pela permissão de acesso do sistema (RNF02): os usuários operacionais podem apenas inserir e consultar registros em `historico`.
+
+### Decisões arquiteturais
+
+- **Estoque por lote:** o saldo de cada produto vem da soma dos seus lotes, o que permite controlar validade (RN05), aplicar FEFO (RN09) e rastrear de qual compra e fornecedor veio cada remessa.
+- **Caixa unificado:** produtos (`item_venda`) e serviços (`venda_servico`) entram na mesma venda. Assim, o pet shop tem um único faturamento.
+- **Cancelar em vez de apagar:** agendamentos, transportes, entregas, vendas, pagamentos e compras têm status. Um cancelamento muda o status e mantém o registro, o que preserva o histórico para auditoria.
+- **Cadastro único de pessoas por papel:** todos os funcionários ficam em uma tabela, diferenciados pelo cargo. Todos os clientes ficam em `cliente`, compartilhados entre o pet shop e a clínica (P3).
+- **Preço histórico:** o preço unitário fica gravado no item da venda, então os relatórios de faturamento continuam corretos depois de reajustes de preço.
+- **Data de referência no script:** as consultas usam a variável `@hoje = '2026-11-01'` em vez da data do sistema, para que os resultados sejam os mesmos em qualquer dia em que o script for executado.
+
+## 1.6 Proposta de Arquitetura Analítica para BI e IA
+
+### Informações estratégicas
+
+Os dados do modelo permitem à gerência acompanhar:
+
+- **Estoque:** quanto de cada produto está disponível dentro da validade, para quantos dias isso dura e quanto dinheiro está parado em lotes perto de vencer.
+- **Custo e margem:** a margem de cada categoria de produto e quais produtos estão com margem baixa.
+- **Clientes e atendimentos:** o histórico completo de cada pet, unindo clínica e banho e tosa, e quais clientes usam as duas frentes.
+- **Compras:** quanto foi comprado de cada fornecedor e quais pedidos estão atrasados.
+- **Caixa:** quanto entrou por dia e por forma de pagamento, o faturamento e o ticket médio.
+- **Serviços e equipe:** quais serviços mais faturam e a produtividade e a taxa de cancelamento de cada funcionário.
+
+### Indicadores (KPIs)
+
+As metas abaixo são propostas pelo grupo e devem ser confirmadas com a gerência do Mercadão Pet.
+
+| KPI | Fórmula | Período | Meta proposta | Consulta |
+|---|---|---|---|---|
+| Cobertura de estoque | saldo em lotes dentro da validade ÷ (quantidade vendida nos últimos 7 dias ÷ 7) | semanal | no mínimo 7 dias de cobertura para cada produto vendido | G01 |
+| Valor em risco por validade | soma de (quantidade × custo) dos lotes que vencem nos próximos 30 dias | próximos 30 dias | redução mês a mês; nenhum lote vencido com saldo (A05) | G02 |
+| Margem bruta por categoria | média de (preço de venda − preço de custo) ÷ preço de venda | catálogo atual (mensal) | no mínimo 20% em todas as categorias | G03 |
+| Clientes nas duas frentes | nº de clientes com atendimento concluído na clínica e no banho e tosa | últimos 30 dias | crescimento mês a mês | G05 |
+| Valor comprado por fornecedor | soma do valor total das compras de cada fornecedor | mensal | nenhuma compra recebida sem nota fiscal | G06 |
+| Pedidos de compra em aberto | dias entre a data da compra e a data atual, para compras SOLICITADAS | diário | nenhum pedido em aberto há mais de 15 dias | G07 |
+| Recebimento por forma de pagamento | soma dos pagamentos confirmados por dia e forma de pagamento | diário | diferença zero entre pagamentos e vendas no fechamento (A01) | G08 |
+| Faturamento diário e ticket médio | faturamento = soma do valor das vendas finalizadas; ticket médio = faturamento ÷ nº de vendas | diário (semana) | crescimento do ticket médio semana a semana | G09 |
+| Faturamento por serviço | soma do preço dos serviços em vendas finalizadas | mensal | acompanhamento dos serviços de maior faturamento | G10 |
+| Taxa de cancelamento | agendamentos cancelados ÷ total de agendamentos × 100, por funcionário | últimos 7 dias | no máximo 10% | G11 |
+
+### Potencial dos dados para BI
+
+As tabelas de movimento registram sempre uma data: `venda`, `item_venda`, `pagamento`, `agendamento`, `historico`, `compra` e `lote` (validade). Isso permite montar séries por dia, semana e mês. Os cadastros funcionam como dimensões de análise: cliente, pet (espécie e raça), produto, categoria, serviço, funcionário (cargo) e fornecedor. Com essa estrutura, é possível montar painéis:
+
+- **Estoque:** cobertura por produto, lotes a vencer e lotes vencidos com saldo (G01, G02, A05).
+- **Financeiro:** faturamento, ticket médio, recebimento por forma de pagamento e divergências de caixa (G08, G09, A01).
+- **Atendimento:** agenda do dia, histórico do pet, clientes nas duas frentes e taxa de cancelamento (G04, G05, G11).
+- **Compras:** valor por fornecedor e pedidos em aberto (G06, G07, A02, A03).
+
+### Aplicações analíticas e de IA
+
+- **Previsão de demanda:** o histórico de `item_venda` por produto e por dia permite prever quanto de cada produto será vendido nas próximas semanas e sugerir o pedido de compra antes de o estoque acabar (P1 e P4).
+- **Recomendação de produtos:** a espécie, a raça e o peso do pet, junto com as compras anteriores do cliente, permitem sugerir no caixa a ração e os produtos adequados ao porte do animal.
+- **Previsão de cancelamentos:** o histórico de agendamentos cancelados por dia, horário e cliente permite estimar a chance de cancelamento e ajustar a agenda de banho e tosa (RN08).
+- **Lembretes de retorno:** o histórico de atendimentos de cada pet (ex.: vacinas e consultas) permite avisar o tutor quando um novo atendimento estiver próximo.
+- **Detecção de anomalias no caixa:** pagamentos fora do padrão de valor ou de forma de pagamento podem ser destacados para conferência no fechamento.
+
+### Rastreabilidade
+
+| Problema ou KPI | Tabelas envolvidas | Consulta no script |
+|---|---|---|
+| P1 — Vendas e estoque em sistemas separados | `produto`, `lote`, `venda`, `item_venda` | G01, G02 (e A05) |
+| P2 — Cadastro manual de produtos e mercadorias | `produto`, `categoria_produto` | G03 |
+| P3 — Pet shop e clínica sem integração | `cliente`, `pet`, `historico`, `agendamento`, `agendamento_servico`, `servico` | G04, G05 |
+| P4 — Fornecedores e compras sem registro estruturado | `fornecedor`, `compra`, `lote` | G06, G07 (e A02, A03) |
+| Cobertura de estoque | `produto`, `lote`, `venda`, `item_venda` | G01 |
+| Valor em risco por validade | `lote`, `produto` | G02 |
+| Margem bruta por categoria | `produto`, `categoria_produto` | G03 |
+| Clientes nas duas frentes | `cliente`, `pet`, `agendamento`, `agendamento_servico`, `servico` | G05 |
+| Valor comprado por fornecedor | `fornecedor`, `compra`, `lote` | G06 |
+| Pedidos de compra em aberto | `compra`, `fornecedor` | G07 |
+| Recebimento por forma de pagamento | `pagamento` | G08 |
+| Faturamento diário e ticket médio | `venda` | G09 |
+| Faturamento por serviço | `venda`, `venda_servico`, `servico` | G10 |
+| Taxa de cancelamento | `agendamento`, `funcionario` | G11 |
+
+## Uso de Inteligência Artificial
 
 |**Item**|**O que registrar**|
 |-|-|
@@ -393,7 +679,7 @@ Uma venda pode não conter serviços quando estiver relacionada apenas à comerc
 | **Prompt(s) utilizados** | "A partir da transcrição da entrevista com a clínica/petshop e do nosso DER modelado, ajude a estruturar de forma clara os Requisitos Funcionais, Não Funcionais e Regras de Negócio do sistema, garantindo alinhamento com a substituição do estoque unificado pela entidade Lote e a remoção da entidade associativa Item_Venda no modelo conceitual." |
 | **Resposta recebida** |A IA estruturou listas separadas para RFs, RNFs e RNs, sugerindo a baixa automática da quantidade_atual do Lote em tempo real na venda, inclusão de regras para controle de validade e NCM, restrições de LGPD no prontuário médico e validação de saldos no caixa antes da finalização |
 | **Fontes consultadas e verificadas** | Validação cruzada com o Diagrama Entidade-Relacionamento (DER) do grupo, as regras de negócio obtidas na entrevista com a empresa e o material didático sobre Engenharia de Requisitos. |
-| **Trechos rejeitados ou corrigidos** | Rejeitado:A sugestão inicial da IA de criar um requisito complexo de controle de comissão para atendentes. Como isso não era foco do escopo atual da clínica, o grupo optou por focar apenas na auditabilidade dos agendamentos (RN06) <br><br> Corrigido: Ajuste no RF05, RNF01 e RN01 para refletir a remoção da entidade Item_Venda no DER conceitual e especificar que a baixa de estoque ocorre em tempo real diretamente na entidade Lote, prevenindo a venda de itens vencidos ou esgotados |
+| **Trechos rejeitados ou corrigidos** | Rejeitado:A sugestão inicial da IA de criar um requisito complexo de controle de comissão para atendentes. Como isso não era foco do escopo atual da clínica, o grupo optou por focar apenas na auditabilidade dos agendamentos (RN06) <br><br> Corrigido: Ajuste no RF05, RNF01 e RN01 para refletir a remoção da entidade Item_Venda no DER conceitual e especificar que a baixa de estoque ocorre diretamente na entidade Lote. <br><br> Corrigido depois, na Entrega 2: a baixa automática "em tempo real" sugerida pela IA não foi implementada no script SQL. A baixa é registrada no lote de menor validade (FEFO), e o RNF01 passou a tratar das restrições de integridade que o banco garante (saldo do lote nunca negativo, validade coerente e chaves estrangeiras). O nome da coluna também foi ajustado de `quantidade_atual` para `quantidade`, como está no script. |
 | **Justificativa da escolha final** | Os requisitos e regras finais foram selecionados e adaptados para refletirem fielmente as prioridades do petshop, garantindo que o sistema atenda tanto a parte fiscal e o controle de validade por lote quanto a agilidade no atendimento de balcão e clínico |
 | **Reflexão crítica** | A IA ajuda a organizar e padronizar o formato dos requisitos e tabelas de software. No entanto, a definição exata de quais restrições são vitais para o negócio, como o rastreamento individual de validades de medicamentos via Lote ou a capacidade operacional de banho e tosa, exigiu a percepção crítica e a tomada de decisão do grupo frente à realidade da empresa. |
 |-|-|
@@ -450,3 +736,14 @@ Uma venda pode não conter serviços quando estiver relacionada apenas à comerc
 | **Trechos rejeitados ou corrigidos** | Foram avaliadas possíveis necessidades adicionais decorrentes das novas funcionalidades. Foram mantidos os requisitos compatíveis com o escopo do projeto, evitando acrescentar características técnicas sem justificativa ou necessidade identificada. |
 | **Justificativa da escolha final** | Os requisitos foram mantidos e revisados por contemplarem aspectos essenciais para o funcionamento adequado do sistema. O grupo considerou que segurança, integridade, disponibilidade e facilidade de utilização são características importantes para apoiar as atividades do Mercadão Pet. |
 | **Reflexão crítica** | A IA auxiliou na identificação de aspectos técnicos que precisam ser considerados além das funcionalidades do sistema. Contudo, foi necessário avaliar a aplicabilidade de cada sugestão, evitando estabelecer exigências incompatíveis com o escopo e a proposta do projeto. |
+|-|-|
+| **Item** | **O que registrar** |
+|---|---|
+| **Ferramenta e etapa** | Claude. Utilizado na revisão e correção do script SQL (`docs/script.sql`), no preenchimento de dados da massa de dados, no alinhamento do README com o script. |
+| **Motivação** | Verificar se o script atendia à Entrega 2, se executava do zero no MySQL e se o README descrevia o que o banco realmente implementa, além de documentar a conversão para o modelo lógico e normalização. |
+| **Prompt(s) utilizados** | "Com base nas indicações da entrega 2 explicada pelo professor, veja se meu sql comporta tudo. |
+| **Resposta recebida** | A IA executou o script em um banco vazio e encontrou 42 erros: 64 pets com raça, peso ou pelagem vazios em colunas obrigatórias impediam a inserção de todos os pets e, em cascata, de históricos, agendamentos, transportes e entregas. Também apontou FKs duplicadas, CPFs sem aspas e partes do README sem correspondência no script. Na massa de dados, a IA preencheu os valores que faltavam nos 64 pets. |
+| **Fontes consultadas e verificadas** | Esqueleto da Entrega 2 e execução do script corrigido do zero no MySQL: sem erros, todas as tabelas com dados e todas as consultas G01 a G11 e A01 a A07 retornando resultado. |
+| **Trechos rejeitados ou corrigidos** | **Corrigido:** na massa de dados, os 64 pets com campos vazios foram preenchidos com valores fictícios (raça desconhecida como "SRD", peso e pelagem com valores típicos da raça e pássaros com pelagem "Penas"); no script, as chaves estrangeiras duplicadas foram removidas de dentro dos `CREATE TABLE` e os CPFs de clientes e funcionários foram colocados entre aspas. No README, os requisitos funcionais RF01 a RF15 foram reescritos com os campos do SQL e foram criados o RF16 (serviços), o RF17 (funcionários) e o RF18 (entrega); os problemas foram numerados de P1 a P4; o consumo de insumos passou para os processos não incluídos e os processos de compra, transporte, cancelamento e fechamento de caixa foram ajustados ao script; a RN10 e a RN11 passaram para as regras não incluídas, a RN01, a RN06, a RN07 e a RN12 foram ajustadas, e o RNF01 e o RNF02 foram reescritos. <br><br> **Rejeitado:** a sugestão de tornar raça, peso e pelagem opcionais, porque o grupo decidiu manter esses campos obrigatórios, e a sugestão de criar um usuário com `GRANT` no script para a RN07, porque o grupo preferiu garantir a regra pela permissão de acesso descrita no RNF02. |
+| **Justificativa da escolha final** | As correções deixaram o script executável sem mudar a estrutura das tabelas e fizeram o README descrever apenas o que o banco implementa. Os dados preenchidos na massa de dados são fictícios e coerentes com cada raça e espécie, e as seções 1.2 a 1.6 descrevem exatamente as tabelas, restrições e consultas do script. |
+| **Reflexão crítica** | O erro só apareceu ao executar o script em um banco vazio. A IA chegou a propor mudar o modelo para caber nos dados, quando o correto era corrigir os dados; essa decisão foi do grupo. |
