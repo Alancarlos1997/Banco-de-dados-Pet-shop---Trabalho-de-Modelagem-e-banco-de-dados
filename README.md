@@ -40,6 +40,9 @@ Durante a pesquisa de campo, foram identificados quatro problemas de gestão de 
 
 Diante disso, a principal necessidade é reunir em um único banco de dados as informações de clientes, pets, atendimentos, vendas, estoque por lote, fornecedores e compras.
 
+**Escopo do sistema:**  
+O banco de dados reúne todos os dados da organização: cadastro de clientes e pets, histórico de atendimentos, agendamentos com transporte e entrega, catálogo de serviços, funcionários, vendas e pagamentos, produtos e categorias, estoque por lote, fornecedores e compras. A doação para ONG não entra no escopo, pois a loja apenas arrecada e repassa a doação a uma ONG parceira.
+
 **Justificativa da escolha:**  
 O Mercadão Pet foi escolhido por apresentar uma variedade de processos de negócio e um volume significativo de informações relacionadas a clientes, pets, funcionários, serviços, atendimentos, produtos, vendas e estoque.
 
