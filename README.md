@@ -1,26 +1,43 @@
-### Integrantes
+# Modelagem de Banco de Dados para Mercadão Pet
 
-| Nome completo | RGM | Usuário do GitHub |
-| :---- | :---- | :---- |
+**Entrega 2 — Relatório Técnico Final, Modelo Lógico e Implementação SQL**
+
+## Integrantes
+
+| Integrantes | RGM | Usuário do GitHub |
+|---|---|---|
 | Alan Carlos Teixeira Marinho de Araujo | 48693871 | Alancarlos1997 |
 | Carla Daiane Mamani Choque | 48011762 | carlachoque |
 | Giovanna Aparecida dos Santos | 47817518 | giovannasant0s |
 | Isabela Barbosa Pereira | 48693821 | isaadsl |
 | Isabelly Pereira de França | 48163732 | Isabelly0007 |
 
-# Modelagem de Banco de Dados para Mercadão Pet
+## Sumário
+
+- [Introdução](#introdução)
+- [1.1 Revisão do Modelo Conceitual](#11-revisão-do-modelo-conceitual) (caracterização, entrevista, processos, requisitos, regras de negócio e DER)
+- [1.2 Conversão do Modelo Conceitual para o Modelo Lógico](#12-conversão-do-modelo-conceitual-para-o-modelo-lógico)
+- [1.3 Definição de Chaves Primárias e Estrangeiras](#13-definição-de-chaves-primárias-e-estrangeiras)
+- [1.4 Processo de Normalização (1FN, 2FN e 3FN)](#14-processo-de-normalização-1fn-2fn-e-3fn)
+- [1.5 Justificativas Técnicas das Decisões](#15-justificativas-técnicas-das-decisões)
+- [1.6 Proposta de Arquitetura Analítica para BI e IA](#16-proposta-de-arquitetura-analítica-para-bi-e-ia)
+- [2. Modelo Lógico Relacional](#2-modelo-lógico-relacional)
+- [3. Script SQL Completo](#3-script-sql-completo)
+- [4. Massa de Dados](#4-massa-de-dados)
+- [5. Repositório GitHub](#5-repositório-github)
+- [6. Uso de Inteligência Artificial](#6-uso-de-inteligência-artificial)
 
 ## Introdução
 
-O presente projeto tem como objetivo realizar a modelagem conceitual de um banco de dados para o Mercadão Pet, organização que atua na venda de produtos para animais, serviços de banho e tosa e atendimento relacionado à clínica veterinária.
+O presente projeto tem como objetivo realizar a modelagem conceitual, a conversão para o modelo lógico e a implementação em MySQL de um banco de dados para o Mercadão Pet, organização que atua na venda de produtos para animais, serviços de banho e tosa e atendimento relacionado à clínica veterinária.
 
 A partir de uma pesquisa de campo realizada na organização, foram levantadas informações sobre seus principais processos, incluindo cadastro de clientes e pets, agendamentos, atendimentos, vendas, cadastro de produtos e controle de estoque.
 
 Durante o levantamento, foi identificado como principal problema operacional a utilização de dois sistemas separados para o gerenciamento das vendas e do estoque. Como esses sistemas não são integrados, as informações relacionadas às vendas e à movimentação dos produtos não são atualizadas de forma conjunta, dificultando o acompanhamento da quantidade de itens disponíveis e tornando o controle de estoque menos eficiente.
 
-Dessa forma, o projeto busca propor uma estrutura conceitual de banco de dados capaz de organizar e integrar as principais informações utilizadas pelo estabelecimento. A modelagem será delimitada aos processos relacionados a clientes, pets, funcionários, serviços, atendimentos, produtos, vendas e controle de estoque.
+Dessa forma, o projeto busca propor e implementar uma estrutura de banco de dados capaz de organizar e integrar as principais informações utilizadas pelo estabelecimento. A modelagem cobre os processos relacionados a clientes, pets, funcionários, serviços, atendimentos, produtos, vendas, controle de estoque por lote, fornecedores e compras.
 
-## Desenvolvimento
+## 1.1 Revisão do Modelo Conceitual
 
 ### Caracterização da Organização
 
@@ -28,7 +45,7 @@ Dessa forma, o projeto busca propor uma estrutura conceitual de banco de dados c
 O grupo escolheu o Mercadão Pet, um estabelecimento do setor pet que atua com a venda de produtos para animais, serviços de banho e tosa e atendimento relacionado à clínica veterinária.
 
 **Contexto e porte:**  
-A organização possui diferentes áreas de atuação, envolvendo a comercialização de produtos e a prestação de serviços para animais. Entre as atividades realizadas, destaca-se o serviço de banho e tosa, que apresenta um volume aproximado de 400 atendimentos por semana. A organização conta com 20 funcionários envolvidos em suas atividades.
+O Mercadão Pet é uma empresa com fins lucrativos, com diferentes áreas de atuação, envolvendo a comercialização de produtos e a prestação de serviços para animais. Segundo a gerência, o serviço de banho e tosa tem um volume aproximado de **400 atendimentos por semana**, e a organização conta com **20 funcionários** envolvidos em suas atividades. Esses números orientam o tamanho da massa de dados (seção 4) e a capacidade operacional por horário (RN08).
 
 **Problemas e necessidades identificados:**  
 Durante a pesquisa de campo, foram identificados quatro problemas de gestão de informações:
@@ -41,7 +58,14 @@ Durante a pesquisa de campo, foram identificados quatro problemas de gestão de 
 Diante disso, a principal necessidade é reunir em um único banco de dados as informações de clientes, pets, atendimentos, vendas, estoque por lote, fornecedores e compras.
 
 **Escopo do sistema:**  
-O banco de dados reúne todos os dados da organização: cadastro de clientes e pets, histórico de atendimentos, agendamentos com transporte e entrega, catálogo de serviços, funcionários, vendas e pagamentos, produtos e categorias, estoque por lote, fornecedores e compras. A doação para ONG não entra no escopo, pois a loja apenas arrecada e repassa a doação a uma ONG parceira.
+O banco de dados reúne os dados da organização como um todo, e não apenas os dos problemas P1 a P4:
+
+- **Loja:** categorias, produtos, lotes, vendas, itens vendidos e pagamentos;
+- **Banho e tosa:** clientes, pets, funcionários, serviços, agendamentos, transporte e entrega do pet;
+- **Clínica veterinária vinculada:** histórico (prontuário) dos pets e serviços do tipo CLINICA;
+- **Compras:** fornecedores, pedidos de compra, notas fiscais e lotes recebidos.
+
+Ficam de fora apenas os processos listados em "Processos prováveis não incluídos", com a justificativa de cada um.
 
 **Justificativa da escolha:**  
 O Mercadão Pet foi escolhido por apresentar uma variedade de processos de negócio e um volume significativo de informações relacionadas a clientes, pets, funcionários, serviços, atendimentos, produtos, vendas e estoque.
@@ -52,24 +76,26 @@ A diversidade de atividades realizadas pela organização torna o estabeleciment
 
 A existência da organização e o acesso para a realização da pesquisa de campo podem ser comprovados por meio das informações abaixo:
 
-- **Endereço:** [Google Maps](https://maps.app.goo.gl/yea361WY7wQY4v9aA)
-- **Telefone:** (11) 93015-6713
-- **Responsável entrevistado:** Guilherme (Gerente)
+- **Organização no Google:** Mercadão Pet Ermelino Matarazzo — [perfil no Google Maps](https://maps.app.goo.gl/yea361WY7wQY4v9aA)
+- **Endereço:** bairro de Ermelino Matarazzo, São Paulo (SP). O endereço completo consta no perfil do Google Maps acima.
+- **Contato da loja:** telefone (11) 2339-3679 e WhatsApp (11) 93015-6713, ambos visíveis na fachada (foto 1). Instagram: @mercadaopetermelino (também na fachada).
+- **Responsável pela organização:** Guilherme (Gerente), que atendeu o grupo na visita.
+- **Legenda das fotos** (arquivos JPG neste repositório): [foto 1](./mercadao-pet-1.jpeg) é a fachada da loja; [foto 2](./mercadao-pet-2.jpeg) e [foto 3](./mercadao-pet-3.jpeg) foram tiradas na entrada da loja durante a visita; [foto 4](./mercadao-pet-4.jpeg) foi tirada no interior da loja, no balcão, durante a visita.
 - **Imagens:** 
 <p align="center">
-  <img src="./mercadao-pet-1.jpeg" width="350">
-  <img src="./mercadao-pet-4.jpeg" width="350">
-  <img src="./mercadao-pet-3.jpeg" width="350">
-  <img src="./mercadao-pet-2.jpeg" width="350">
+  <img src="./mercadao-pet-1.jpeg" width="350" alt="Foto 1 - fachada do Mercadão Pet">
+  <img src="./mercadao-pet-2.jpeg" width="350" alt="Foto 2 - entrada da loja durante a visita">
+  <img src="./mercadao-pet-3.jpeg" width="350" alt="Foto 3 - entrada da loja durante a visita">
+  <img src="./mercadao-pet-4.jpeg" width="350" alt="Foto 4 - balcão da loja durante a visita">
 </p>
 
 ### Relato da entrevista
 
-- **Responsáveis pelo levantamento:** Alan Carlos Teixeira Marinho de Araújo e Isabelly Pereira de França.
+- **Quem:** o entrevistado foi Guilherme, gerente do Mercadão Pet. Participaram da entrevista os integrantes Alan Carlos Teixeira Marinho de Araújo e Isabelly Pereira de França.
 
-- **Quando e onde:** 14/08/2026.
+- **Quando e onde:** 14/08/2026, no próprio Mercadão Pet (Ermelino Matarazzo, São Paulo), ou seja, no ambiente da organização.
 
-- **Comprovação:** A visita técnica será comprovada por meio de uma fotografia da entrevista realizada presencialmente, em formato JPG ou PNG, disponibilizada no repositório do projeto.
+- **Comprovação:** a visita está comprovada pelas fotos tiradas no local e disponíveis neste repositório em formato JPG, em especial a [foto 4](./mercadao-pet-4.jpeg) (interior da loja, no balcão) e as fotos [2](./mercadao-pet-2.jpeg) e [3](./mercadao-pet-3.jpeg) (entrada da loja).
 
 - **Resumo do levantamento:** Durante a pesquisa de campo, foram levantadas informações sobre as principais atividades do estabelecimento, incluindo venda de produtos, serviços de banho e tosa e atendimento em clínica veterinária vinculada. A organização realiza aproximadamente 400 atendimentos de banho e tosa por semana, mantém cadastros de clientes e pets e utiliza o Sistema Moura para o controle de estoque.
 
@@ -79,9 +105,15 @@ A existência da organização e o acesso para a realização da pesquisa de cam
 
 - **Observação presencial:** Durante a visita técnica, observamos que o contato com fornecedores e o recebimento de mercadorias ocorrem de maneira informal, utilizando anotações manuais e mensagens, sem uma rotina estruturada de registro e rastreamento das compras. Também identificamos a falta de integração entre o sistema do pet shop e o da clínica veterinária, o que dificulta a centralização das informações e a consulta unificada dos históricos de atendimento.
 
+- **O que mudou em relação à Entrega 1:**
+  - a organização foi mantida: é a mesma organização real da Entrega 1;
+  - o porte foi dimensionado (cerca de 400 atendimentos de banho e tosa por semana e 20 funcionários), o que fundamenta o volume da massa de dados;
+  - os problemas foram refinados: a ausência de cadastro estruturado de fornecedores (P4) e a falta de integração entre o pet shop e a clínica veterinária (P3) passaram a ser tratadas no modelo;
+  - o escopo dos processos e das regras foi ajustado: feiras de adoção e lar temporário não fazem parte da organização e foram removidos; a venda de produtos a granel e a associação do profissional responsável ao atendimento viraram regras de negócio (RF04 e RN06).
+
 - **Arquivo completo:** O levantamento detalhado está organizado no arquivo [`levantamento/levantamento.md`](levantamento/levantamento.md), que reúne as informações obtidas na entrevista, as observações presenciais e os ajustes realizados em relação à Entrega 1.
 
-## Processos de Negócio
+### Processos de Negócio
 
 Durante a entrevista com a gerência do Mercadão Pet, identificamos sete processos principais que acontecem no dia a dia do estabelecimento:
 
@@ -95,7 +127,7 @@ Durante a entrevista com a gerência do Mercadão Pet, identificamos sete proces
 
 Abaixo detalhamos o passo a passo de cada um.
 
-### 1. Atendimento e agendamento de serviços
+#### 1. Atendimento e agendamento de serviços
 
 1. O cliente entra em contato ou chega ao estabelecimento com o pet.
 2. O balconista verifica se o cliente e o pet já têm cadastro. Se não tiverem, o cadastro é feito na hora.
@@ -106,7 +138,7 @@ Abaixo detalhamos o passo a passo de cada um.
 6. O atendimento é registrado no histórico do pet, com data, tipo de atendimento, descrição e observações.
 7. Depois do atendimento, o valor é enviado para o caixa, virando uma venda.
 
-### 2. Venda de produtos e serviços no balcão
+#### 2. Venda de produtos e serviços no balcão
 
 1. O cliente vai até o caixa com produtos ou para pagar um serviço já feito.
 2. O balconista passa o código de barras dos produtos ou puxa o serviço já agendado.
@@ -116,7 +148,7 @@ Abaixo detalhamos o passo a passo de cada um.
 6. São registrados um ou mais pagamentos (dinheiro, cartão ou PIX), com valor, data e status. Quando os pagamentos confirmados somam o valor da venda, ela passa para FINALIZADA.
 7. É dada baixa na quantidade do lote utilizado.
 
-### 3. Controle de estoque e compras
+#### 3. Controle de estoque e compras
 
 1. Chega uma entrega de mercadorias enviada pelo fornecedor.
 2. O funcionário confere os itens recebidos com a nota fiscal.
@@ -126,7 +158,7 @@ Abaixo detalhamos o passo a passo de cada um.
 4. É registrado um novo lote para esse produto, vinculado à compra, com número do lote, quantidade recebida, custo, data de fabricação e data de validade.
 5. O estoque fica atualizado na hora, já separado por lote, mostrando o que está disponível e dentro da validade para venda.
 
-### 4. Pedido de compra
+#### 4. Pedido de compra
 
 1. O funcionário identifica a necessidade de reposição e registra a solicitação de compra.
 2. Seleciona o fornecedor cadastrado e faz o pedido a ele.
@@ -134,27 +166,27 @@ Abaixo detalhamos o passo a passo de cada um.
 4. Quando a mercadoria chega, o funcionário confere os itens com a nota fiscal, registra o número da nota na compra e muda o status para RECEBIDA.
 5. Os lotes recebidos são registrados vinculados à compra (processo 3). Se o pedido não for atendido, o status passa para CANCELADA.
 
-### 5. Transporte petshop
+#### 5. Transporte petshop
 
 1. Ao criar o agendamento, o balconista verifica se o cliente precisa de transporte para o pet.
 2. Se precisar, a busca é registrada como transporte vinculado ao agendamento, com endereço de origem, endereço de destino, tipo, data, hora e status PENDENTE.
 3. A devolução do pet é registrada como entrega vinculada ao mesmo agendamento, com endereço, data, hora e status PENDENTE.
 4. Cada agendamento tem no máximo um transporte e uma entrega. Quando a busca ou a devolução é feita, o status correspondente passa para REALIZADO.
 
-### 6. Cancelamento de agendamento
+#### 6. Cancelamento de agendamento
 
 1. O cliente solicita o cancelamento e o balconista localiza o agendamento.
 2. O motivo informado pelo cliente é registrado no campo de observações do agendamento.
 3. O status do agendamento passa para CANCELADO, liberando o horário. O registro não é apagado.
 4. Se houver transporte ou entrega pendentes vinculados ao agendamento, o status deles também passa para CANCELADO.
 
-### 7. Fechamento de caixa
+#### 7. Fechamento de caixa
 
 1. Ao final do expediente, o responsável consulta os pagamentos confirmados do dia, separados por forma de pagamento (dinheiro, cartão ou PIX).
 2. Confere o faturamento e o ticket médio das vendas finalizadas no dia.
 3. Verifica se alguma venda finalizada tem total de pagamentos confirmados diferente do valor da venda e corrige as divergências.
 
-### Processos prováveis não incluídos
+#### Processos prováveis não incluídos
 
 - **Consumo de insumos nos serviços:** os materiais usados no banho, na tosa e na clínica (shampoo, medicamentos etc.) não são registrados por atendimento nesta versão do modelo. Eles são controlados como produtos em estoque, por lote, como as demais mercadorias.
 - **Doações para ONG:** a loja apenas arrecada doações e as repassa a uma ONG parceira, sem controle no sistema da loja.
@@ -232,6 +264,31 @@ O módulo comercial (Caixa) e o módulo de agendamentos devem manter disponibili
 - **RNF04 (Usabilidade):** 
 A interface do caixa e de agendamento deve ser simples e intuitiva para permitir finalizações rápidas de atendimentos no balcão.
 
+#### Cobertura dos problemas e dos processos pelos requisitos
+
+| Problema ou processo | Requisitos que o atendem |
+|---|---|
+| P1 — Vendas e estoque em sistemas separados | RF04, RF05, RF07, RF15 (e RN01, RN05, RN09) |
+| P2 — Cadastro manual de produtos e mercadorias | RF06, RF07, RF10 |
+| P3 — Pet shop e clínica sem integração | RF01, RF02, RF03, RF16, RF17 |
+| P4 — Fornecedores e compras sem registro estruturado | RF08, RF09, RF10 (e RN14) |
+| Processo 1 — Atendimento e agendamento de serviços | RF01, RF02, RF03, RF16, RF17 |
+| Processo 2 — Venda de produtos e serviços no balcão | RF04, RF05, RF11 |
+| Processo 3 — Controle de estoque e compras | RF06, RF07, RF10, RF15 |
+| Processo 4 — Pedido de compra | RF08, RF09, RF10 |
+| Processo 5 — Transporte petshop | RF13, RF18 |
+| Processo 6 — Cancelamento de agendamento | RF12 |
+| Processo 7 — Fechamento de caixa | RF11, RF14 |
+
+#### Requisitos prováveis não incluídos
+
+- **Baixa automática do estoque no momento da venda (em tempo real):** o script não tem gatilho (`TRIGGER`) nem procedimento armazenado. A baixa é registrada por `UPDATE` no lote de menor validade (RF05, RN09), e o banco garante apenas que o saldo do lote nunca fique negativo (RNF01). A automação depende do sistema de caixa, que está fora do escopo desta entrega, focada no banco de dados.
+- **Consumo de insumos por atendimento (shampoo, medicamentos etc.):** não é registrado por atendimento nesta versão. Os materiais são controlados como produtos em estoque, por lote.
+- **Exigência de receita para medicamentos (RN10) e cadastro do veterinário pelo CRMV (RN11):** o cadastro de produtos não identifica quais medicamentos exigem receita, e o atendimento clínico é feito pela clínica veterinária vinculada, de modo que o banco registra o atendimento no histórico do pet, mas não o cadastro profissional do veterinário.
+- **Comissão por atendimento:** sugerida durante o uso de IA e rejeitada, porque não faz parte do escopo atual. O grupo manteve o foco na auditabilidade dos agendamentos (RN06).
+- **Doações para ONG, feiras de adoção e lar temporário:** a loja apenas arrecada doações e as repassa a uma ONG parceira, sem controle no sistema, e não realiza feiras de adoção nem lar temporário (confirmado na entrevista).
+- **Endereço dividido em logradouro, número, bairro e CEP:** o endereço é guardado em uma única coluna, porque nenhum processo ou consulta filtra por região (ver 1FN na seção 1.4).
+
 
 ---
 
@@ -280,9 +337,11 @@ Os códigos abaixo foram mantidos para não alterar a numeração das demais reg
 - **RN10 (Medicamentos com Receita):** a venda de medicamento que exige receita só deveria ser finalizada com a apresentação da receita. Não foi implementada nesta versão: o cadastro de produtos não identifica quais medicamentos exigem receita.
 - **RN11 (Identificação do Veterinário):** o veterinário responsável por um atendimento clínico deveria ser identificado pelo CRMV. Não foi implementada nesta versão: o atendimento clínico é feito pela clínica veterinária vinculada, e o banco registra o atendimento no histórico do pet, mas não o cadastro profissional do veterinário.
 
-## Modelagem Conceitual e Justificativa Técnica (DER)
+### Modelagem Conceitual (DER) e Justificativa Técnica
 
-### Entidades Reconhecidas
+O DER foi criado no **brModelo**, na notação conceitual da disciplina: entidades em retângulos, relacionamentos em losangos, cardinalidades mínima e máxima nos dois lados, identificadores em círculos preenchidos e atributos comuns em círculos vazios. O DER não tem chaves estrangeiras, que aparecem somente no modelo lógico (seção 2).
+
+#### Entidades Reconhecidas
 No Diagrama Entidade-Relacionamento (DER) ajustado para o Mercadão Pet, foram modeladas 16 entidades principais.
 
 - **Cliente:** Tutor responsável pelo cadastro e pelos pets.
@@ -304,11 +363,11 @@ No Diagrama Entidade-Relacionamento (DER) ajustado para o Mercadão Pet, foram m
 
 ---
 
-### Justificativa Técnica das Cardinalidades e Decisões de Modelagem
+#### Justificativa Técnica das Cardinalidades e Decisões de Modelagem
 
 A definição de cardinalidades no modelo conceitual reflete diretamente as regras de negócio capturadas durante a pesquisa de campo no Mercadão Pet, garantindo a integridade dos dados e resolvendo os gargalos operacionais identificados.
 
-#### Decisões Estratégicas para Resolução dos Problemas Identificados
+##### Decisões Estratégicas para Resolução dos Problemas Identificados
 
 * **Relacionamento entre Venda e Produto:** Foi mantido o relacionamento CONTÉM entre VENDA e PRODUTO, sem a inclusão da entidade `ITEM_VENDA`, conforme orientação do professor. A cardinalidade foi ajustada para `(0,n)`, permitindo vendas que contenham apenas serviços, sem a obrigatoriedade de produtos.
 
@@ -322,7 +381,7 @@ A definição de cardinalidades no modelo conceitual reflete diretamente as regr
 
 * **Transporte e Entrega:** Foram adicionadas as entidades TRANSPORTE e ENTREGA, ambas relacionadas a AGENDAMENTO, para representar os serviços oferecidos pelo estabelecimento. TRANSPORTE registra a busca do animal para o atendimento, enquanto ENTREGA registra a devolução do animal ao endereço do cliente depois do atendimento.
 
-#### Todas as Cardinalidades do DER
+##### Todas as Cardinalidades do DER
 
 * **Cliente (0,n) — Possui — (1,1) Pet**
 Um cliente pode se cadastrar no sistema antes de ter um pet ativo ou registrar múltiplos animais (`0,n`). Por outro lado, para fins de responsabilidade financeira e legal no estabelecimento, cada pet cadastrado deve obrigatoriamente estar vinculado a exatamente um tutor responsável (`1,1`).
@@ -374,40 +433,28 @@ Uma venda pode não conter serviços quando estiver relacionada apenas à comerc
 
 ---
 
-### Diagrama Entidade-Relacionamento (DER)
+#### Diagrama Entidade-Relacionamento (DER)
 
 ![Diagrama Entidade-Relacionamento - Mercadão Pet](./Alteracoes_definitivas_DER.png)
 
-## Revisão do Modelo Conceitual
+#### Revisão do DER em relação à Entrega 1
 
-A organização é a mesma da Entrega 1 (Caso A). A tabela abaixo registra o que foi feito para cada apontamento da correção.
+A tabela registra o que foi revisado no DER e nos demais itens desde a Entrega 1 e por quê.
 
-| Apontamento da correção da E1 | O que mudou no trabalho | Por quê |
-| :---- | :---- | :---- |
-| Processos de negócio com 63% de cobertura | Incluídos pedido de compra, transporte (busca e devolução do pet), cancelamento de agendamento e fechamento de caixa. Consumo de insumos justificado como não incluído | A loja controla os insumos como produtos em estoque, sem registro por atendimento |
-| Regras de negócio sem FEFO, receita, CRMV, cancelamento, pagamento e nota fiscal | Criadas RN09, RN12, RN13 e RN14. RN10 e RN11 justificadas como não implementadas. Criada a RN15 (LGPD) e as regras separadas em operacionais e legais | O cadastro de produtos não marca receita e o CRMV não é guardado no cadastro de funcionários |
-| Dicionário de dados desatualizado | [regenerado com as 19 tabelas, restrições e DEFAULT] | [para refletir o modelo lógico implementado] |
-| Venda–Produto sem quantidade e preço por item | Quantidade e preço unitário praticado passaram a ser atributos do relacionamento Contém, convertido na tabela `item_venda` | Sem eles não é possível saber quanto de cada produto foi vendido |
-| Justificativa da remoção de ITEM_VENDA improcedente | A justificativa foi removida e o item da venda voltou ao modelo como atributos do relacionamento | Um relacionamento N:N com atributos é perfeitamente conceitual |
-| Cardinalidades de Venda impediam vender só produto ou só serviço | Contém e Realiza passaram para (0,n) | Uma venda só de ração ou só de banho agora é possível |
-| `categoria` e `quantidade_estoque` redundantes em Produto | Atributos removidos | O saldo do estoque é calculado pela soma dos lotes |
-| Faltavam Pagamento e Compra | Entidades criadas e ligadas a Venda, Fornecedor e Lote | Permitem pagamentos parciais e rastrear compras e notas fiscais |
-| Funcionário ligado a Serviço, e não ao Agendamento | Agendamento ligado a Funcionário (`agendamento.id_funcionario`) | Saber quem executou cada atendimento |
-| Balconista como entidade à parte | Uma única tabela `funcionario`, com a coluna `cargo` [e uma única entidade no DER] | Os dois têm os mesmos atributos e mudam apenas de cargo |
-| Cliente ligado a Pagamento | [Cliente religado a Venda no DER] | Todo pagamento pertence a uma venda, e a venda é que pertence ao cliente |
-| Trecho sobre "LibreOffice/ffmpeg" no dicionário | [removido] | Texto sem relação com o projeto |
+| Apontamento da correção da E1 / ponto revisado | O que mudou no trabalho | Por quê |
+|---|---|---|
+| Relacionamento entre Venda e Produto, sem registro de quantidade e de preço praticado | Foi mantido o relacionamento CONTÉM entre VENDA e PRODUTO, sem a entidade `ITEM_VENDA` no DER, conforme orientação do professor. No modelo lógico ele virou a tabela associativa `item_venda`, com `quantidade` e `preco_unitario`. A cardinalidade passou a (0,n) | Sem esses dados não é possível saber quanto de cada produto foi vendido nem por qual preço. O (0,n) permite vendas que contenham apenas serviços |
+| Estoque guardado no produto (`quantidade_estoque`) | O atributo foi removido de PRODUTO. O estoque passou a ser controlado pela entidade LOTE (número do lote, data de fabricação, data de validade, custo e quantidade), ligada a PRODUTO | Evita dois valores de estoque que podem divergir (P1) e permite controlar a validade (RN05) e o FEFO (RN09) |
+| Fornecedores sem registro das compras | Foi criada a entidade COMPRA, ligada a FORNECEDOR (1,1)–(0,n) e a LOTE (1,1)–(1,n) | Permite saber de qual fornecedor, compra e nota fiscal veio cada lote (P4, RN14) |
+| Forma de pagamento da venda | Foi criada a entidade PAGAMENTO, ligada a VENDA (1,1)–(0,n), com forma de pagamento, valor, data e status | Uma venda pode ser paga em partes e em formas diferentes (RN13). É a base do fechamento de caixa |
+| Busca e devolução dos pets | Foram criadas as entidades TRANSPORTE e ENTREGA, ligadas a AGENDAMENTO com cardinalidade (0,1) | A entrevista confirmou que a loja busca e devolve pets. Cada agendamento tem no máximo uma busca e uma devolução |
+| Serviços fora do caixa | AGENDAMENTO foi relacionado a SERVICO (1,n)–(1,n), e VENDA a SERVICO (0,n)–(0,n) | Banho, tosa e clínica passam a entrar no mesmo caixa dos produtos, com um único faturamento |
+| Profissional responsável pelo atendimento | Todo agendamento passou a ter obrigatoriamente um funcionário responsável (1,1) | Regra RN06, incorporada após a entrevista: auditabilidade e controle da capacidade por horário (RN08) |
+| Escopo: feiras de adoção e lar temporário | Foram removidos das premissas do modelo | A entrevista confirmou que a organização não realiza essas atividades |
 
-## Modelo Lógico Relacional
+## 1.2 Conversão do Modelo Conceitual para o Modelo Lógico
 
-O modelo lógico foi criado no **brModelo** e representa as 19 tabelas implementadas no script [`docs/script.sql`](docs/script.sql), com as colunas e seus tipos de dados, as chaves primárias (PK), as chaves estrangeiras (FK) e as cardinalidades já convertidas (ver seções 1.2 e 1.3).
-
-![Modelo Lógico - Mercadão Pet](./modelo_logico.jpeg)
-
-As demais restrições de integridade, que não aparecem no diagrama do brModelo (`NOT NULL`, `UNIQUE`, `CHECK` e `DEFAULT`), estão documentadas no [dicionário de dados](dicionario_dados_petshop.html) e implementadas no script SQL (ver seção 1.5).
-
-## Conversão do Modelo Conceitual para o Modelo Lógico
-
-O modelo lógico foi implementado no MySQL e está no script [`docs/script.sql`](docs/script.sql). O DER gerou 19 tabelas: 15 vindas das entidades e 4 tabelas associativas vindas dos relacionamentos N:N.
+O modelo lógico foi implementado no MySQL e está no script [`Docs/script.sql`](Docs/script.sql). O DER gerou 19 tabelas: 15 vindas das entidades e 4 tabelas associativas vindas dos relacionamentos N:N.
 
 ### Entidades → Tabelas
 
@@ -485,7 +532,7 @@ O DER não tem generalização formal. As duas entidades de funcionário (banho 
 - um funcionário pode mudar de função sem trocar de tabela;
 - a consulta de capacidade por horário (RN08) conta os funcionários pelo cargo.
 
-## Definição de Chaves Primárias e Estrangeiras
+## 1.3 Definição de Chaves Primárias e Estrangeiras
 
 | Tabela | Chave primária (PK) | Chaves estrangeiras (FK) |
 |---|---|---|
@@ -511,7 +558,7 @@ O DER não tem generalização formal. As duas entidades de funcionário (banho 
 
 Todas as chaves estrangeiras são criadas com nome (ex.: `fk_pet_cliente`) e com `ON UPDATE CASCADE ON DELETE RESTRICT`.
 
-# Processo de Normalização (1FN, 2FN e 3FN)
+## 1.4 Processo de Normalização (1FN, 2FN e 3FN)
 
 ### 1FN: eliminação de grupos repetitivos e atributos multivalorados
 
@@ -552,7 +599,7 @@ O `valor_total` de `venda` é a única coluna calculável a partir de outras tab
 - A 2FN foi necessária na venda de produtos: sem separar `item_venda` de `produto` e de `venda`, o nome e o NCM do produto se repetiriam em cada venda, e a data e o cliente se repetiriam em cada item.
 - A 3FN resolve o problema central da loja (P1). Guardar o estoque no produto e também nos lotes criaria dois valores que podem divergir, que é exatamente o que acontece hoje com os dois sistemas separados. Com o saldo vindo só dos lotes, existe um único lugar onde o estoque é atualizado.
 
-## Justificativas Técnicas das Decisões
+## 1.5 Justificativas Técnicas das Decisões
 
 ### Chaves primárias
 
@@ -614,7 +661,7 @@ Algumas regras envolvem mais de uma tabela ou dependem da data atual, então nã
 - **Preço histórico:** o preço unitário fica gravado no item da venda, então os relatórios de faturamento continuam corretos depois de reajustes de preço.
 - **Data de referência no script:** as consultas usam a variável `@hoje = '2026-11-01'` em vez da data do sistema, para que os resultados sejam os mesmos em qualquer dia em que o script for executado.
 
-## Proposta de Arquitetura Analítica para BI e IA
+## 1.6 Proposta de Arquitetura Analítica para BI e IA
 
 ### Informações estratégicas
 
@@ -680,19 +727,146 @@ As tabelas de movimento registram sempre uma data: `venda`, `item_venda`, `pagam
 | Faturamento por serviço | `venda`, `venda_servico`, `servico` | G10 |
 | Taxa de cancelamento | `agendamento`, `funcionario` | G11 |
 
-## Uso de Inteligência Artificial
+## 2. Modelo Lógico Relacional
+
+O modelo lógico foi criado no **brModelo** e representa as 19 tabelas implementadas no script [`Docs/script.sql`](Docs/script.sql), com as colunas e seus tipos de dados, as chaves primárias (PK), as chaves estrangeiras (FK) e as cardinalidades já convertidas (ver seções 1.2 e 1.3).
+
+![Modelo Lógico - Mercadão Pet](./modelo_logico.jpeg)
+
+As demais restrições de integridade, que não aparecem no diagrama do brModelo (`NOT NULL`, `UNIQUE`, `CHECK` e `DEFAULT`), estão documentadas no [dicionário de dados](dicionario_dados_petshop.html) e implementadas no script SQL (ver seção 1.5).
+
+## 3. Script SQL Completo
+
+O script completo está em [`Docs/script.sql`](Docs/script.sql), em um único arquivo `.sql` no repositório. O SGBD é o **MySQL 8.0 ou superior** (o script usa a collation `utf8mb4_0900_ai_ci` e restrições `CHECK`).
+
+**Como executar:** abrir o arquivo no MySQL Workbench e executá-lo inteiro, ou rodar `mysql -u root -p < Docs/script.sql`. O script começa com `DROP DATABASE IF EXISTS mercadao_pet`, então ele pode ser executado em um banco vazio ou repetido quantas vezes for preciso, mas apaga e recria o banco `mercadao_pet`. A execução do zero, sem erros, está registrada na seção 6.9.
+
+### Ordem dos blocos
+
+| # | Bloco | Conteúdo | Linhas do script |
+|---|---|---|---|
+| 1 | `CREATE DATABASE` | Banco `mercadao_pet`, com `utf8mb4` | 1 a 5 |
+| 2 | `CREATE TABLE` | As 19 tabelas, com tipos de dados, `PRIMARY KEY`, `NOT NULL`, `UNIQUE` e `DEFAULT` | 7 a 169 |
+| 3 | Constraints | Chaves estrangeiras nomeadas (`ON UPDATE CASCADE ON DELETE RESTRICT`) e restrições `CHECK` | 171 a 325 |
+| 4 | `INSERT INTO` | Massa de dados (ver seção 4) | 327 a 5288 |
+| 5 | `SELECT` com `JOIN` | Consultas que cruzam várias tabelas: pets por cliente, agenda do dia, itens da venda, lotes em ordem FEFO, serviços por funcionário, pagamentos por venda, transporte e entrega por agendamento e clientes sem compra | 5290 a 5364 |
+| 6 | `UPDATE` | Recebimento de compra, baixa de estoque, cancelamento de agendamento, reajuste de preço e confirmação de pagamentos | 5366 a 5400 |
+| 7 | `DELETE` | Remoção de vínculo e de um cadastro duplicado, sempre do filho para o pai (as chaves estrangeiras usam `RESTRICT`) | 5402 a 5420 |
+| 8 | Consultas gerenciais | G01 a G11 | 5422 a 5563 |
+| 9 | Consultas de auditoria | A01 a A07 | 5565 a 5627 |
+
+As consultas que dependem da data atual usam a variável `@hoje = '2026-11-01'`, para que o resultado seja o mesmo em qualquer dia de execução.
+
+### Consultas gerenciais e de auditoria
+
+Cada consulta tem no script um cabeçalho em comentário com o código, a pergunta que responde e o que atende.
+
+| Código | Pergunta que responde | Atende |
+|---|---|---|
+| G01 | Quanto resta em estoque (lotes dentro da validade) de cada produto vendido na última semana e para quantos dias isso dura? | P1, KPI cobertura de estoque |
+| G02 | Quais lotes vencem nos próximos 30 dias e quanto dinheiro, a custo, está parado neles? | P1, KPI valor em risco por validade |
+| G03 | Qual a margem média de cada categoria e quantos produtos estão com margem abaixo de 20%? | P2, KPI margem bruta por categoria |
+| G04 | Qual o histórico completo de um pet, juntando prontuário clínico e atendimentos do pet shop? | P3 |
+| G05 | Quais clientes usaram a clínica e o banho e tosa nos últimos 30 dias? | P3, KPI clientes nas duas frentes |
+| G06 | Quanto foi comprado de cada fornecedor, quantas compras estão abertas e quantas foram recebidas sem nota? | P4, KPI valor comprado por fornecedor |
+| G07 | Quais pedidos de compra ainda não foram recebidos e há quantos dias estão em aberto? | P4, KPI pedidos de compra em aberto |
+| G08 | Quanto entrou no caixa em cada dia da última semana, por forma de pagamento? | KPI recebimento por forma de pagamento |
+| G09 | Qual o faturamento e o ticket médio por dia (vendas finalizadas)? | KPI faturamento diário e ticket médio |
+| G10 | Quais serviços mais faturam e quantas vezes foram vendidos? | KPI faturamento por serviço |
+| G11 | Quantos atendimentos cada funcionário concluiu e qual a taxa de cancelamento nos últimos 7 dias? | KPI taxa de cancelamento |
+| A01 | Existe venda finalizada cujo total de pagamentos confirmados é diferente do valor da venda? | Verifica RN13 |
+| A02 | Existe compra recebida sem número de nota fiscal? | Verifica RN14 |
+| A03 | Existe compra recebida sem nenhum lote registrado? | Verifica RN14 e a cardinalidade Compra (1,1) – Registra – (1,n) Lote |
+| A04 | Existe horário com mais agendamentos de banho e tosa do que funcionários operacionais? | Verifica RN08 |
+| A05 | Existe lote vencido que ainda tem saldo em estoque? | Verifica RN05 |
+| A06 | Existe agendamento cancelado com transporte ou entrega ainda pendente? | Verifica RN12 |
+| A07 | Existe pagamento com data anterior à data da venda? | Verifica RN13 |
+
+A relação entre cada problema ou KPI, as tabelas que o sustentam e a consulta que o responde está na tabela de rastreabilidade da seção 1.6.
+
+## 4. Massa de Dados
+
+A massa de dados está incluída no próprio [`Docs/script.sql`](Docs/script.sql) (bloco `INSERT INTO`, linhas 327 a 5288), logo depois da criação das tabelas. Não há arquivo separado.
+
+**Dados fictícios.** Nenhum dado real da organização foi usado: nomes de clientes e de pets, CPFs, telefones e endereços são inventados, mas coerentes com as operações do Mercadão Pet.
+
+**Como o volume real justifica a quantidade de registros.** O Mercadão Pet faz cerca de 400 atendimentos de banho e tosa por semana e tem 20 funcionários (seção 1.1). Por isso, a massa representa uma **semana-base de operação, de 26/10/2026 a 01/11/2026** (a data de referência do script é o domingo 01/11/2026), mais a agenda da semana seguinte. No total, são cerca de 4.750 linhas em 19 tabelas.
+
+| Tabela | Linhas | Por que esse volume |
+|---|---|---|
+| `funcionario` | 20 | Mesmo número de funcionários informado pela gerência: 8 Banho e Tosa, 3 Balconista, 3 Veterinário, 2 Motorista, 2 Estoquista, 1 Administrativo e 1 Gerente. Os 8 de Banho e Tosa definem a capacidade por horário (RN08) |
+| `agendamento` | 500 | 440 agendamentos na semana-base (391 concluídos e 49 cancelados), compatíveis com os cerca de 400 atendimentos por semana, mais 60 agendados para a semana seguinte (02 a 07/11) |
+| `agendamento_servico` | 712 | Média de 1,4 serviço por agendamento (ex.: Banho + Tosa) |
+| `servico` | 14 | Catálogo com 3 serviços de banho, 3 de tosa, 4 de estética e 4 de clínica |
+| `funcionario_servico` | 83 | Cerca de 4 serviços executados por funcionário |
+| `cliente` | 350 | Tutores cadastrados: 293 têm ao menos uma venda e 57 nunca compraram |
+| `pet` | 450 | Cerca de 1,3 pet por tutor |
+| `historico` | 200 | Prontuário clínico de 03/11/2025 a 31/10/2026: 95 consultas, 59 vacinas, 22 vermífugos, 17 retornos e 7 exames |
+| `transporte` e `entrega` | 69 e 61 | Os 69 agendamentos com endereço pedem a busca do pet; 61 têm também a devolução |
+| `categoria_produto` e `produto` | 8 e 62 | Amostra do catálogo, com 62 produtos em 8 categorias, incluindo 3 produtos a granel vendidos em KG |
+| `fornecedor` e `compra` | 8 e 15 | 15 pedidos de compra entre 17/08 e 30/10/2026 (cerca de 1 a 2 por semana): 12 recebidos e 3 solicitados |
+| `lote` | 91 | Cerca de 1,5 lote por produto, com remessas de validades diferentes |
+| `venda` | 550 | Movimento do caixa na semana-base, em média 79 vendas por dia |
+| `pagamento` | 583 | Cerca de 1,06 pagamento por venda: algumas vendas são pagas em partes |
+| `item_venda` e `venda_servico` | 425 e 553 | Produtos e serviços vendidos no mesmo caixa |
+
+**Variedade de situações.** A massa cobre casos além do comum, para que as consultas gerenciais e de auditoria tenham o que mostrar:
+
+| Situação coberta | Quantidade | Onde é usada |
+|---|---|---|
+| Agendamentos AGENDADO, CONCLUIDO e CANCELADO | 60, 391 e 49 | G11, A04, A06 |
+| Vendas FINALIZADA, CANCELADA e ABERTA | 540, 6 e 4 | G09, G10, A01 |
+| Pagamentos por PIX, CARTAO e DINHEIRO | 260, 223 e 100 | G08 |
+| Pagamentos CONFIRMADO, ESTORNADO e PENDENTE | 575, 5 e 3 | G08, A01 |
+| Compras RECEBIDA e SOLICITADA | 12 e 3 | G06, G07, A02, A03 |
+| Lotes já vencidos (3 deles ainda com saldo) | 6 | A05 |
+| Lotes que vencem nos próximos 30 dias | 10 | G02 |
+| Lotes sem saldo | 9 | Ficam de fora da escolha FEFO |
+| Transportes REALIZADO, PENDENTE e CANCELADO | 53, 11 e 5 | A06 |
+| Entregas REALIZADO, PENDENTE e CANCELADO | 49, 7 e 5 | A06 |
+| Clientes cadastrados que nunca compraram | 57 | Consulta de clientes sem compra (bloco `SELECT` com `JOIN`) |
+| Itens vendidos a granel, com quantidade fracionada | 8 | RF04 |
+| Cadastro duplicado de teste (cliente 999 e o pet dele) | 1 | `DELETE` do script |
+
+**Consistência.** Todas as linhas respeitam as chaves estrangeiras e as restrições do script: vendas referenciam clientes existentes, itens referenciam produtos existentes, lotes referenciam produtos e compras existentes, e assim por diante.
+
+**Uso de IA.** O uso de ferramentas de IA na massa de dados está registrado na seção 6.
+
+## 5. Repositório GitHub
+
+Os artefatos da Entrega 2 estão na branch `main`:
+
+| Artefato | Arquivo |
+|---|---|
+| Relatório Técnico Final | [`README.md`](README.md) (este arquivo) |
+| DER conceitual, criado no brModelo | [`Alteracoes_definitivas_DER.png`](./Alteracoes_definitivas_DER.png) |
+| Modelo lógico, criado no brModelo | [`modelo_logico.jpeg`](./modelo_logico.jpeg) |
+| Dicionário de dados | [`dicionario_dados_petshop.html`](dicionario_dados_petshop.html) |
+| Levantamento da entrevista | [`levantamento/levantamento.md`](levantamento/levantamento.md) |
+| Script SQL completo e massa de dados | [`Docs/script.sql`](Docs/script.sql) |
+| Evidências da organização e da visita | [`mercadao-pet-1.jpeg`](./mercadao-pet-1.jpeg), [`mercadao-pet-2.jpeg`](./mercadao-pet-2.jpeg), [`mercadao-pet-3.jpeg`](./mercadao-pet-3.jpeg) e [`mercadao-pet-4.jpeg`](./mercadao-pet-4.jpeg) |
+
+O histórico de commits do GitHub registra o desenvolvimento ao longo do tempo. O usuário do GitHub de cada integrante está na tabela de Integrantes, no início deste documento.
+
+## 6. Uso de Inteligência Artificial
+
+Cada bloco abaixo registra um uso de ferramenta de IA no projeto, no formato pedido no esqueleto da Entrega 2.
+
+### 6.1 Gemini — validação conceitual e revisão do DER
 
 |**Item**|**O que registrar**|
-|-|-|
+|---|---|
 |**Ferramenta e etapa**|Gemini. Utilizado na etapa de validação conceitual e revisão técnica do Diagrama Entidade-Relacionamento (DER)|
 |**Motivação**|Analisar o primeiro rascunho do nosso projeto para encontrar erros de lógica, verificar se as cardinalidades estavam certas e ver se faltava alguma informação importante antes de desenhar a versão final no sistema.|
 |**Prompt(s) utilizados**|"Analise os dados da entrevista com a clínica/petshop em conjunto com o esqueleto da Entrega 1. Verifique as falhas do meu primeiro esboço (DER) e informe o que pode ser melhorado para atender aos requisitos da modelagem conceitual."|
 |**Resposta recebida**|A IA apontou a inconsistência de ligar Venda diretamente a Categoria\_Produto, sugeriu criar a entidade associativa Item\_Venda, recomendou detalhar o controle de estoque de produtos a granel e alertou sobre a redundância de ter uma entidade separada para Histórico.|
 |**Fontes consultadas e verificadas**|Comparação direta entre os feedbacks da IA e a transcrição da entrevista realizada na clínica/petshop, além da checagem com o material didático da disciplina sobre Regras de Negócio e Notação Conceitual de DER.|
-|**Trechos rejeitados ou corrigidos**|**Rejeitado:** A sugestão inicial da IA de eliminar totalmente a entidade Histórico e Adicionar a entidade Item_Venda e Estoque. O grupo optou por mantê-la a emtidade Histórico como uma entidade específica vinculada ao Pet para registrar observações médicas e clínicas passadas de forma isolada do fluxo operacional diário de agendamentos. O grupo também optou por remover a entidade Item_Venda, pois não se encaixa no modelo conceitual e, transformar a entidade Estoque em Lote. <br /><br />**Corrigido:** Manter a entidade Histórico como entidade específica vinculada ao Pet. Remover a entidade Item_Venda, pois não se encaixa no modelo conceitual e, transformar a entidade Estoque em Lote.|
+|**Trechos rejeitados ou corrigidos**|**Rejeitado:** A sugestão inicial da IA de eliminar totalmente a entidade Histórico e Adicionar a entidade Item_Venda e Estoque. O grupo optou por manter a entidade Histórico como uma entidade específica vinculada ao Pet para registrar observações médicas e clínicas passadas de forma isolada do fluxo operacional diário de agendamentos. O grupo também optou por remover a entidade Item_Venda, pois não se encaixa no modelo conceitual e, transformar a entidade Estoque em Lote. <br /><br />**Corrigido:** Manter a entidade Histórico como entidade específica vinculada ao Pet. Remover a entidade Item_Venda, pois não se encaixa no modelo conceitual e, transformar a entidade Estoque em Lote.|
 |**Justificativa da escolha final**|Todas as entidades, atributos e relacionamentos foram desenhados manualmente pelo grupo no software brModelo. A IA serviu estritamente para apontar gaps de lógica; a tomada de decisão final levou em consideração a real necessidade da empresa entrevistada.|
 |**Reflexão crítica**|A IA às vezes dá soluções muito genéricas ou simples demais, que não mostram como as coisas funcionam na prática no dia a dia da clínica e do petshop (como o controle de estoque e as fichas de atendimento). Por isso, o nosso olhar foi essencial para pegar a teoria do banco de dados e ajustar do jeito que a empresa realmente precisa.|
-|-|-|
+
+### 6.2 ChatGPT — revisão textual e formatação do README
+
 | **Item** | **O que registrar** |
 |---|---|
 | **Ferramenta e etapa** | ChatGPT. Utilizado na etapa de revisão textual e formatação do README.md do projeto. |
@@ -703,7 +877,9 @@ As tabelas de movimento registram sempre uma data: `venda`, `item_venda`, `pagam
 | **Trechos rejeitados ou corrigidos** | **Corrigido:** Erros de ortografia, pontuação e concordância presentes no texto original. Alguns trechos foram reorganizados para deixar mais explícitos o problema operacional identificado, os objetivos do projeto e a delimitação da modelagem. <br /><br /> **Rejeitado:** Sugestões que alteravam a essência das informações obtidas durante a pesquisa de campo. O grupo manteve as informações originais e utilizou a IA apenas como apoio na revisão e organização do texto. |
 | **Justificativa da escolha final** | O conteúdo e as informações apresentadas no README.md foram definidos pelo grupo com base na pesquisa de campo e nas orientações da disciplina. O ChatGPT foi utilizado somente como ferramenta de apoio para revisão textual, correção ortográfica e organização do conteúdo no formato Markdown. |
 | **Reflexão crítica** | A utilização da IA facilitou a identificação de erros de escrita e ajudou a organizar o conteúdo de maneira mais clara e adequada ao formato do GitHub. Entretanto, a ferramenta não foi utilizada para definir as informações do projeto ou tomar decisões sobre a modelagem do banco de dados. A revisão final foi realizada pelo grupo, que verificou se as alterações mantinham o conteúdo e as informações obtidas durante a pesquisa. |
-|-|-|
+
+### 6.3 Gemini — requisitos funcionais, não funcionais e regras de negócio
+
 | **Item** | **O que registrar** |
 |---|---|
 | **Ferramenta e etapa** | Gemini. Utilizado na etapa de elicitação, refinamento e validação dos Requisitos Funcionais (RF), Requisitos Não Funcionais (RNF) e Regras de Negócio (RN) para o sistema da clínica e petshop. |
@@ -714,7 +890,9 @@ As tabelas de movimento registram sempre uma data: `venda`, `item_venda`, `pagam
 | **Trechos rejeitados ou corrigidos** | Rejeitado:A sugestão inicial da IA de criar um requisito complexo de controle de comissão para atendentes. Como isso não era foco do escopo atual da clínica, o grupo optou por focar apenas na auditabilidade dos agendamentos (RN06) <br><br> Corrigido: Ajuste no RF05, RNF01 e RN01 para refletir a remoção da entidade Item_Venda no DER conceitual e especificar que a baixa de estoque ocorre diretamente na entidade Lote. <br><br> Corrigido depois, na Entrega 2: a baixa automática "em tempo real" sugerida pela IA não foi implementada no script SQL. A baixa é registrada no lote de menor validade (FEFO), e o RNF01 passou a tratar das restrições de integridade que o banco garante (saldo do lote nunca negativo, validade coerente e chaves estrangeiras). O nome da coluna também foi ajustado de `quantidade_atual` para `quantidade`, como está no script. |
 | **Justificativa da escolha final** | Os requisitos e regras finais foram selecionados e adaptados para refletirem fielmente as prioridades do petshop, garantindo que o sistema atenda tanto a parte fiscal e o controle de validade por lote quanto a agilidade no atendimento de balcão e clínico |
 | **Reflexão crítica** | A IA ajuda a organizar e padronizar o formato dos requisitos e tabelas de software. No entanto, a definição exata de quais restrições são vitais para o negócio, como o rastreamento individual de validades de medicamentos via Lote ou a capacidade operacional de banho e tosa, exigiu a percepção crítica e a tomada de decisão do grupo frente à realidade da empresa. |
-|-|-|
+
+### 6.4 Claude — processos de negócio (primeira versão)
+
 | **Item** | **O que registrar** |
 |---|---|
 | **Ferramenta e etapa** | Claude. Utilizado na etapa de elaboração e revisão dos Processos de Negócio do projeto. |
@@ -725,7 +903,9 @@ As tabelas de movimento registram sempre uma data: `venda`, `item_venda`, `pagam
 | **Trechos rejeitados ou corrigidos** | O grupo revisou os processos para confirmar que cada etapa correspondia ao que foi relatado na entrevista. |
 | **Justificativa da escolha final** | O conteúdo dos processos de negócio (etapas, decisões e entidades envolvidas) foi definido pelo grupo com base na pesquisa de campo. A IA foi usada apenas como apoio para estudar o conceito de fluxo de processos e revisar se o texto estava alinhado com o DER, e não para definir o funcionamento real do petshop. |
 | **Reflexão crítica** | A consulta ajudou o grupo a entender melhor a lógica de um fluxo de processo de negócio e a identificar inconsistências entre o texto e o modelo de dados atualizado. Ainda assim, o conhecimento sobre como a operação do petshop realmente funciona veio da entrevista de campo, e a decisão final sobre cada etapa do processo foi do grupo. |
-|-|-|
+
+### 6.5 Claude — dicionário de dados (HTML)
+
 | **Item** | **O que registrar** |
 |---|---|
 | **Ferramenta e etapa** | Claude. Utilizado na etapa de elaboração do Dicionário de Dados (formato HTML) a partir do Diagrama Entidade-Relacionamento (DER) conceitual já finalizado no brModelo. |
@@ -735,7 +915,9 @@ As tabelas de movimento registram sempre uma data: `venda`, `item_venda`, `pagam
 | **Fontes consultadas e verificadas** | Comparação direta entre o dicionário gerado e o print do DER (brModelo) enviado pelo grupo; verificação cruzada com os dois PDFs de exemplo fornecidos pela disciplina (estrutura de notação e convenções de prefixos); e, posteriormente, comparação com o log de uso de IA (Gemini) do próprio grupo, que revelou decisões de modelagem tomadas após o print (remoção de Item_Venda, transformação de Estoque em Lote). |
 | **Trechos rejeitados ou corrigidos** | **Identificado como desatualizado:** ao comparar com o registro de uso do Gemini, o grupo percebeu que o dicionário gerado pela Claude ainda continha as entidades Item_Venda e Estoque na forma antiga, quando a decisão final do grupo já havia sido remover Item_Venda e transformar Estoque em Lote. A IA (Claude), em vez de assumir a correção sem confirmação, apontou a divergência e solicitou ao grupo os detalhes da nova estrutura (relação Venda–Produto sem Item_Venda, e atributos específicos da entidade Lote) antes de regenerar o dicionário. |
 | **Justificativa da escolha final** | O DER e todas as decisões de modelagem (entidades, atributos, cardinalidades, e as revisões feitas com apoio do Gemini) foram definidos manualmente pelo grupo no brModelo. A Claude foi usada apenas para formatar esse modelo já decidido em um documento HTML no padrão exigido, sem alterar a lógica de negócio do projeto. |
-|-|-|
+
+### 6.6 Claude e ChatGPT — ampliação dos processos de negócio
+
 | **Item** | **O que registrar** |
 |---|---|
 | **Ferramenta e etapa** | Claude e ChatGPT. Utilizados na etapa de revisão, ampliação e detalhamento dos Processos de Negócio do Mercadão Pet. |
@@ -746,7 +928,9 @@ As tabelas de movimento registram sempre uma data: `venda`, `item_venda`, `pagam
 | **Trechos rejeitados ou corrigidos** | Os processos foram revisados para manter coerência com a realidade do estabelecimento e com o DER atualizado, principalmente nas operações de compra, estoque, agendamento e transporte. Sugestões que não correspondiam às atividades identificadas na entrevista foram descartadas ou adaptadas. |
 | **Justificativa da escolha final** | Os cinco processos foram incorporados por complementarem as atividades identificadas durante a pesquisa de campo e permitirem uma representação mais completa das operações do Mercadão Pet. A decisão final foi validada pelos integrantes do grupo. |
 | **Reflexão crítica** | A IA facilitou a identificação de atividades que poderiam não estar suficientemente detalhadas na documentação inicial. Entretanto, foi necessário avaliar as sugestões com base na realidade da empresa, pois nem toda possibilidade apresentada representa uma necessidade efetiva do estabelecimento. |
-|-|-|
+
+### 6.7 Claude e ChatGPT — regras de negócio
+
 | **Item** | **O que registrar** |
 |---|---|
 | **Ferramenta e etapa** | Claude e ChatGPT. Utilizados na etapa de identificação, revisão e complementação das Regras de Negócio do sistema. |
@@ -757,7 +941,9 @@ As tabelas de movimento registram sempre uma data: `venda`, `item_venda`, `pagam
 | **Trechos rejeitados ou corrigidos** | As regras foram ajustadas para evitar condições contraditórias entre os processos e o modelo de dados. Foram consideradas as particularidades do controle de lotes, a rastreabilidade dos medicamentos, a identificação dos profissionais responsáveis e a manutenção dos registros de agendamento e pagamento. |
 | **Justificativa da escolha final** | As regras foram mantidas por representarem condições necessárias para a integridade das informações e a padronização das operações. O grupo verificou sua compatibilidade com os processos documentados e com a estrutura do banco de dados. |
 | **Reflexão crítica** | A utilização da IA contribuiu para transformar necessidades operacionais em regras mais claras e objetivas. Porém, as sugestões precisaram ser verificadas para evitar regras redundantes ou incompatíveis com a estrutura do projeto. A validação humana foi essencial para garantir que cada regra tivesse aplicação prática. |
-|-|-|
+
+### 6.8 Claude e ChatGPT — requisitos não funcionais
+
 | **Item** | **O que registrar** |
 |---|---|
 | **Ferramenta e etapa** | Claude e ChatGPT. Utilizados na etapa de revisão e validação dos Requisitos Não Funcionais, considerando as novas funcionalidades incorporadas ao projeto. |
@@ -768,10 +954,12 @@ As tabelas de movimento registram sempre uma data: `venda`, `item_venda`, `pagam
 | **Trechos rejeitados ou corrigidos** | Foram avaliadas possíveis necessidades adicionais decorrentes das novas funcionalidades. Foram mantidos os requisitos compatíveis com o escopo do projeto, evitando acrescentar características técnicas sem justificativa ou necessidade identificada. |
 | **Justificativa da escolha final** | Os requisitos foram mantidos e revisados por contemplarem aspectos essenciais para o funcionamento adequado do sistema. O grupo considerou que segurança, integridade, disponibilidade e facilidade de utilização são características importantes para apoiar as atividades do Mercadão Pet. |
 | **Reflexão crítica** | A IA auxiliou na identificação de aspectos técnicos que precisam ser considerados além das funcionalidades do sistema. Contudo, foi necessário avaliar a aplicabilidade de cada sugestão, evitando estabelecer exigências incompatíveis com o escopo e a proposta do projeto. |
-|-|-|
+
+### 6.9 Claude — script SQL, massa de dados e seções 1.2 a 1.6
+
 | **Item** | **O que registrar** |
 |---|---|
-| **Ferramenta e etapa** | Claude. Utilizado na revisão e correção do script SQL (`docs/script.sql`), no preenchimento de dados da massa de dados, no alinhamento do README com o script e na redação das seções 1.2 a 1.6. |
+| **Ferramenta e etapa** | Claude. Utilizado na revisão e correção do script SQL (`Docs/script.sql`), no preenchimento de dados da massa de dados, no alinhamento do README com o script e na redação das seções 1.2 a 1.6. |
 | **Motivação** | Verificar se o script atendia à Entrega 2, se executava do zero no MySQL e se o README descrevia o que o banco realmente implementa, além de documentar a conversão para o modelo lógico, a normalização, as justificativas técnicas e a proposta de BI a partir do script. |
 | **Prompt(s) utilizados** | "Com base nas indicações da entrega 2 explicada pelo professor, veja se meu sql comporta tudo." <br><br> "Vamos começar arrumando os requisitos funcionais. Por favor, façam ele se adequar ao SQL." <br><br> "Faça a seção 1" (pedido para escrever as seções 1.2 a 1.6 do README). |
 | **Resposta recebida** | A IA executou o script em um banco vazio e encontrou 42 erros: 64 pets com raça, peso ou pelagem vazios em colunas obrigatórias impediam a inserção de todos os pets e, em cascata, de históricos, agendamentos, transportes e entregas. Também apontou FKs duplicadas, CPFs sem aspas e partes do README sem correspondência no script. Na massa de dados, a IA preencheu os valores que faltavam nos 64 pets. Por fim, redigiu as seções 1.2 (conversão), 1.3 (chaves), 1.4 (normalização), 1.5 (justificativas técnicas) e 1.6 (BI e IA, com KPIs e tabela de rastreabilidade), com base nas tabelas, restrições e consultas do script. |
@@ -779,15 +967,3 @@ As tabelas de movimento registram sempre uma data: `venda`, `item_venda`, `pagam
 | **Trechos rejeitados ou corrigidos** | **Corrigido:** na massa de dados, os 64 pets com campos vazios foram preenchidos com valores fictícios (raça desconhecida como "SRD", peso e pelagem com valores típicos da raça e pássaros com pelagem "Penas"); no script, as chaves estrangeiras duplicadas foram removidas de dentro dos `CREATE TABLE` e os CPFs de clientes e funcionários foram colocados entre aspas. No README, os requisitos funcionais RF01 a RF15 foram reescritos com os campos do SQL e foram criados o RF16 (serviços), o RF17 (funcionários) e o RF18 (entrega); os problemas foram numerados de P1 a P4; o consumo de insumos passou para os processos não incluídos e os processos de compra, transporte, cancelamento e fechamento de caixa foram ajustados ao script; a RN10 e a RN11 passaram para as regras não incluídas, a RN01, a RN06, a RN07 e a RN12 foram ajustadas, e o RNF01 e o RNF02 foram reescritos. As seções 1.2 a 1.6 foram escritas a partir do script, e as metas dos KPIs sugeridas pela IA ficaram indicadas como propostas, a serem confirmadas com a gerência. <br><br> **Rejeitado:** a sugestão de tornar raça, peso e pelagem opcionais, porque o grupo decidiu manter esses campos obrigatórios, e a sugestão de criar um usuário com `GRANT` no script para a RN07, porque o grupo preferiu garantir a regra pela permissão de acesso descrita no RNF02. |
 | **Justificativa da escolha final** | As correções deixaram o script executável sem mudar a estrutura das tabelas e fizeram o README descrever apenas o que o banco implementa. Os dados preenchidos na massa de dados são fictícios e coerentes com cada raça e espécie, e as seções 1.2 a 1.6 descrevem exatamente as tabelas, restrições e consultas do script. |
 | **Reflexão crítica** | O erro só apareceu ao executar o script em um banco vazio. A IA chegou a propor mudar o modelo para caber nos dados, quando o correto era corrigir os dados; essa decisão foi do grupo. |
-|-|-|
-| Item | O que registrar |
-| :---- | :---- |
-| **Ferramenta e etapa** | ChatGPT — elaboração do direcionamento e criação dos slides editáveis da Apresentação Corporativa Final da Entrega 2. |
-| **Motivação** | Preparar uma apresentação visual alinhada aos critérios do professor, usando o repositório do Mercadão Pet, o esqueleto da Entrega 2 e a foto da fachada. |
-| **Prompt(s) utilizados** | “Elabore um prompt estruturado para o Claude criar os slides editáveis em PPTX, seguindo a lógica do nosso repositório e o esqueleto da Entrega 2. Utilize cores clean relacionadas à foto do Mercadão Pet.” Em seguida, o pedido foi ajustado: “Não quero com o fundo totalmente branco. Deixe com design, sem ser genérico, atendendo ao que o professor realmente quer. Me mande o arquivo editável.” |
-| **Resposta recebida** | Foi elaborado um direcionamento para os slides e, em seguida, criada uma apresentação editável de 8 slides, com pitch de 8 minutos, cores inspiradas na fachada e os sete tópicos obrigatórios. |
-| **Fontes consultadas e verificadas** | Repositório do projeto na branch `main`, esqueleto da Entrega 2 e foto `mercadao-pet-1.jpeg`. O README consultado registra, entre outros dados, 20 funcionários, aproximadamente 400 atendimentos semanais de banho e tosa e problemas de integração entre vendas, estoque e clínica veterinária. |
-| **Trechos rejeitados ou corrigidos** | A primeira proposta visual foi ajustada após o pedido para evitar fundo totalmente branco e aparência genérica. A apresentação não incluiu resultados de consultas SQL como se fossem reais. |
-| **Justificativa da escolha final** | Foi adotada uma identidade visual inspirada na fachada e uma sequência alinhada à ordem exigida pelo professor, mantendo textos curtos e elementos editáveis. |
-| **Reflexão crítica** | O material consultado não apresentava o script SQL nem um modelo lógico final com atributos, tipos, chaves e cardinalidades. Por isso, a demonstração depende do script real da equipe, e o esquema de entidades apresentado precisa ser conferido e substituído pelo modelo lógico definitivo antes da apresentação. Esta conversa não comprova uso efetivo do Claude; ele foi mencionado como destino do prompt. |
-
