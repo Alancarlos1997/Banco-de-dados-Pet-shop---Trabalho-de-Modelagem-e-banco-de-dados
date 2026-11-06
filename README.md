@@ -1,10 +1,12 @@
-# Nome dos integrantes:
+### Integrantes
 
-* **Alan Carlos Teixeira Marinho de Araujo - **RGM:** 48693871** - **Alancarlos1997**
-* **Carla Daiane Mamani Choque - **RGM:** 48011762** - **carlachoque**
-* **Giovanna Aparecida dos Santos - **RGM:** 47817518** - **giovannasant0s**
-* **Isabela Barbosa Pereira - **RGM:** 48693821** - **isaadsl**
-* **Isabelly Pereira de França - **RGM:** 48163732** - **Isabelly0007**
+| Nome completo | RGM | Usuário do GitHub |
+| :---- | :---- | :---- |
+| Alan Carlos Teixeira Marinho de Araujo | 48693871 | Alancarlos1997 |
+| Carla Daiane Mamani Choque | 48011762 | carlachoque |
+| Giovanna Aparecida dos Santos | 47817518 | giovannasant0s |
+| Isabela Barbosa Pereira | 48693821 | isaadsl |
+| Isabelly Pereira de França | 48163732 | Isabelly0007 |
 
 # Modelagem de Banco de Dados para Mercadão Pet
 
