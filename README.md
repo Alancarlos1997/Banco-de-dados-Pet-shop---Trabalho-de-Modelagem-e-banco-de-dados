@@ -1,10 +1,10 @@
 # Nome dos integrantes:
 
-* **Alan Carlos Teixeira Marinho de Araujo - **RGM:** 48693871** - Alancarlos1997
-* **Carla Daiane Mamani Choque - **RGM:** 48011762** - carlachoque
-* **Giovanna Aparecida dos Santos - **RGM:** 47817518** - giovannasant0s
-* **Isabela Barbosa Pereira - **RGM:** 48693821** - isaadsl
-* **Isabelly Pereira de França - **RGM:** 48163732** - Isabelly0007
+* **Alan Carlos Teixeira Marinho de Araujo - **RGM:** 48693871** - **Alancarlos1997**
+* **Carla Daiane Mamani Choque - **RGM:** 48011762** - **carlachoque**
+* **Giovanna Aparecida dos Santos - **RGM:** 47817518** - **giovannasant0s**
+* **Isabela Barbosa Pereira - **RGM:** 48693821** - **isaadsl**
+* **Isabelly Pereira de França - **RGM:** 48163732** - **Isabelly0007**
 
 # Modelagem de Banco de Dados para Mercadão Pet
 
@@ -75,7 +75,7 @@ A existência da organização e o acesso para a realização da pesquisa de cam
 
 ## Processos de Negócio
 
-Durante a entrevista com a gerência do Mercadão Pet, identificamos três processos principais que acontecem no dia a dia do estabelecimento:
+Durante a entrevista com a gerência do Mercadão Pet, identificamos oito processos principais que acontecem no dia a dia do estabelecimento:
 
 - **Atendimento e agendamento de serviços (banho, tosa e clínica):** o pet chega, o serviço é marcado, o profissional executa e, se for consulta, fica registrado no histórico do animal.
 - **Venda de produtos e serviços no caixa:** o cliente compra produtos ou paga por um serviço, e o estoque é atualizado na hora.
