@@ -378,7 +378,7 @@ Uma venda pode não conter serviços quando estiver relacionada apenas à comerc
 
 ![Diagrama Entidade-Relacionamento - Mercadão Pet](./Alteracoes_definitivas_DER.png)
 
-## 1.1 Revisão do Modelo Conceitual
+## Revisão do Modelo Conceitual
 
 A organização é a mesma da Entrega 1 (Caso A). A tabela abaixo registra o que foi feito para cada apontamento da correção.
 
@@ -397,7 +397,15 @@ A organização é a mesma da Entrega 1 (Caso A). A tabela abaixo registra o que
 | Cliente ligado a Pagamento | [Cliente religado a Venda no DER] | Todo pagamento pertence a uma venda, e a venda é que pertence ao cliente |
 | Trecho sobre "LibreOffice/ffmpeg" no dicionário | [removido] | Texto sem relação com o projeto |
 
-## 1.2 Conversão do Modelo Conceitual para o Modelo Lógico
+## Modelo Lógico Relacional
+
+O modelo lógico foi criado no **brModelo** e representa as 19 tabelas implementadas no script [`docs/script.sql`](docs/script.sql), com as colunas e seus tipos de dados, as chaves primárias (PK), as chaves estrangeiras (FK) e as cardinalidades já convertidas (ver seções 1.2 e 1.3).
+
+![Modelo Lógico - Mercadão Pet](./modelo_logico.jpeg)
+
+As demais restrições de integridade, que não aparecem no diagrama do brModelo (`NOT NULL`, `UNIQUE`, `CHECK` e `DEFAULT`), estão documentadas no [dicionário de dados](dicionario_dados_petshop.html) e implementadas no script SQL (ver seção 1.5).
+
+## Conversão do Modelo Conceitual para o Modelo Lógico
 
 O modelo lógico foi implementado no MySQL e está no script [`docs/script.sql`](docs/script.sql). O DER gerou 19 tabelas: 15 vindas das entidades e 4 tabelas associativas vindas dos relacionamentos N:N.
 
@@ -477,7 +485,7 @@ O DER não tem generalização formal. As duas entidades de funcionário (banho 
 - um funcionário pode mudar de função sem trocar de tabela;
 - a consulta de capacidade por horário (RN08) conta os funcionários pelo cargo.
 
-## 1.3 Definição de Chaves Primárias e Estrangeiras
+## Definição de Chaves Primárias e Estrangeiras
 
 | Tabela | Chave primária (PK) | Chaves estrangeiras (FK) |
 |---|---|---|
@@ -503,7 +511,7 @@ O DER não tem generalização formal. As duas entidades de funcionário (banho 
 
 Todas as chaves estrangeiras são criadas com nome (ex.: `fk_pet_cliente`) e com `ON UPDATE CASCADE ON DELETE RESTRICT`.
 
-## 1.4 Processo de Normalização (1FN, 2FN e 3FN)
+# Processo de Normalização (1FN, 2FN e 3FN)
 
 ### 1FN: eliminação de grupos repetitivos e atributos multivalorados
 
@@ -544,7 +552,7 @@ O `valor_total` de `venda` é a única coluna calculável a partir de outras tab
 - A 2FN foi necessária na venda de produtos: sem separar `item_venda` de `produto` e de `venda`, o nome e o NCM do produto se repetiriam em cada venda, e a data e o cliente se repetiriam em cada item.
 - A 3FN resolve o problema central da loja (P1). Guardar o estoque no produto e também nos lotes criaria dois valores que podem divergir, que é exatamente o que acontece hoje com os dois sistemas separados. Com o saldo vindo só dos lotes, existe um único lugar onde o estoque é atualizado.
 
-## 1.5 Justificativas Técnicas das Decisões
+## Justificativas Técnicas das Decisões
 
 ### Chaves primárias
 
@@ -606,7 +614,7 @@ Algumas regras envolvem mais de uma tabela ou dependem da data atual, então nã
 - **Preço histórico:** o preço unitário fica gravado no item da venda, então os relatórios de faturamento continuam corretos depois de reajustes de preço.
 - **Data de referência no script:** as consultas usam a variável `@hoje = '2026-11-01'` em vez da data do sistema, para que os resultados sejam os mesmos em qualquer dia em que o script for executado.
 
-## 1.6 Proposta de Arquitetura Analítica para BI e IA
+## Proposta de Arquitetura Analítica para BI e IA
 
 ### Informações estratégicas
 
@@ -671,14 +679,6 @@ As tabelas de movimento registram sempre uma data: `venda`, `item_venda`, `pagam
 | Faturamento diário e ticket médio | `venda` | G09 |
 | Faturamento por serviço | `venda`, `venda_servico`, `servico` | G10 |
 | Taxa de cancelamento | `agendamento`, `funcionario` | G11 |
-
-## 2. Modelo Lógico Relacional
-
-O modelo lógico foi criado no **brModelo** e representa as 19 tabelas implementadas no script [`docs/script.sql`](docs/script.sql), com as colunas e seus tipos de dados, as chaves primárias (PK), as chaves estrangeiras (FK) e as cardinalidades já convertidas (ver seções 1.2 e 1.3).
-
-![Modelo Lógico - Mercadão Pet](./modelo_logico.jpeg)
-
-As demais restrições de integridade, que não aparecem no diagrama do brModelo (`NOT NULL`, `UNIQUE`, `CHECK` e `DEFAULT`), estão documentadas no [dicionário de dados](dicionario_dados_petshop.html) e implementadas no script SQL (ver seção 1.5).
 
 ## Uso de Inteligência Artificial
 
