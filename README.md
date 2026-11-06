@@ -652,7 +652,7 @@ As tabelas de movimento registram sempre uma data: `venda`, `item_venda`, `pagam
 
 O modelo lógico foi criado no **brModelo** e representa as 19 tabelas implementadas no script [`docs/script.sql`](docs/script.sql), com as colunas e seus tipos de dados, as chaves primárias (PK), as chaves estrangeiras (FK) e as cardinalidades já convertidas (ver seções 1.2 e 1.3).
 
-![Modelo Lógico - Mercadão Pet](./modelo_logico.png)
+![Modelo Lógico - Mercadão Pet](./modelo_logico.jpeg)
 
 As demais restrições de integridade, que não aparecem no diagrama do brModelo (`NOT NULL`, `UNIQUE`, `CHECK` e `DEFAULT`), estão documentadas no [dicionário de dados](dicionario_dados_petshop.html) e implementadas no script SQL (ver seção 1.5).
 
