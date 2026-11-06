@@ -378,6 +378,25 @@ Uma venda pode não conter serviços quando estiver relacionada apenas à comerc
 
 ![Diagrama Entidade-Relacionamento - Mercadão Pet](./Alteracoes_definitivas_DER.png)
 
+## 1.1 Revisão do Modelo Conceitual
+
+A organização é a mesma da Entrega 1 (Caso A). A tabela abaixo registra o que foi feito para cada apontamento da correção.
+
+| Apontamento da correção da E1 | O que mudou no trabalho | Por quê |
+| :---- | :---- | :---- |
+| Processos de negócio com 63% de cobertura | Incluídos pedido de compra, transporte (busca e devolução do pet), cancelamento de agendamento e fechamento de caixa. Consumo de insumos justificado como não incluído | A loja controla os insumos como produtos em estoque, sem registro por atendimento |
+| Regras de negócio sem FEFO, receita, CRMV, cancelamento, pagamento e nota fiscal | Criadas RN09, RN12, RN13 e RN14. RN10 e RN11 justificadas como não implementadas. Criada a RN15 (LGPD) e as regras separadas em operacionais e legais | O cadastro de produtos não marca receita e o CRMV não é guardado no cadastro de funcionários |
+| Dicionário de dados desatualizado | [regenerado com as 19 tabelas, restrições e DEFAULT] | [para refletir o modelo lógico implementado] |
+| Venda–Produto sem quantidade e preço por item | Quantidade e preço unitário praticado passaram a ser atributos do relacionamento Contém, convertido na tabela `item_venda` | Sem eles não é possível saber quanto de cada produto foi vendido |
+| Justificativa da remoção de ITEM_VENDA improcedente | A justificativa foi removida e o item da venda voltou ao modelo como atributos do relacionamento | Um relacionamento N:N com atributos é perfeitamente conceitual |
+| Cardinalidades de Venda impediam vender só produto ou só serviço | Contém e Realiza passaram para (0,n) | Uma venda só de ração ou só de banho agora é possível |
+| `categoria` e `quantidade_estoque` redundantes em Produto | Atributos removidos | O saldo do estoque é calculado pela soma dos lotes |
+| Faltavam Pagamento e Compra | Entidades criadas e ligadas a Venda, Fornecedor e Lote | Permitem pagamentos parciais e rastrear compras e notas fiscais |
+| Funcionário ligado a Serviço, e não ao Agendamento | Agendamento ligado a Funcionário (`agendamento.id_funcionario`) | Saber quem executou cada atendimento |
+| Balconista como entidade à parte | Uma única tabela `funcionario`, com a coluna `cargo` [e uma única entidade no DER] | Os dois têm os mesmos atributos e mudam apenas de cargo |
+| Cliente ligado a Pagamento | [Cliente religado a Venda no DER] | Todo pagamento pertence a uma venda, e a venda é que pertence ao cliente |
+| Trecho sobre "LibreOffice/ffmpeg" no dicionário | [removido] | Texto sem relação com o projeto |
+
 ## 1.2 Conversão do Modelo Conceitual para o Modelo Lógico
 
 O modelo lógico foi implementado no MySQL e está no script [`docs/script.sql`](docs/script.sql). O DER gerou 19 tabelas: 15 vindas das entidades e 4 tabelas associativas vindas dos relacionamentos N:N.
