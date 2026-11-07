@@ -113,84 +113,109 @@ A existência da organização e o acesso para a realização da pesquisa de cam
 
 - **Arquivo completo:** O levantamento detalhado está organizado no arquivo [`levantamento/levantamento.md`](levantamento/levantamento.md), que reúne as informações obtidas na entrevista, as observações presenciais e os ajustes realizados em relação à Entrega 1.
 
+---
+
 ### Processos de Negócio
 
-Durante a entrevista com a gerência do Mercadão Pet, identificamos sete processos principais que acontecem no dia a dia do estabelecimento:
+Os processos abaixo descrevem a operação do Mercadão Pet, com os dados que cada etapa usa. Os nomes entre crases são as colunas do modelo lógico. Quando uma etapa é uma melhoria proposta, e não uma rotina de hoje, isso está indicado.
 
-- **Atendimento e agendamento de serviços (banho, tosa e clínica):** o pet chega, o serviço é marcado, o profissional executa e, se for consulta, fica registrado no histórico do animal.
-- **Venda de produtos e serviços no caixa:** o cliente compra produtos ou paga por um serviço, e é dada baixa no lote de onde o produto saiu.
-- **Controle de estoque e compras:** quando chega mercadoria do fornecedor, ela é conferida e cadastrada, atualizando o estoque disponível para venda.
-- **Pedido de compra:** a solicitação é feita a um fornecedor com os produtos necessários, e o recebimento é conferido com a nota fiscal.
-- **Transporte petshop:** a busca do pet (transporte) e a devolução do pet (entrega) são vinculadas ao agendamento.
-- **Cancelamento de agendamento:** o status do agendamento passa para cancelado, o motivo fica registrado nas observações e o transporte e a entrega vinculados também são cancelados.
-- **Fechamento de caixa:** os pagamentos recebidos em cada forma de pagamento são conferidos com as vendas ao final do expediente.
+#### PN01. Atendimento e agendamento de serviços
 
-Abaixo detalhamos o passo a passo de cada um.
+* Entrada: o cliente entra em contato ou chega ao estabelecimento com o pet.
+* Responsáveis: o balconista, no cadastro e no agendamento. O profissional que executa o serviço (banho e tosa ou clínica), no atendimento.
+* Etapas:
+   1. procurar o cliente pelo `cpf`;
+   2. se o cliente não existir, registrar `nome`, `cpf`, `endereco` e `telefone`. Se o pet não existir, registrar `nome`, `especie`, `raca`, `peso`, `pelagem`, `data_nascimento`, `sexo` e o cliente tutor (`id_cliente`);
+   3. escolher o serviço (banho, tosa ou consulta) e conferir se há horário disponível (RN08);
+   4. criar o agendamento com `data`, `hora`, o pet (`id_pet`), o funcionário responsável (`id_funcionario`) e `status` = AGENDADO. Cada serviço escolhido vira uma linha em AGENDAMENTO_SERVICO (ex.: Banho + Tosa). Se houver transporte, o endereço vai em `endereco`, e o que o cliente pedir fica em `observacoes`;
+   5. no dia marcado, o profissional atende o pet e o `status` passa para CONCLUIDO;
+   6. registrar o atendimento no histórico do pet, com `data`, `tipo_atendimento`, `descricao` e `observacoes`. Hoje o sistema do pet shop não é integrado ao da clínica; o histórico único dos dois é uma melhoria proposta (P4);
+   7. enviar o valor para o caixa, onde ele vira uma venda (PN02).
+* Saída: CLIENTE, PET, AGENDAMENTO, AGENDAMENTO_SERVICO e HISTORICO.
+* Integração: alimenta o PN02 (venda do serviço), o PN05 (transporte) e o PN06 (cancelamento). A FUNCIONARIO_SERVICO guarda quais serviços cada funcionário executa.
 
-#### 1. Atendimento e agendamento de serviços
+#### PN02. Venda de produtos e serviços no balcão
 
-1. O cliente entra em contato ou chega ao estabelecimento com o pet.
-2. O balconista verifica se o cliente e o pet já têm cadastro. Se não tiverem, o cadastro é feito na hora.
-3. O balconista escolhe o serviço desejado (banho, tosa ou consulta) e confere se tem horário disponível.
-4. É criado o agendamento com data, hora, pet, funcionário responsável pelo atendimento e um ou mais serviços (ex.: Banho + Tosa). Ele começa com o status AGENDADO.
-   - Se houver transporte, o endereço é registrado no agendamento.
-5. No dia marcado, o profissional atende o pet e o status do agendamento passa para CONCLUIDO.
-6. O atendimento é registrado no histórico do pet, com data, tipo de atendimento, descrição e observações.
-7. Depois do atendimento, o valor é enviado para o caixa, virando uma venda.
+* Entrada: o cliente vai ao caixa com produtos ou para pagar um serviço já feito.
+* Responsáveis: o balconista.
+* Etapas:
+   1. passar o `codigo_barras` dos produtos ou puxar o serviço já agendado;
+   2. buscar o preço de cada produto (`preco_venda`) e de cada serviço (`preco`);
+   3. registrar a venda com `data`, o cliente (`id_cliente`) e `valor_total`. Cada produto vira uma linha em ITEM_VENDA, com `quantidade` (inclusive fracionada, nos itens a granel) e o `preco_unitario` praticado. Cada serviço vira uma linha em VENDA_SERVICO;
+   4. escolher o lote de onde o produto sai: o de menor `data_validade`, dentro do prazo e com `quantidade` suficiente (RN01, RN05 e RN09; melhoria proposta, a confirmar se a loja já faz isso hoje);
+   5. registrar um ou mais pagamentos, com `forma_pagamento` (dinheiro, cartão ou PIX), `valor_pagamento`, `data_pagamento` e `status_pagamento`;
+   6. quando os pagamentos confirmados somam o `valor_total` (RN13), o `status` da venda passa para FINALIZADA;
+   7. dar baixa na `quantidade` do lote utilizado.
+* Saída: VENDA, ITEM_VENDA, VENDA_SERVICO e PAGAMENTO, e o saldo atualizado do LOTE.
+* Integração: usa o PN01 (serviços agendados) e o PN03 (lotes disponíveis). Alimenta o PN07 (fechamento de caixa).
 
-#### 2. Venda de produtos e serviços no balcão
+#### PN03. Controle de estoque e recebimento de mercadorias
 
-1. O cliente vai até o caixa com produtos ou para pagar um serviço já feito.
-2. O balconista passa o código de barras dos produtos ou puxa o serviço já agendado.
-3. O sistema busca o preço de cada produto ou serviço.
-4. A venda é registrada com data, cliente e valor total, e cada produto com quantidade (inclusive fracionada, para itens a granel) e preço unitário praticado.
-5. É escolhido o lote de onde o produto sai: o de menor data de validade, dentro do prazo e com saldo suficiente (FEFO).
-6. São registrados um ou mais pagamentos (dinheiro, cartão ou PIX), com valor, data e status. Quando os pagamentos confirmados somam o valor da venda, ela passa para FINALIZADA.
-7. É dada baixa na quantidade do lote utilizado.
+* Entrada: chega uma entrega de mercadorias enviada pelo fornecedor.
+* Responsáveis: o funcionário que recebe a mercadoria [confirmar o cargo].
+* Etapas:
+   1. conferir os itens recebidos com a nota fiscal;
+   2. procurar o produto no cadastro, conferindo `codigo_barras` e `ncm`;
+   3. se o produto for novo, cadastrar `ncm`, `nome`, `codigo_barras`, `preco_custo`, `preco_venda`, `unidade_medida` e a categoria (`id_categoria`). Se já existir, só selecioná-lo;
+   4. registrar um novo lote para o produto, vinculado à compra (`id_compra`), com `numero_lote`, `quantidade`, `custo`, `data_fabricacao` e `data_validade`;
+   5. o estoque do produto passa a ser a soma da `quantidade` dos lotes dentro da validade.
+* Saída: PRODUTO e LOTE.
+* Integração: recebe a compra do PN04 e fornece os lotes para o PN02. Hoje a entrada de mercadorias é feita de forma manual no Sistema Moura; o registro por lote, com validade, é uma melhoria proposta (P1).
 
-#### 3. Controle de estoque e compras
+#### PN04. Pedido de compra
 
-1. Chega uma entrega de mercadorias enviada pelo fornecedor.
-2. O funcionário confere os itens recebidos com a nota fiscal.
-3. Ele procura o produto no cadastro e confere o código de barras e o código NCM.
-   - Se o produto for novo, é cadastrado com NCM, nome, código de barras, preço de custo, preço de venda, unidade de medida e categoria.
-   - Se já existir, só é selecionado no sistema.
-4. É registrado um novo lote para esse produto, vinculado à compra, com número do lote, quantidade recebida, custo, data de fabricação e data de validade.
-5. O estoque fica atualizado na hora, já separado por lote, mostrando o que está disponível e dentro da validade para venda.
+* Entrada: o funcionário identifica a necessidade de reposição de um produto.
+* Responsáveis: o funcionário responsável pelas compras [confirmar o cargo].
+* Etapas:
+   1. escolher o fornecedor cadastrado (`nome`, `telefone` e `endereco`);
+   2. registrar a compra com `data_compra`, `valor_total`, o fornecedor (`id_fornecedor`) e `status_compra` = SOLICITADA. Os produtos não são registrados no pedido: eles entram como lotes, quando a mercadoria chega (PN03);
+   3. quando a mercadoria chega, conferir os itens com a nota fiscal, registrar o `numero_nota_fiscal` (RN14) e mudar o `status_compra` para RECEBIDA;
+   4. se o pedido não for atendido, o `status_compra` passa para CANCELADA.
+* Saída: COMPRA e FORNECEDOR.
+* Integração: dispara o PN03 (recebimento e lotes). Hoje o contato com fornecedores e o recebimento são informais, por anotações e mensagens; registrar a compra no sistema é uma melhoria proposta (P3).
 
-#### 4. Pedido de compra
+#### PN05. Transporte petshop
 
-1. O funcionário identifica a necessidade de reposição e registra a solicitação de compra.
-2. Seleciona o fornecedor cadastrado e faz o pedido a ele.
-3. A compra é registrada vinculada ao fornecedor, com data, valor total e status SOLICITADA. Os produtos não são registrados no pedido: eles entram no sistema quando a mercadoria chega, como lotes da compra.
-4. Quando a mercadoria chega, o funcionário confere os itens com a nota fiscal, registra o número da nota na compra e muda o status para RECEBIDA.
-5. Os lotes recebidos são registrados vinculados à compra (processo 3). Se o pedido não for atendido, o status passa para CANCELADA.
+* Entrada: o cliente precisa que o pet seja buscado e devolvido, ao marcar o agendamento.
+* Responsáveis: o balconista, no registro, e o funcionário que faz o transporte [confirmar o cargo].
+* Etapas:
+   1. ao criar o agendamento (PN01), verificar se o cliente precisa de transporte;
+   2. se precisar, registrar a busca como TRANSPORTE vinculado ao agendamento, com `endereco_origem`, `endereco_destino`, `tipo_transporte`, `data`, `hora` e `status` = PENDENTE;
+   3. registrar a devolução como ENTREGA vinculada ao mesmo agendamento, com `endereco`, `data_entrega`, `hora_entrega` e `status` = PENDENTE;
+   4. cada agendamento tem no máximo um transporte e uma entrega. Quando a busca ou a devolução é feita, o `status` correspondente passa para REALIZADO.
+* Saída: TRANSPORTE e ENTREGA.
+* Integração: depende do agendamento (PN01) e é cancelado junto com ele (PN06).
 
-#### 5. Transporte petshop
+#### PN06. Cancelamento de agendamento
 
-1. Ao criar o agendamento, o balconista verifica se o cliente precisa de transporte para o pet.
-2. Se precisar, a busca é registrada como transporte vinculado ao agendamento, com endereço de origem, endereço de destino, tipo, data, hora e status PENDENTE.
-3. A devolução do pet é registrada como entrega vinculada ao mesmo agendamento, com endereço, data, hora e status PENDENTE.
-4. Cada agendamento tem no máximo um transporte e uma entrega. Quando a busca ou a devolução é feita, o status correspondente passa para REALIZADO.
+* Entrada: o cliente solicita o cancelamento de um agendamento.
+* Responsáveis: o balconista.
+* Etapas:
+   1. localizar o agendamento;
+   2. registrar o motivo informado pelo cliente em `observacoes`;
+   3. mudar o `status` do agendamento para CANCELADO (RN12), o que libera o horário. O registro não é apagado;
+   4. se houver transporte ou entrega pendentes vinculados, o `status` deles também passa para CANCELADO.
+* Saída: AGENDAMENTO, TRANSPORTE e ENTREGA atualizados.
+* Integração: usa o PN01 e o PN05. Quando o cliente simplesmente não comparece, o caso é registrado como cancelamento.
 
-#### 6. Cancelamento de agendamento
+#### PN07. Fechamento de caixa
 
-1. O cliente solicita o cancelamento e o balconista localiza o agendamento.
-2. O motivo informado pelo cliente é registrado no campo de observações do agendamento.
-3. O status do agendamento passa para CANCELADO, liberando o horário. O registro não é apagado.
-4. Se houver transporte ou entrega pendentes vinculados ao agendamento, o status deles também passa para CANCELADO.
-
-#### 7. Fechamento de caixa
-
-1. Ao final do expediente, o responsável consulta os pagamentos confirmados do dia, separados por forma de pagamento (dinheiro, cartão ou PIX).
-2. Confere o faturamento e o ticket médio das vendas finalizadas no dia.
-3. Verifica se alguma venda finalizada tem total de pagamentos confirmados diferente do valor da venda e corrige as divergências.
+* Entrada: o fim do expediente.
+* Responsáveis: o responsável pelo caixa [confirmar o cargo].
+* Etapas:
+   1. consultar os pagamentos confirmados do dia (`data_pagamento` e `status_pagamento`), separados por `forma_pagamento`;
+   2. conferir o faturamento e o ticket médio das vendas com `status` = FINALIZADA no dia;
+   3. verificar se alguma venda finalizada tem a soma dos pagamentos confirmados diferente do `valor_total`, e corrigir a divergência (RN13).
+* Saída: o resumo do dia por forma de pagamento. Não cria registros novos, só consulta VENDA e PAGAMENTO.
+* Integração: usa as vendas e os pagamentos do PN02.
 
 #### Processos prováveis não incluídos
 
 - **Consumo de insumos nos serviços:** os materiais usados no banho, na tosa e na clínica (shampoo, medicamentos etc.) não são registrados por atendimento nesta versão do modelo. Eles são controlados como produtos em estoque, por lote, como as demais mercadorias.
 - **Doações para ONG:** a loja apenas arrecada doações e as repassa a uma ONG parceira, sem controle no sistema da loja.
 - **Feiras de adoção e lar temporário:** a organização não realiza essas atividades, conforme confirmado na entrevista.
+
+---
 
 ### Requisitos Funcionais (RF)
 
