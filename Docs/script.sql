@@ -324,7 +324,7 @@ ALTER TABLE item_venda ADD CONSTRAINT ck_itemvenda_quantidade
 ALTER TABLE item_venda ADD CONSTRAINT ck_itemvenda_preco
     CHECK (preco_unitario >= 0);
 
--- (massa de dados)
+-- 4. INSERT INTO: massa de dados
 INSERT INTO categoria_produto (id_categoria, nome, descricao) VALUES
 (1, 'Racoes', 'Racoes secas, umidas e a granel'),
 (2, 'Petiscos e Snacks', 'Bifinhos, ossos e biscoitos'),
@@ -5287,18 +5287,23 @@ INSERT INTO venda_servico (id_venda, id_servico) VALUES
 (550, 4),
 (550, 7);
 
--- (correspondencias entre tabelas)
-/* data de referencia da massa de dados (domingo, ultimo dia da semana-base) */
+-- 5. SELECT COM JOIN (J01..J08): correspondencias entre tabelas
+
+-- Data de referencia da massa de dados (domingo, ultimo dia da semana-base).
+-- Usada no lugar de CURDATE() para o resultado ser o mesmo em qualquer dia de execucao.
 SET @hoje = '2026-11-01';
 
-/* quais pets cada cliente possui? */
+-- J01: Quais pets cada cliente possui?
+-- Tabelas: cliente (1,n) pet. Lista os 20 primeiros, em ordem de tutor e de pet.
 SELECT c.id_cliente, c.nome AS tutor, p.id_pet, p.nome AS pet, p.especie, p.raca
 FROM cliente c
 JOIN pet p ON p.id_cliente = c.id_cliente
 ORDER BY c.nome, p.nome
 LIMIT 20;
 
-/* agenda do dia: pet, tutor, servicos e funcionario responsavel */
+-- J02: Qual a agenda do dia (pet, tutor, servicos e funcionario responsavel)?
+-- Tabelas: agendamento, pet, cliente, agendamento_servico, servico, funcionario.
+-- Os servicos do mesmo agendamento saem na mesma linha (GROUP_CONCAT). Usa @hoje.
 SELECT a.id_agendamento, a.data, a.hora, a.status,
        p.nome AS pet, c.nome AS tutor,
        GROUP_CONCAT(s.nome ORDER BY s.nome SEPARATOR ' + ') AS servicos,
@@ -5313,7 +5318,8 @@ WHERE a.data = @hoje
 GROUP BY a.id_agendamento, a.data, a.hora, a.status, p.nome, c.nome, f.nome
 ORDER BY a.hora;
 
-/* quais produtos tem a venda 1, com quantidade e subtotal? */
+-- J03: Quais produtos tem a venda 1, com quantidade e subtotal?
+-- Tabelas: venda, item_venda, produto. Subtotal = quantidade x preco unitario gravado na venda.
 SELECT v.id_venda, v.data, pr.nome AS produto, iv.quantidade, iv.preco_unitario,
        ROUND(iv.quantidade * iv.preco_unitario, 2) AS subtotal
 FROM venda v
@@ -5322,7 +5328,9 @@ JOIN produto pr    ON pr.id_produto = iv.id_produto
 WHERE v.id_venda = 1
 ORDER BY pr.nome;
 
-/* lotes disponiveis do produto 1, na ordem FEFO, com compra e fornecedor (RN09) */
+-- J04: Quais lotes do produto 1 estao disponiveis, na ordem FEFO, com compra e fornecedor?
+-- Tabelas: lote, produto, compra, fornecedor.
+-- Atende: RN09 (sai primeiro o lote de menor validade). So entram lotes com saldo e dentro da validade (@hoje).
 SELECT pr.nome AS produto, l.numero_lote, l.data_validade, l.quantidade,
        f.nome AS fornecedor, c.numero_nota_fiscal
 FROM lote l
@@ -5332,21 +5340,25 @@ JOIN fornecedor f  ON f.id_fornecedor = c.id_fornecedor
 WHERE pr.id_produto = 1 AND l.quantidade > 0 AND l.data_validade >= @hoje
 ORDER BY l.data_validade;
 
-/* quais servicos cada funcionario executa? */
+-- J05: Quais servicos cada funcionario executa?
+-- Tabelas: funcionario, funcionario_servico (associativa N:N), servico.
 SELECT f.nome AS funcionario, f.cargo, s.nome AS servico, s.tipo
 FROM funcionario f
 JOIN funcionario_servico fs ON fs.id_funcionario = f.id_funcionario
 JOIN servico s              ON s.id_servico = fs.id_servico
 ORDER BY f.nome, s.nome;
 
-/* como cada venda foi paga (uma venda pode ter varios pagamentos)? */
+-- J06: Como cada venda foi paga (uma venda pode ter varios pagamentos)?
+-- Tabelas: venda, pagamento. Lista os 30 primeiros pagamentos.
 SELECT v.id_venda, v.data, v.valor_total, pg.forma_pagamento, pg.valor_pagamento, pg.status_pagamento
 FROM venda v
 JOIN pagamento pg ON pg.id_venda = v.id_venda
 ORDER BY v.id_venda, pg.id_pagamento
 LIMIT 30;
 
-/* quais agendamentos tem transporte (busca) e entrega (devolucao)? */
+-- J07: Quais agendamentos tem transporte (busca) e entrega (devolucao)?
+-- Tabelas: agendamento, pet, transporte, entrega.
+-- Usa LEFT JOIN porque nem todo agendamento tem transporte ou entrega; o WHERE deixa so os que tem ao menos um dos dois.
 SELECT a.id_agendamento, a.data, p.nome AS pet,
        t.status AS status_busca, e.status AS status_devolucao
 FROM agendamento a
@@ -5356,67 +5368,79 @@ LEFT JOIN entrega e    ON e.id_agendamento = a.id_agendamento
 WHERE t.id_transporte IS NOT NULL OR e.id_entrega IS NOT NULL
 ORDER BY a.data, a.hora;
 
-/* quais clientes cadastrados nunca fizeram uma compra? */
+-- J08: Quais clientes cadastrados nunca fizeram uma compra?
+-- Tabelas: cliente, venda. O LEFT JOIN com o filtro "venda IS NULL" deixa so os clientes sem nenhuma venda.
 SELECT c.id_cliente, c.nome
 FROM cliente c
 LEFT JOIN venda v ON v.id_cliente = c.id_cliente
 WHERE v.id_venda IS NULL
 ORDER BY c.nome;
 
--- (alterando dados que ja existem)
+-- 6. UPDATE (U01..U08): alterando dados que ja existem
 /* os ids usados aqui existem na massa de dados */
 
--- Registrar a chegada da compra 13: status e numero da nota fiscal (RN14)
+-- U01: Registrar a chegada da compra 13 (status e numero da nota fiscal).
+-- Atende: RN14 (toda compra recebida tem nota fiscal). So altera se a compra ainda estiver SOLICITADA.
 UPDATE compra
 SET status_compra = 'RECEBIDA', numero_nota_fiscal = '000004711'
 WHERE id_compra = 13 AND status_compra = 'SOLICITADA';
 
--- Registrar o lote recebido nessa compra (toda compra recebida tem ao menos um lote).
--- So insere se a compra 13 ja estiver RECEBIDA e o produto 1 existir.
+-- U02 (INSERT): Registrar o lote recebido na compra 13 (toda compra recebida tem ao menos um lote).
+-- Atende: RN14. So insere se a compra 13 ja estiver RECEBIDA e o produto 1 existir.
 INSERT INTO lote (numero_lote, data_fabricacao, data_validade, quantidade, custo, id_produto, id_compra)
 SELECT 'L13-001', '2026-09-15', '2027-09-15', 40, 8.50, 1, 13
 FROM compra c
 WHERE c.id_compra = 13 AND c.status_compra = 'RECEBIDA'
   AND EXISTS (SELECT 1 FROM produto p WHERE p.id_produto = 1);
 
--- Baixa de estoque: venda de 2 unidades tiradas do lote de menor validade (RF05, RN09)
+-- U03: Baixa de estoque: venda de 2 unidades tiradas do lote de menor validade.
+-- Atende: RF05 e RN09 (FEFO). A condicao quantidade >= 2 evita saldo negativo e lote vencido nao e usado.
 UPDATE lote
 SET quantidade = quantidade - 2
 WHERE id_lote = 1 AND quantidade >= 2 AND data_validade >= @hoje;
 
--- Cancelar o agendamento 1 e o transporte e a entrega ligados a ele, sem apagar nada (RN12)
+-- U04: Cancelar o agendamento 1, sem apagar nada.
+-- Atende: RN12 (cancelar atualiza tambem o transporte e a entrega ligados a ele: U05 e U06).
 UPDATE agendamento SET status = 'CANCELADO' WHERE id_agendamento = 1 AND status = 'AGENDADO';
+
+-- U05: Cancelar o transporte (busca) do agendamento 1, se ainda estiver pendente.
 UPDATE transporte  SET status = 'CANCELADO' WHERE id_agendamento = 1 AND status = 'PENDENTE';
+
+-- U06: Cancelar a entrega (devolucao) do agendamento 1, se ainda estiver pendente.
 UPDATE entrega     SET status = 'CANCELADO' WHERE id_agendamento = 1 AND status = 'PENDENTE';
 
--- Reajuste de 5% no preco de venda da categoria 1
+-- U07: Reajuste de 5% no preco de venda de todos os produtos da categoria 1 (arredondado em 2 casas).
 UPDATE produto
 SET preco_venda = ROUND(preco_venda * 1.05, 2)
 WHERE id_categoria = 1;
 
--- Confirmar os pagamentos em PIX que estavam pendentes
+-- U08: Confirmar os pagamentos em PIX que estavam pendentes.
+-- Atende: RN13 (so os pagamentos confirmados contam para finalizar a venda).
 UPDATE pagamento
 SET status_pagamento = 'CONFIRMADO'
 WHERE forma_pagamento = 'PIX' AND status_pagamento = 'PENDENTE';
 
---  DELETE (apagando linhas)
+-- 7. DELETE (D01..D04): apagando linhas
 /* sempre o filho antes do pai: as FKs usam ON DELETE RESTRICT */
 
--- Remover o vinculo do funcionario 1 com o servico 1
+-- D01: Remover o vinculo do funcionario 1 com o servico 1.
+-- Apaga so a linha da tabela associativa funcionario_servico; o funcionario e o servico continuam cadastrados.
 DELETE FROM funcionario_servico WHERE id_funcionario = 1 AND id_servico = 1;
 
--- Apagar cadastro duplicado (cliente 999 e o pet dele), que nunca teve atendimento nem compra
+-- D02: Apagar o pet do cadastro duplicado (cliente 999), que nunca teve historico nem agendamento.
+-- Vem antes do D03 porque o pet e filho do cliente (ON DELETE RESTRICT).
 DELETE FROM pet
 WHERE id_cliente = 999
   AND NOT EXISTS (SELECT 1 FROM historico h WHERE h.id_pet = pet.id_pet)
   AND NOT EXISTS (SELECT 1 FROM agendamento a WHERE a.id_pet = pet.id_pet);
 
+-- D03: Apagar o cadastro duplicado (cliente 999), so se ele nao tiver mais pet nem venda.
 DELETE FROM cliente
 WHERE id_cliente = 999
   AND NOT EXISTS (SELECT 1 FROM pet p WHERE p.id_cliente = cliente.id_cliente)
   AND NOT EXISTS (SELECT 1 FROM venda v WHERE v.id_cliente = cliente.id_cliente);
 
--- Apagar um cliente que tem pet ou venda e bloqueado (ERRO 1451). Exemplo, nao executar:
+-- D04 (exemplo, nao executar): apagar um cliente que tem pet ou venda e bloqueado pelo banco (ERRO 1451).
 -- DELETE FROM cliente WHERE id_cliente = 1;
 
 -- 8. CONSULTAS GERENCIAIS (G01..G11)
@@ -5562,7 +5586,7 @@ LEFT JOIN agendamento a ON a.id_funcionario = f.id_funcionario
 GROUP BY f.id_funcionario, f.nome, f.cargo
 ORDER BY concluidos DESC;
 
--- CONSULTAS DE AUDITORIA (A01..A07)
+-- 9. CONSULTAS DE AUDITORIA (A01..A07)
 
 -- A01: Existe venda finalizada cujo total de pagamentos confirmados e diferente do valor da venda?
 -- Verifica: RN13 (a venda so finaliza com pagamentos confirmados iguais ao valor)
