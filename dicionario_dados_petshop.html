@@ -182,27 +182,42 @@ produtos, controlados por estoque e fornecedores.</p>
     <tr><th>Entidade</th><th>Relaciona-se com</th><th>Losango (nome)</th><th>Cardinalidade</th></tr>
   </thead>
   <tbody>
-    <tr><td>CLIENTE</td><td>PET</td><td>Possui</td><td>(0,n) — (1,1): um cliente possui vários pets; todo pet pertence a exatamente um cliente</td></tr>
-    <tr><td>PET</td><td>HISTORICO</td><td>Tem</td><td>(1,1) — (0,n): um pet tem vários registros de histórico; cada histórico pertence a um único pet</td></tr>
-    <tr><td>PET</td><td>AGENDAMENTO</td><td>Possui</td><td>(1,1) — (0,n): um pet pode ter vários agendamentos; cada agendamento é de um único pet</td></tr>
-    <tr><td>SERVICO</td><td>AGENDAMENTO</td><td>Relacionado</td><td>(0,n) — (1,n): um serviço pode estar em vários agendamentos e um agendamento pode envolver vários serviços</td></tr>
-    <tr><td>AGENDAMENTO</td><td>FUNCIONARIO</td><td>Realiza</td><td>(0,n) — (1,1): um funcionário realiza vários agendamentos; cada agendamento é realizado por um único funcionário</td></tr>
-    <tr><td>SERVICO</td><td>VENDA</td><td>Realiza</td><td>(0,n) — (1,1) relaciona serviços prestados que também compõem uma venda</td></tr>
-    <tr><td>BALCONISTA</td><td>AGENDAMENTO</td><td>Realiza</td><td>(1,1) - (0,n) - relaciona balconistas aos agendamentos que também possui um cliente </td>
-    <tr><td>PRODUTO</td><td>CATEGORIA_PRODUTO</td><td>Pertence</td><td>(1,1) — (0,n): todo produto pertence a uma categoria; uma categoria agrupa vários produtos</td></tr>
-    <tr><td>PRODUTO</td><td>LOTE</td><td>Possui</td><td>(1,1) — (0,n): todo produto possui um registro de estoque correspondente</td></tr>
-    <tr><td>FORNECEDOR</td><td>LOTE</td><td>Fornece</td><td>(0,n) — (1,n): um fornecedor abastece vários lotes; cada lote de pode ter um ou mais fornecedores associados</td></tr>
+    <tr><td>CLIENTE</td><td>PET</td><td>Possui</td><td>(0,n) — (1,1): um cliente pode se cadastrar sem ter nenhum pet ou ter vários; todo pet pertence a exatamente um cliente</td></tr>
+    <tr><td>PET</td><td>HISTORICO</td><td>Tem</td><td>(1,1) — (0,n): um pet pode não ter nenhum registro de histórico ou ter vários; cada histórico pertence a um único pet</td></tr>
+    <tr><td>PET</td><td>AGENDAMENTO</td><td>Possui</td><td>(1,1) — (0,n): um pet pode não ter nenhum agendamento ou ter vários; cada agendamento é de um único pet</td></tr>
+    <tr><td>AGENDAMENTO</td><td>FUNCIONARIO (BALCONISTA)</td><td>Realiza</td><td>(1,1) — (0,n): um balconista pode não ter registrado nenhum agendamento ou registrar vários; cada agendamento tem um único balconista responsável</td></tr>
+    <tr><td>AGENDAMENTO</td><td>SERVICO</td><td>Relacionado</td><td>(1,n) — (1,n): um agendamento contém um ou mais serviços; um serviço pode estar em vários agendamentos</td></tr>
+    <tr><td>AGENDAMENTO SERVICO</td><td>AGENDAMENTO</td><td>Entidade intermediária</td><td>(1,1) — (1,n): cada registro pertence a um único agendamento; um agendamento possui um ou mais registros (serviços contratados)</td></tr>
+    <tr><td>AGENDAMENTO SERVICO</td><td>SERVICO</td><td>Entidade intermediária</td><td>(1,1) — (1,n): cada registro se refere a um único serviço; um serviço pode estar em vários agendamentos</td></tr>
+    <tr><td>FUNCIONARIO</td><td>SERVICO</td><td>Realiza</td><td>(0,n) — (0,n): um funcionário pode não executar nenhum serviço ou executar vários; um serviço pode não ser realizado por nenhum funcionário ou por vários</td></tr>
+    <tr><td>FUNCIONARIO SERVICO</td><td>FUNCIONARIO</td><td>Entidade intermediária</td><td>(1,1) — (0,n): cada registro pertence a um único funcionário; um funcionário pode não executar nenhum serviço ou executar vários</td></tr>
+    <tr><td>FUNCIONARIO SERVICO</td><td>SERVICO</td><td>Entidade intermediária</td><td>(1,1) — (0,n): cada registro se refere a um único serviço; um serviço pode não ser realizado por nenhum funcionário ou por vários</td></tr>
+    <tr><td>VENDA SERVICO</td><td>VENDA</td><td>Entidade intermediária</td><td>(1,1) — (0,n): cada registro pertence a uma única venda; uma venda pode não ter serviços (apenas produtos) ou ter vários</td></tr>
+    <tr><td>VENDA SERVICO</td><td>SERVICO</td><td>Entidade intermediária</td><td>(1,1) — (0,n): cada registro se refere a um único serviço; um serviço pode não ter sido vendido ou estar em várias vendas</td></tr>
+    <tr><td>ITEM VENDA</td><td>VENDA</td><td>Entidade intermediária</td><td>(1,1) — (0,n): cada item pertence a uma única venda; uma venda pode não ter produtos (apenas serviços) ou ter vários itens</td></tr>
+    <tr><td>ITEM VENDA</td><td>PRODUTO</td><td>Entidade intermediária</td><td>(1,1) — (0,n): cada item se refere a um único produto; um produto pode não ter sido vendido ou estar em vários itens de venda</td></tr>
+    <tr><td>CLIENTE</td><td>VENDA</td><td>Realiza</td><td>(0,n) — (1,1): um cliente pode estar cadastrado sem nenhuma venda ou realizar várias; cada venda pertence a um único cliente</td></tr>
+    <tr><td>VENDA</td><td>PRODUTO</td><td>Contém</td><td>(0,n) — (0,n): uma venda pode não ter produtos (apenas serviços) ou ter vários; um produto pode não ter sido vendido ou estar em várias vendas</td></tr>
+    <tr><td>PRODUTO</td><td>CATEGORIA_PRODUTO</td><td>Pertence</td><td>(1,1) — (0,n): todo produto pertence a uma categoria; uma categoria pode não ter nenhum produto ou agrupar vários</td></tr>
+    <tr><td>PRODUTO</td><td>LOTE</td><td>Possui</td><td>(1,1) — (0,n): um produto pode não ter nenhum lote em estoque ou ter vários; cada lote pertence a um único produto</td></tr>
+    <tr><td>FORNECEDOR</td><td>COMPRA</td><td>Atende</td><td>(1,1) — (0,n): um fornecedor pode não ter nenhuma compra ou atender várias; cada compra está vinculada a um único fornecedor</td></tr>
+    <tr><td>COMPRA</td><td>LOTE</td><td>Registra</td><td>(1,1) — (1,n): uma compra registra um ou mais lotes; cada lote pertence a uma única compra</td></tr>
+    <tr><td>VENDA</td><td>PAGAMENTO</td><td>Possui</td><td>(1,1) — (0,n): uma venda pode não ter nenhum pagamento registrado ou ter vários; cada pagamento pertence a uma única venda</td></tr>
+    <tr><td>AGENDAMENTO</td><td>TRANSPORTE</td><td>Possui</td><td>(1,1) — (0,1): um agendamento pode não solicitar transporte ou ter um registro de retirada do animal; cada transporte pertence a um único agendamento</td></tr>
+    <tr><td>AGENDAMENTO</td><td>ENTREGA</td><td>Possui</td><td>(1,1) — (0,1): um agendamento pode não solicitar entrega ou ter um registro de devolução do animal; cada entrega pertence a um único agendamento</td></tr>
+    <tr><td>VENDA</td><td>SERVICO</td><td>Realiza</td><td>(0,n) — (0,n): uma venda pode não ter serviços (apenas produtos) ou ter vários; um serviço pode não ter sido vendido ou estar em várias vendas</td></tr>
   </tbody>
 </table>
 
   <h3>2. Fluxo de dados (visão de DFD)</h3>
     <p>
-    O cliente chega ao petshop ou entra em contato para atendimento &rarr; 
-    realiza cadastro/consulta na entidade <strong>CLIENTE</strong>, com abertura ou atualização dos dados do <strong>PET</strong> vinculado via relacionamento <em>Possui</em> &rarr; 
-    o atendimento para banho, tosa ou serviços pode gerar um <strong>AGENDAMENTO</strong> registrado pelo <strong>BALCONISTA</strong> e associado a um <strong>SERVICO</strong> prestado por um <strong>FUNCIONARIO</strong> &rarr; 
-    durante ou após o atendimento clínico/estético, os dados da consulta, procedimentos e observações são gravados no <strong>HISTORICO</strong> vinculado diretamente ao <strong>PET</strong> &rarr; 
-    a aquisição de mercadorias ou a finalização dos serviços gera um registro na entidade <strong>VENDA</strong>, que contêm um ou mais itens da entidade <strong>PRODUTO</strong> (pertencente a uma <strong>CATEGORIA_PRODUTO</strong> e associado a seu respectivo <strong>LOTE</strong> e <strong>FORNECEDOR</strong>) &rarr; 
-    toda leitura ou escrita nessas entidades (Cliente, Pet, Histórico, Agendamento, Balconista, Funcionário, Serviço, Venda, Produto, Categoria, Lote e Fornecedor) é devidamente registrada pelo log de acesso e auditoria do SGBD, garantindo integridade das operações de estoque/caixa e total conformidade com as diretrizes da LGPD.
+    O cliente chega ao petshop &rarr;  
+    realiza cadastro/consulta na entidade <strong>CLIENTE</strong>, com os dados do <strong>PET</strong> vinculado via relacionamento <em>Possui</em> &rarr;  
+    o atendimento gera um <strong>AGENDAMENTO</strong> registrado pelo <strong>FUNCIONÁRIO</strong> (balconista) com um ou mais <strong>SERVIÇO</strong> executados por (veterinário/tosador/banhador) e, se solicitado, <strong>TRANSPORTE</strong> e <strong>ENTREGA</strong> &rarr;  
+    os dados do atendimento são gravados no <strong>HISTORICO</strong> do <strong>PET</strong> &rarr;  
+    a compra de produtos ou a finalização dos serviços gera uma <strong>VENDA</strong> do cliente, com seus <strong>PAGAMENTO</strong> &rarr;  
+    os <strong>PRODUTO</strong> pertencem a uma <strong>CATEGORIA_PRODUTO</strong> e têm <strong>LOTE</strong> recebidos por uma <strong>COMPRA</strong> junto ao <strong>FORNECEDOR</strong> &rarr;  
+    toda leitura ou escrita nessas entidades é registrada pelo log de acesso e auditoria do SGBD, garantindo a integridade das operações de estoque/caixa e a conformidade com a LGPD.
     </p>
 
 <h2>3. Convenções do Dicionário</h2>
@@ -236,9 +251,10 @@ português em campos de nome, endereço e observações.</p>
     <tr><td>CD_</td><td>código de domínio (ex.: CPF, CEP, telefone)</td></tr>
     <tr><td>QT_</td><td>quantidade</td></tr>
     <tr><td>TP_</td><td>tipo (categorização)</td></tr>
-    <tr><td>IN_</td><td>indicador booleano</td></tr>
     <tr><td>DS_</td><td>descrição / texto livre</td></tr>
     <tr><td>VL_</td><td>valor monetário</td></tr>
+    <tr><td>HR_</td><td>hora, minutos e segundos</td></tr>
+    <tr><td>NUM_</td><td>Número de identificação</td></tr>
     <tr><td>IN_</td><td>indicador booleano</td></tr>
   </tbody>
 </table>
@@ -254,8 +270,8 @@ obrigatórios e conectados por +.</div>
 <table>
   <thead><tr><th>Nome do Campo</th><th>Tipo Físico</th><th>Obrigatório</th><th>Descrição / Relevância</th><th>Restrição / Chave</th></tr></thead>
   <tbody>
-    <tr><td>ID_CLIENTE</td><td>interger</td><td>Sim</td><td>Código de localização do regsitro, não sofre operação matemática</td><td class="pk">Chave Primária (PK)</td></tr>
-    <tr><td>NM_CLIENTE</td><td>varchar(120)</td><td>Sim</td><td>Nome completo, podendo ser o nome social bastando ser declarado ou o nome civil. Identifica o cliente a seus respectivos pets e comprovantes de vendas.</td><td>Not Null</td></tr>
+    <tr><td>ID_CLIENTE</td><td>char(11)</td><td>Sim</td><td>Código de localização do regsitro, não sofre operação matemática</td><td class="pk">Chave Primária (PK)</td></tr>
+    <tr><td>NM_CLIENTE</td><td>varchar(100)</td><td>Sim</td><td>Nome completo, podendo ser o nome social bastando ser declarado ou o nome civil. Identifica o cliente a seus respectivos pets e comprovantes de vendas.</td><td>Not Null</td></tr>
     <tr><td>DS_ENDERECO</td><td>varchar(200)</td><td>Sim</td><td>Endereço completo, podendo ser utilizado em entregas. identifica o logradouro do cliente.</td><td>Not Null</td></tr>
     <tr><td>CD_TELEFONE</td><td>varchar(11)</td><td>Sim</td><td>Telefone de contato para confirmação de agendamentos ou aviso para qualquer urgência.</td><td>Not Null</td></tr>
     <tr><td>IN_ATIVO</td><td>boolean</td><td>Sim</td><td>Indica se o cliente está ativo; cliente inativo some da tela de vendas sem perder o pet.</td><td>Not Null</td></tr>
@@ -273,12 +289,12 @@ um cliente; [TP_MACHO | TP_FEMEA] exige escolher exatamente um sexo para o anima
   <thead><tr><th>Nome do Campo</th><th>Tipo Físico</th><th>Obrigatório</th><th>Descrição / Relevância</th><th>Restrição / Chave</th></tr></thead>
   <tbody>
     <tr><td>ID_PET</td><td>integer</td><td>Sim</td><td>Identificador único do pet, usado para evitar cadastros duplicados e identificar de maneira inequívoca o pet.</td><td class="pk">Chave Primária (PK)</td></tr>
-    <tr><td>ID_CLIENTE</td><td>integer</td><td>Sim</td><td>Referência ao cliente tutor do pet: por ser único, garante a unicidade de 1:1.</td><td class="fk">Chave Estrangeira (FK) → CLIENTE</td></tr>
-    <tr><td>NM_PET</td><td>varchar(60)</td><td>Sim</td><td>Nome do animal, usado na ficha de atendimento e no agendamento.</td><td>Not Null</td></tr>
-    <tr><td>DS_ESPECIE</td><td>varchar(30)</td><td>Sim</td><td>Espécie do animal (ex.: cão, gato, ave).</td><td>Not Null</td></tr>
+    <tr><td>ID_CLIENTE</td><td>char(11)</td><td>Sim</td><td>Referência ao cliente tutor do pet. Um cliente pode ter vários pets, mas cada pet pertence a exatamente um cliente.</td><td class="fk">Chave Estrangeira (FK) → CLIENTE</td></tr>
+    <tr><td>NM_PET</td><td>varchar(100)</td><td>Sim</td><td>Nome do animal, usado na ficha de atendimento e no agendamento.</td><td>Not Null</td></tr>
+    <tr><td>DS_ESPECIE</td><td>varchar(50)</td><td>Sim</td><td>Espécie do animal (ex.: cão, gato, ave).</td><td>Not Null</td></tr>
     <tr><td>DS_RACA</td><td>varchar(50)</td><td>Não</td><td>Raça do animal; orienta cuidados específicos de tosa e saúde.</td><td>—</td></tr>
     <tr><td>QT_PESO</td><td>decimal(5,2)</td><td>Não</td><td>Peso em quilogramas; usado para dosagem de produtos e serviços de banho/tosa.</td><td>Domínio: &gt; 0</td></tr>
-    <tr><td>DS_PELAGEM</td><td>varchar(40)</td><td>Não</td><td>Tipo e cor da pelagem; orienta o serviço de banho/tosa contratado. Ex:(Cachorro com alergia; exige shampoo para alergia)</td><td>—</td></tr>
+    <tr><td>DS_PELAGEM</td><td>varchar(50)</td><td>Não</td><td>Tipo e cor da pelagem; orienta o serviço de banho/tosa contratado. Ex:(Cachorro com alergia; exige shampoo para alergia)</td><td>—</td></tr>
     <tr><td>DT_NASCIMENTO</td><td>date</td><td>Sim</td><td>Data no qual o pet nasceu. Permiti calcular a idade no momento do atendimento e restringi por faixa etária </td><td>Not Null</td></tr>
     <tr><td>TP_MACHO&nbsp;|&nbsp;TP_FEMEA</td><td>caracter (M, F)</td><td>Sim</td><td>Sexo biológico do animal. Ex: (M,F)</td><td>Escolha obrigatória</td></tr>
   </tbody>
@@ -289,15 +305,15 @@ um cliente; [TP_MACHO | TP_FEMEA] exige escolher exatamente um sexo para o anima
 <h3 class="entidade">HISTORICO</h3>
 <p class="subtitulo">Registro acumulado dos atendimentos anteriores de um pet.</p>
 <div class="notacao">HISTORICO = @ID_HISTORICO + ID_PET + DT_ATENDIMENTO + TP_ATENDIMENTO + DS_DESCRICAO + (DS_OBSERVACAO)</div>
-<div class="leitura"><b>Leitura:</b> ID_PET conecta o histórico ao pet que originou o registro; (DS_OBSERVACAO) fica
+<div class="leitura"><b>Leitura:</b> @ID_HISTORICO é o identificador único; ID_PET conecta o histórico ao pet que originou o registro; (DS_OBSERVACAO) fica
 entre parênteses porque nem todo atendimento gera uma observação adicional.</div>
 <table>
   <thead><tr><th>Nome do Campo</th><th>Tipo Físico</th><th>Obrigatório</th><th>Descrição / Relevância</th><th>Restrição / Chave</th></tr></thead>
   <tbody>
     <tr><td>ID_HISTORICO</td><td>integer</td><td>Sim</td><td>Identificador único do registro de histórico.</td><td class="pk">Chave Primária (PK)</td></tr>
-    <tr><td>ID_PET</td><td>integer</td><td>Sim</td><td>Referencia o pet a qual histórico pertence. A unicidade é o que garante o 1:1</td><td class="fk">Chave Estrangeira (FK) → PET</td></tr>
+    <tr><td>ID_PET</td><td>integer</td><td>Sim</td><td>Referencia o pet a que o histórico pertence. Um pet pode ter vários históricos, mas cada histórico pertence a um único pet.</td><td class="fk">Chave Estrangeira (FK) → PET</td></tr>
     <tr><td>DT_ATENDIMENTO</td><td>date</td><td>Sim</td><td>Data em que o atendimento ocorreu.</td><td>Not Null</td></tr>
-    <tr><td>TP_ATENDIMENTO</td><td>varchar(30)</td><td>Sim</td><td>Tipo de atendimento registrado (ex.: banho, vacina, consulta).</td><td>Not Null</td></tr>
+    <tr><td>TP_ATENDIMENTO</td><td>varchar(50)</td><td>Sim</td><td>Tipo de atendimento registrado (ex.: banho, vacina, consulta).</td><td>Not Null</td></tr>
     <tr><td>DS_DESCRICAO</td><td>text(200)</td><td>Sim</td><td>Descrição do que foi realizado no atendimento.</td><td>Not Null</td></tr>
     <tr><td>DS_OBSERVACAO</td><td>text(200)</td><td>Não</td><td>Observações complementares (ex.: reações do animal).</td><td>—</td></tr>
   </tbody>
@@ -308,15 +324,14 @@ entre parênteses porque nem todo atendimento gera uma observação adicional.</
 <h3 class="entidade">SERVICO</h3>
 <p class="subtitulo">Serviço oferecido pelo petshop (banho, tosa, consulta, hospedagem etc.).</p>
 <div class="notacao">SERVICO = @ID_SERVICO + NM_SERVICO + DS_DESCRICAO + TP_SERVICO + VL_PRECO</div>
-<div class="leitura"><b>Leitura:</b> todos os campos são obrigatórios e conectados por +; não há grupos opcionais
-nesta entidade.</div>
+<div class="leitura"><b>Leitura:</b> @ID_SERVICO é o identificador único; todos os campos são obrigatórios e conectados por +.</div>
 <table>
   <thead><tr><th>Nome do Campo</th><th>Tipo Físico</th><th>Obrigatório</th><th>Descrição / Relevância</th><th>Restrição / Chave</th></tr></thead>
   <tbody>
     <tr><td>ID_SERVICO</td><td>integer</td><td>Sim</td><td>Identificador único do serviço.</td><td class="pk">Chave Primária (PK)</td></tr>
-    <tr><td>NM_SERVICO</td><td>varchar(60)</td><td>Sim</td><td>Nome do serviço (ex.: "Banho e Tosa","consulta", "vacina").</td><td>Not Null</td></tr>
+    <tr><td>NM_SERVICO</td><td>varchar(100)</td><td>Sim</td><td>Nome do serviço (ex.: "Banho e Tosa","consulta", "vacina").</td><td>Not Null</td></tr>
     <tr><td>DS_DESCRICAO</td><td>varchar(200)</td><td>Sim</td><td>Descrição detalhada do que o serviço inclui.</td><td>Not Null</td></tr>
-    <tr><td>TP_SERVICO</td><td>varchar(30)</td><td>Sim</td><td>Categoria do serviço no qual o estabelecimento oferece (ex.: banho, tosa, veterinário, vacina).</td><td>Not Null</td></tr>
+    <tr><td>TP_SERVICO</td><td>varchar(50)</td><td>Sim</td><td>Categoria do serviço no qual o estabelecimento oferece (ex.: banho, tosa, veterinário, vacina).</td><td>Not Null</td></tr>
     <tr><td>VL_PRECO</td><td>decimal(10,2)</td><td>Sim</td><td>Valor cobrado pelo serviço.</td><td>Domínio: ≥ 0</td></tr>
   </tbody>
 </table>
@@ -325,63 +340,110 @@ nesta entidade.</div>
 <!-- ============ AGENDAMENTO ============ -->
 <h3 class="entidade">AGENDAMENTO</h3>
 <p class="subtitulo">Entidade associativa que registra a marcação de um serviço para um pet, executado por um funcionário.</p>
-<div class="notacao">AGENDAMENTO = @ID_AGENDAMENTO + ID_PET + ID_SERVICO + ID_FUNCIONARIO + DT_AGENDAMENTO + HR_AGENDAMENTO + DS_ENDERECO + (DS_OBSERVACAO) + TP_STATUS</div>
-<div class="leitura"><b>Leitura:</b> ID_PET, ID_SERVICO e ID_FUNCIONARIO ligam o agendamento às três entidades
-envolvidas no atendimento; (DS_OBSERVACAO) é opcional, os demais campos são obrigatórios.</div>
+<div class="notacao">AGENDAMENTO = @ID_AGENDAMENTO + ID_PET + ID_FUNCIONARIO + DT_AGENDAMENTO + HR_AGENDAMENTO + DS_ENDERECO + (DS_OBSERVACAO) + TP_STATUS</div>
+<div class="leitura"><b>Leitura:</b> ID_PET e ID_FUNCIONARIO ligam o agendamento ao pet atendido e ao funcionário (balconista) que o registrou; (DS_OBSERVACAO) é opcional, os demais campos são obrigatórios.</div>
 <table>
   <thead><tr><th>Nome do Campo</th><th>Tipo Físico</th><th>Obrigatório</th><th>Descrição / Relevância</th><th>Restrição / Chave</th></tr></thead>
   <tbody>
     <tr><td>ID_AGENDAMENTO</td><td>integer</td><td>Sim</td><td>Identificador único do agendamento.</td><td class="pk">Chave Primária (PK)</td></tr>
     <tr><td>ID_PET</td><td>integer</td><td>Sim</td><td>Pet para o qual o serviço foi agendado.</td><td class="fk">Chave Estrangeira (FK) → PET</td></tr>
-    <tr><td>ID_SERVICO</td><td>integer</td><td>Sim</td><td>Serviço o qual foi agendado.</td><td class="fk">Chave Estrangeira (FK) → SERVICO</td></tr>
-    <tr><td>ID_FUNCIONARIO</td><td>integer</td><td>Sim</td><td>Funcionário responsável por realizar o atendimento.</td><td class="fk">Chave Estrangeira (FK) → FUNCIONARIO</td></tr>
+    <tr><td>ID_FUNCIONARIO</td><td>integer</td><td>Sim</td><td>Funcionário (balconista) responsável por registrar o agendamento.</td><td class="fk">Chave Estrangeira (FK) → FUNCIONARIO</td></tr>
     <tr><td>DT_AGENDAMENTO</td><td>date</td><td>Sim</td><td>Data marcada para o atendimento do serviço solicitado.</td><td>Not Null</td></tr>
     <tr><td>HR_AGENDAMENTO</td><td>time</td><td>Sim</td><td>Horário marcado para o atendimento do serviço solicitado.</td><td>Not Null</td></tr>
     <tr><td>DS_ENDERECO</td><td>varchar(200)</td><td>Sim</td><td>Endereço de atendimento (loja ou domicílio, no caso de busca/entrega). Podendo ser o mesmo declarado na </td><td>Not Null</td></tr>
-    <tr><td>DS_OBSERVACAO</td><td>text</td><td>Não</td><td>Observações sobre o agendamento peculiaridades solicitadas pelo cliente ex.:("Apos realizar banho e tosa no meu pet, favor entregá-lo entre: 12h00min e 12h30min").</td><td>—</td></tr>
+    <tr><td>DS_OBSERVACAO</td><td>text(200)</td><td>Não</td><td>Observações sobre o agendamento peculiaridades solicitadas pelo cliente ex.:("Apos realizar banho e tosa no meu pet, favor entregá-lo entre: 12h00min e 12h30min").</td><td>—</td></tr>
     <tr><td>TP_STATUS</td><td>varchar(20)</td><td>Sim</td><td>Situação do agendamento (ex.: agendado, concluído, cancelado).</td><td>Not Null</td></tr>
   </tbody>
 </table>
-<p class="indices"><b>Índices:</b> PK ID_AGENDAMENTO; índices em ID_PET, ID_SERVICO e ID_FUNCIONARIO (agenda por pet/serviço/funcionário).</p>
+<p class="indices"><b>Índices:</b> PK ID_AGENDAMENTO; índices em ID_PET e ID_FUNCIONARIO (agenda por pet/funcionário).</p>
+
+<!-- ============ AGENDAMENTO SERVICO ============ -->
+<h3 class="entidade">AGENDAMENTO SERVIÇO</h3>
+<p class="subtitulo">Entidade intermediária que relaciona as entidades (AGENDAMENTO E SERVICO).</p>
+<div class="notacao">AGENDAMENTO SERVICO = @ID_AGENDAMENTO + @ID_SERVICO</div>
+<div class="leitura"><b>Leitura:</b> ID_AGENDAMENTO; ID_SERVICO são chaves estrangeiras de suas respctivas tabelas e, juntas, formam a chave primária composta.</div>
+<table>
+  <thead><tr><th>Nome do Campo</th><th>Tipo Físico</th><th>Obrigatório</th><th>Descrição / Relevância</th><th>Restrição / Chave</th></tr></thead>
+  <tbody>
+    <tr><td>ID_AGENDAMENTO</td><td>integer</td><td>Sim</td><td>Identificador único do agendamento.</td><td class="fk">Chave Primária composta (PK) + Chave Estrangeira (FK) → AGENDAMENTO</td></tr>
+    <tr><td>ID_SERVICO</td><td>integer</td><td>Sim</td><td>Identificador único do serviço agendado.</td><td class="fk">Chave Primária composta (PK) + Chave Estrangeira (FK) → SERVICO</td></tr>
+  </tbody>
+</table>
+<p class="indices"><b>Índices:</b> PK composta (ID_AGENDAMENTO, ID_SERVICO).</p>
+
+<!-- ============ TRANSPORTE ============ -->
+<h3 class="entidade">TRANSPORTE</h3>
+<p class="subtitulo">Transporte solicitado pelo cliente para trazer o seu pet até o estabelecimento e após a realização do serviço, entregar seu pet no endereço solicitado.</p>
+<div class="notacao">TRANSPORTE = @ID_TRANSPORTE + ID_AGENDAMENTO +  DS_ENDEREÇO + TP_TRANSPORTE + DT_TRANSPORTE + HR_TRANSPORTE + TP_STATUS</div>
+<div class="leitura"><b>Leitura:</b> @ID_TRANSPORTE é o identificado único; TP_TRANSPORTE é um campo opcional; os demais campos são obrigatórios e conectados por + </div>
+<table>
+  <thead><tr><th>Nome do Campo</th><th>Tipo Físico</th><th>Obrigatório</th><th>Descrição / Relevância</th><th>Restrição / Chave</th></tr></thead>
+  <tbody>
+    <tr><td>ID_TRANSPORTE</td><td>integer</td><td>Sim</td><td>Identificador único do transporte.</td><td class="pk">Chave Primária (PK)</td></tr>
+    <tr><td>ID_AGENDAMENTO</td><td>integer</td><td>Sim (único)</td><td>Identifica o agendamento que será transportado; a unicidade garante no máximo um transporte por agendamento.</td><td class="fk">Chave Estrangeira (FK) → AGENDAMENTO</td></tr>
+    <tr><td>DS_ENDEREÇO</td><td>varchar(200)</td><td>Sim</td><td>Endereço informado pelo cliente para transportar o seu pet ao endereço desejado.</td>.</td><td>Not Null</td></tr>
+    <tr><td>TP_TRANSPORTE</td><td>varchar(50)</td><td>Sim</td><td>Tipo de transporte realizado pelo estabelecimento. EX:(banho e tosa)</td><td>--</td></tr>
+    <tr><td>DT_TRANSPORTE</td><td>date</td><td>Sim</td><td>Dia em que o pet foi transportado até o endereço solicitado.</td><td>Not Null</td></tr>
+    <tr><td>HR_TRANSPORTE</td><td>time</td><td>Sim</td><td>Horário em que o pet foi transportado.</td><td>Not Null</td></tr>
+    <tr><td>TP_STATUS</td><td>varchar(20)</td><td>Sim</td><td>Situação do transporte (ex.: concluído, cancelado e retornar).</td><td>Not Null</td></tr>
+  </tbody>
+  </tbody>
+</table>
+<p class="indices"><b>Índices:</b> PK ID_TRANSPORTE; índice único em ID_AGENDAMENTO (no máximo um transporte por agendamento).</p>
+
+<!-- ============ ENTREGA ============ -->
+<h3 class="entidade">ENTREGA</h3>
+<p class="subtitulo">Entrega de produto solicitada pelo cliente a ser realizada pelo estabelecimento.</p>
+<div class="notacao">ENTREGA = @ID_ENTREGA + ID_AGENDAMENTO + DT_HR_ENTREGA + DS_ENDEREÇO + DT_ENTREGA + TP_STATUS</div>
+<div class="leitura"><b>Leitura:</b>@ID_ENTREGA é o identificador único; ID_AGENDAMENTO é a chave estrangeira única que liga a entrega a exatamente um agendamento; os demais campos são obrigatórios e conectados por +</div>
+<table>
+  <thead><tr><th>Nome do Campo</th><th>Tipo Físico</th><th>Obrigatório</th><th>Descrição / Relevância</th><th>Restrição / Chave</th></tr></thead>
+  <tbody>
+    <tr><td>ID_ENTREGA</td><td>integer</td><td>Sim</td><td>Identificador único da entrega.</td><td class="pk">Chave Primária (PK)</td></tr>
+    <tr><td>ID_AGENDAMENTO</td><td>integer</td><td>Sim (único)</td><td>Agendamento ao qual a entrega pertence; a unicidade garante no máximo uma entrega por agendamento.</td><td class="fk">Chave Estrangeira (FK) → AGENDAMENTO</td></tr>
+    <tr><td>DT_HR_ENTREGA</td><td>datetime</td><td>Sim</td><td>Data e horário que o veículo saiu para realizar a entrega do produto.</td><td>Not Null</td></tr>
+    <tr><td>DS_ENDEREÇO</td><td>varchar(200)</td><td>Sim</td><td>Endereço informado pelo cliente, no qual será realizada a entrega do produto.</td><td>Not Null</td></tr>
+    <tr><td>DT_ENTREGA</td><td>date</td><td>Sim</td><td>Data em que o produto foi entregue</td><td>Not Null</td></tr>
+    <tr><td>TP_STATUS</td><td>varchar(20)</td><td>Sim</td><td>Status referente a entrega do cliente. Ex: (realizado, cancelado e retornar)</td><td>Not Null</td></tr>
+  </tbody>
+</table>
+<p class="indices"><b>Índices:</b> PK ID_ENTREGA; índice único em ID_AGENDAMENTO (no máximo uma entrega por agendamento).</p>
 
 <!-- ============ FUNCIONARIO ============ -->
 <h3 class="entidade">FUNCIONARIO</h3>
 <p class="subtitulo">Pessoa contratada pelo petshop responsável por executar os serviços agendados.</p>
-<div class="notacao">FUNCIONARIO = @ID_FUNCIONARIO + NM_FUNCIONARIO + CD_CPF + DS_CARGO + CD_TELEFONE</div>
+<div class="notacao">FUNCIONARIO = @ID_FUNCIONARIO + NM_FUNCIONARIO + DS_CARGO + CD_TELEFONE</div>
 <div class="leitura"><b>Leitura:</b> estrutura simples, sem campos opcionais; ID_FUNCIONARIO é único para evitar
 duplicidade de cadastro.</div>
 <table>
   <thead><tr><th>Nome do Campo</th><th>Tipo Físico</th><th>Obrigatório</th><th>Descrição / Relevância</th><th>Restrição / Chave</th></tr></thead>
   <tbody>
     <tr><td>ID_FUNCIONARIO</td><td>integer</td><td>Sim</td><td>Documento de identificação civl do funcionário.</td><td class="pk">Chave Primária (PK)</td></tr>
-    <tr><td>NM_FUNCIONARIO</td><td>varchar(120)</td><td>Sim</td><td>Nome completo do funcionário.</td><td>Not Null</td></tr>
-    <tr><td>DS_CARGO</td><td>varchar(40)</td><td>Sim</td><td>Função exercida (ex.: tosador, banahdo, veterinário, balconista).</td><td>Not Null</td></tr>
-    <tr><td>CD_TELEFONE</td><td>varchar(15)</td><td>Sim</td><td>Telefone de contato do funcionário.</td><td>Not Null</td></tr>
+    <tr><td>NM_FUNCIONARIO</td><td>varchar(100)</td><td>Sim</td><td>Nome completo do funcionário.</td><td>Not Null</td></tr>
+    <tr><td>DS_CARGO</td><td>varchar(50)</td><td>Sim</td><td>Função exercida (ex.: tosador, banahdo, veterinário, balconista).</td><td>Not Null</td></tr>
+    <tr><td>CD_TELEFONE</td><td>varchar(11)</td><td>Sim</td><td>Telefone de contato do funcionário.</td><td>Not Null</td></tr>
   </tbody>
 </table>
 <p class="indices"><b>Índices:</b> PK ID_FUNCIONARIO; índice único em CD_CPF.</p>
 
-<!-- ============ BALCONISTA ============ -->
-<h3 class="entidade">BALCONISTA</h3>
-<p class="subtitulo">Pessoa contratada pelo petshop responsável para agendar os serviços.</p>
-<div class="notacao">BALCONISTA = @ID_BALCONISTA + NM_BALCONISTA + CD_TELEFONE</div>
-<div class="leitura"><b>Leitura:</b> estrutura simples, sem campos opcionais; ID_BALCONISTA é único para evitar
-duplicidade de cadastro.</div>
+<!-- ============ FUNCIONÁRIO SERVICO ============ -->
+<h3 class="entidade">FUNCIONÁRIO SERVIÇO</h3>
+<p class="subtitulo">Entidade intermediária que relaciona as entidades (FUNCIONÁRIO E SERVICO).</p>
+<div class="notacao">FUNCIONÁRIO SERVICO = @ID_FUNCIONÁRIO + @ID_SERVICO</div>
+<div class="leitura"><b>Leitura:</b> ID_FUNCIONÁRIO; ID_SERVICO são chaves estrangeiras de suas respctivas tabelas e, juntas, formam a chave primária composta.</div>
 <table>
   <thead><tr><th>Nome do Campo</th><th>Tipo Físico</th><th>Obrigatório</th><th>Descrição / Relevância</th><th>Restrição / Chave</th></tr></thead>
   <tbody>
-    <tr><td>ID_BALCONISTA</td><td>integer</td><td>Sim</td><td>Documento de identificação civl do funcionário. Não sofre operação matemática.</td><td class="pk">Chave Primária (PK)</td></tr>
-    <tr><td>NM_BALCONISTA</td><td>varchar(120)</td><td>Sim</td><td>Nome completo do balconista.</td><td>Not Null</td></tr>
-    <tr><td>CD_TELEFONE</td><td>varchar(15)</td><td>Sim</td><td>Telefone de contato do funcionário.</td><td>Not Null</td></tr>
+    <tr><td>ID_FUNCIONÁRIO</td><td>integer</td><td>Sim</td><td>Identificador único do funcionário.</td><td class="fk">Chave Primária composta (PK) + Chave Estrangeira (FK) → FUNCIONARIO</td></tr>
+    <tr><td>ID_SERVICO</td><td>integer</td><td>Sim</td><td>Identificador único do servico prestado pelo funcionário.</td><td class="fk">Chave Primária composta (PK) + Chave Estrangeira (FK) → SERVICO</td></tr>
   </tbody>
 </table>
-<p class="indices"><b>Índices:</b> PK ID_BALCONISTA.</p>
-
+<p class="indices"><b>Índices:</b> PK composta (ID_FUNCIONÁRIO, ID_SERVICO).</p>
 
 <!-- ============ VENDA ============ -->
 <h3 class="entidade">VENDA</h3>
 <p class="subtitulo">Registro de uma transação de venda de produtos e/ou serviços a um cliente.</p>
-<div class="notacao">VENDA = @ID_VENDA + ID_CLIENTE + DT_VENDA + HR_VENDA + VL_TOTAL + TP_FORMA_PAGAMENTO</div>
+<div class="notacao">VENDA = @ID_VENDA + ID_CLIENTE + DT_VENDA + HR_VENDA + VL_TOTAL</div>
 <div class="leitura"><b>Leitura:</b> ID_CLIENTE conecta a venda ao cliente que a realizou; todos os campos
 são obrigatórios.</div>
 <table>
@@ -390,26 +452,72 @@ são obrigatórios.</div>
     <tr><td>ID_VENDA</td><td>integer</td><td>Sim</td><td>Identificador único da venda.</td><td class="pk">Chave Primária (PK)</td></tr>
     <tr><td>ID_CLIENTE</td><td>integer</td><td>Sim</td><td>Cliente que realizou a compra.</td><td class="fk">Chave Estrangeira (FK) → CLIENTE</td></tr>
     <tr><td>DT_VENDA</td><td>date</td><td>Sim</td><td>Data em que a venda foi efetuada.</td><td>Not Null</td></tr>
-    <tr><td>HR_VENDA</td><td>time</td><td>Sim</td><td>Horário em produto ou serviço foi vendido.</td><td>Not Null</td></tr>
+    <tr><td>HR_VENDA</td><td>time</td><td>Sim</td><td>Hora em que a venda foi efetuada.</td><td>Not Null</td></tr>
     <tr><td>VL_TOTAL</td><td>decimal(10,2)</td><td>Sim</td><td>Valor total da venda, soma dos itens vendidos.</td><td>Domínio: ≥ 0</td></tr>
-    <tr><td>TP_FORMA_PAGAMENTO</td><td>varchar(20)</td><td>Sim</td><td>Meio de pagamento utilizado (ex.: dinheiro, cartão, pix).</td><td>Not Null</td></tr>
   </tbody>
 </table>
 <p class="indices"><b>Índices:</b> PK ID_VENDA; índice em ID_CLIENTE (histórico de compras do cliente).</p>
 
+<!-- ============ ITEM VENDA ============ -->
+<h3 class="entidade">ITEM VENDA</h3>
+<p class="subtitulo">Entidade intermediária que relaciona as entidades (VENDA E PRODUTO).</p>
+<div class="notacao">ITEM VENDA = @ID_VENDA + @ID_PRODUTO + QT_PRODUTO + VL_UNITÁRIO</div>
+<div class="leitura"><b>Leitura:</b> ID_VENDA; ID_PRODUTO são chaves estrangeiras de suas respctivas tabelas e, juntas, formam a chave primária composta. Os demais campos são obrigatórios, adicionador por +</div>
+<table>
+  <thead><tr><th>Nome do Campo</th><th>Tipo Físico</th><th>Obrigatório</th><th>Descrição / Relevância</th><th>Restrição / Chave</th></tr></thead>
+  <tbody>
+    <tr><td>ID_VENDA</td><td>integer</td><td>Sim</td><td>Identificador único da venda.</td><td class="fk">Chave Primária composta (PK) + Chave Estrangeira (FK) → VENDA</td></tr>
+    <tr><td>ID_PRODUTO</td><td>integer</td><td>Sim</td><td>Identificador único do produto vendido.</td><td class="fk">Chave Primária composta (PK) + Chave Estrangeira (FK) → PRODUTO</td></tr>
+    <tr><td>QT_PRODUTO</td><td>decimal(10,3)</td><td>Sim</td><td>Quantifica a quantidade de produto vendido.</td><td>Domínio  ≥ 0</td></tr>
+    <tr><td>VL_UNITÁRIO</td><td>decimal(10,2)</td><td>Sim</td><td>Valor do item vendido.</td><td>Domínio  ≥ 0</td></tr>
+  </tbody>
+</table>
+<p class="indices"><b>Índices:</b> PK composta (ID_VENDA, ID_PRODUTO).</p>
+
+<!-- ============ VENDA SERVICO ============ -->
+<h3 class="entidade">VENDA SERVIÇO</h3>
+<p class="subtitulo">Entidade intermediária que relaciona as entidades (VENDA E SERVICO).</p>
+<div class="notacao">VENDA SERVICO = @ID_VENDA + @ID_SERVICO</div>
+<div class="leitura"><b>Leitura:</b> ID_VENDA; ID_SERVICO são chaves estrangeiras de suas respctivas tabelas e, juntas, formam a chave primária composta.</div>
+<table>
+  <thead><tr><th>Nome do Campo</th><th>Tipo Físico</th><th>Obrigatório</th><th>Descrição / Relevância</th><th>Restrição / Chave</th></tr></thead>
+  <tbody>
+    <tr><td>ID_VENDA</td><td>integer</td><td>Sim</td><td>Identificador único dA venda.</td><td class="fk">Chave Primária composta (PK) + Chave Estrangeira (FK) → VENDA</td></tr>
+    <tr><td>ID_SERVICO</td><td>integer</td><td>Sim</td><td>Identificador único do servico vendido.</td><td class="fk">Chave Primária composta (PK) + Chave Estrangeira (FK) → SERVICO</td></tr>
+  </tbody>
+</table>
+<p class="indices"><b>Índices:</b> PK composta (ID_VENDA, ID_SERVICO).</p>
+
+<!-- ============ PAGAMENTO ============ -->
+<h3 class="entidade">PAGAMENTO</h3>
+<p class="subtitulo">Tipo de pagamento realizado pelo cliente ao final da venda ex: (cartão, pix, dinheiro).</p>
+<div class="notacao">PAGAMENTO = @ID_PAGAMENTO + ID_VENDA + FORMA_PAGAMENTO + VL_PAGAMENTO + DT_PAGAMENTO + STATUS_PAGAMENTO</div>
+<div class="leitura"><b>Leitura:</b> ID_PAGAMENTO e os demais camnpos são obrigatórios e adicionados por +; iD_VENDA conecta a venda ao pagamento a ser realizado.</div>
+<table>
+  <thead><tr><th>Nome do Campo</th><th>Tipo Físico</th><th>Obrigatório</th><th>Descrição / Relevância</th><th>Restrição / Chave</th></tr></thead>
+  <tbody>
+    <tr><td>ID_PAGAMENTO</td><td>integer</td><td>Sim</td><td>Identificador único do pagamento.</td><td class="pk">Chave Primária (PK)</td></tr>
+    <tr><td>ID_VENDA</td><td>integer</td><td>Sim</td><td>Venda realizada que será cobrada.</td><td class="fk">Chave Estrangeira (FK) → VENDA</td></tr>>
+    <tr><td>FM_PAGAMENTO</td><td>varchar(50)</td><td>Sim</td><td>Forma de pagamento realizado pelo cliente. Ex:(carto, pix, dinheiro).</td><td>Not Null</td></tr>
+    <tr><td>VL_PAGAMENTO</td><td>decimal (10,2)</td><td>Sim</td><td>Valor monetário referente ao pagamento de um serviço ou produto. Pago pelo cliente.</td><td>Domínio:  ≥ 0</td></tr>
+    <tr><td>DT_PAGAMENTO</td><td>date</td><td>Sim</td><td>Data em que o pagamento foi efetuado.</td><td>Not Null</td></tr>
+    <tr><td>STATUS_PAGAMENTO</td><td>varchar(20)</td><td>Sim</td><td>Status referente ao pagamento do cliente. Ex: (realizado, cancelado e bonificado)</td><td>Not Null</td></tr>
+  </tbody>
+</table>
+<p class="indices"><b>Índices:</b> PK ID_PAGAMENTO.É o índice único. ID_VENDA (vendas feitas que serão cobradas no pagamento).</p>
 
 <!-- ============ PRODUTO ============ -->
 <h3 class="entidade">PRODUTO</h3>
 <p class="subtitulo">Item comercializado pelo petshop (ração, brinquedo, medicamento etc.), vinculado a uma categoria e a um registro de lote.</p>
-<div class="notacao">PRODUTO = @ID_PRODUTO + ID_CATEGORIA + NM_PRODUTO + DS_DESCRICAO + CD_BARRAS + VL_PRECO_VENDA + VL_PRECO_CUSTO + DS_UNIDADE_MEDIDA</div>
+<div class="notacao">PRODUTO = @ID_PRODUTO + ID_CATEGORIA + ID_NCM + NM_PRODUTO + DS_DESCRICAO + CD_BARRAS + VL_PRECO_VENDA + VL_PRECO_CUSTO + DS_UNIDADE_MEDIDA</div>
 <div class="leitura"><b>Leitura:</b> ID_CATEGORIA conecta o produto à sua categoria; CD_BARRAS é único, pois
 identifica o produto fisicamente no ponto de venda.</div>
 <table>
   <thead><tr><th>Nome do Campo</th><th>Tipo Físico</th><th>Obrigatório</th><th>Descrição / Relevância</th><th>Restrição / Chave</th></tr></thead>
   <tbody>
     <tr><td>ID_PRODUTO</td><td>integer</td><td>Sim</td><td>Identificador único do produto.</td><td class="pk">Chave Primária (PK)</td></tr>
-    <tr><td>ID_NCM</td><td>varchar(8)</td><td>Sim</td><td>Nomenclatura comum do mercosul. Identifica qual tipo de tributação incide sobre o produto</td><td>Not Null</td></tr>
     <tr><td>ID_CATEGORIA</td><td>integer</td><td>Sim</td><td>Categoria a qual o produto pertence.</td><td class="fk">Chave Estrangeira (FK) → CATEGORIA_PRODUTO</td></tr>
+    <tr><td>ID_NCM</td><td>char(8)</td><td>Sim</td><td>Nomenclatura comum do mercosul. Identifica qual tipo de tributação incide sobre o produto</td><td>Not Null</td></tr>
     <tr><td>NM_PRODUTO</td><td>varchar(100)</td><td>Sim</td><td>Nome do produto exibido ao cliente.</td><td>Not Null</td></tr>
     <tr><td>DS_DESCRICAO</td><td>varchar(200)</td><td>Não</td><td>Descrição detalhada do produto.</td><td>—</td></tr>
     <tr><td>CD_BARRAS</td><td>varchar(20)</td><td>Sim</td><td>Código de barras usado na leitura no caixa.</td><td>Único</td></tr>
@@ -429,7 +537,7 @@ identifica o produto fisicamente no ponto de venda.</div>
   <thead><tr><th>Nome do Campo</th><th>Tipo Físico</th><th>Obrigatório</th><th>Descrição / Relevância</th><th>Restrição / Chave</th></tr></thead>
   <tbody>
     <tr><td>ID_CATEGORIA</td><td>integer</td><td>Sim</td><td>Identificador único da categoria.</td><td class="pk">Chave Primária (PK)</td></tr>
-    <tr><td>NM_CATEGORIA</td><td>varchar(60)</td><td>Sim</td><td>Nome da categoria de produtos.</td><td>Not Null</td></tr>
+    <tr><td>NM_CATEGORIA</td><td>varchar(50)</td><td>Sim</td><td>Nome da categoria de produtos.</td><td>Not Null</td></tr>
     <tr><td>DS_DESCRICAO</td><td>varchar(200)</td><td>Não</td><td>Descrição do que a categoria abrange.</td><td>—</td></tr>
   </tbody>
 </table>
@@ -437,41 +545,56 @@ identifica o produto fisicamente no ponto de venda.</div>
 
 <!-- ============ FORNECEDOR ============ -->
 <h3 class="entidade">FORNECEDOR</h3>
-<p class="subtitulo">Empresa responsável por abastecer o lote de produtos do petshop.</p>
-<div class="notacao">FORNECEDOR = @ID_FORNECEDOR + NM_FORNECEDOR + CD_TELEFONE + CD_EMAIL + DS_ENDERECO</div>
+<p class="subtitulo">Empresas responsaveis por abastecer o lote de produtos do petshop.</p>
+<div class="notacao">FORNECEDOR = @ID_FORNECEDOR + NM_FORNECEDOR + CD_TELEFONE + DS_ENDERECO</div>
 <div class="leitura"><b>Leitura:</b> estrutura simples, sem campos opcionais.</div>
 <table>
   <thead><tr><th>Nome do Campo</th><th>Tipo Físico</th><th>Obrigatório</th><th>Descrição / Relevância</th><th>Restrição / Chave</th></tr></thead>
   <tbody>
     <tr><td>ID_FORNECEDOR</td><td>integer</td><td>Sim</td><td>Identificador único do fornecedor.</td><td class="pk">Chave Primária (PK)</td></tr>
-    <tr><td>NM_FORNECEDOR</td><td>varchar(120)</td><td>Sim</td><td>Razão social ou nome do fornecedor.</td><td>Not Null</td></tr>
+    <tr><td>NM_FORNECEDOR</td><td>varchar(100)</td><td>Sim</td><td>Razão social ou nome do fornecedor.</td><td>Not Null</td></tr>
     <tr><td>CD_TELEFONE</td><td>varchar(11)</td><td>Sim</td><td>Telefone de contato comercial.</td><td>Not Null</td></tr>
-    <tr><td>CD_EMAIL</td><td>varchar(120)</td><td>Sim</td><td>E-mail de contato comercial.</td><td>Not Null</td></tr>
     <tr><td>DS_ENDERECO</td><td>varchar(200)</td><td>Sim</td><td>Endereço do fornecedor.</td><td>Not Null</td></tr>
   </tbody>
 </table>
 <p class="indices"><b>Índices:</b> PK ID_FORNECEDOR.</p>
 
+<!-- ============ COMPRA ============ -->
+<h3 class="entidade">COMPRA</h3>
+<p class="subtitulo">Compra de um produto, acessório e derivados (adquiridos através dos nossos fornecedores) para o pet shop.</p>
+<div class="notacao">VENDA = @ID_COMPRA + ID_FORNECEDOR + DT_COMPRA + NUM_NOTA_FISCAL + VL_TOTAL + TP_STATUS </div>
+<div class="leitura"><b>Leitura:</b> @ID_COMPRA e os demais campos são obrigatórios; adicionados por +</div>
+<table>
+  <thead><tr><th>Nome do Campo</th><th>Tipo Físico</th><th>Obrigatório</th><th>Descrição / Relevância</th><th>Restrição / Chave</th></tr></thead>
+  <tbody>
+    <tr><td>ID_COMPRA</td><td>integer</td><td>Sim</td><td>Identificador único da compra.</td><td class="pk">Chave Primária (PK)</td></tr>
+     <tr><td>ID_FORNECEDOR</td><td>integer</td><td>Sim</td><td>Identifica qual fornecedor aquela compra foi feita.</td><td class="fk">Chave Estrangeira (FK) → FORNECEDOR</td></tr>
+    <tr><td>DT_COMPRA</td><td>date</td><td>Sim</td><td>data no qual a compra foi realizada. Ex(DD/MM/ANO).</td><td>Not Null</td></tr>
+    <tr><td>NUM_NOTA_FISCAL</td><td>varchar(20)</td><td>Sim</td><td>Número de identificação da nota fiscal.</td><td>Not Null</td></tr>
+    <tr><td>VL_TOTAL</td><td>decimal(10,2)</td><td>Sim</td><td>Valor total da compra.</td><td>Domínio ≥ 0 </td></tr>
+    <tr><td>TP_STATUS</td><td>varchar(20)</td><td>Sim</td><td>Status da compra. Ex.:(realizada, cancelada e aguardando)</td><td>Not Null</td></tr>
+  </tbody>
+</table>
+<p class="indices"><b>Índices:</b> PK ID_COMPRA. FK ID_FORNECEDOR indica qual fornecedor está atrelado aquela compra.</p>
+
 <!-- ============ LOTE ============ -->
 <h3 class="entidade">LOTE</h3>
-<p class="subtitulo">Controle da quantidade disponível de cada produto, incluindo dados de localização e de entrada/saída.</p>
-<div class="notacao">LOTE = @ID_LOTE + ID_PRODUTO + ID_FORNECEDOR + QT_RESERVADA + DS_LOCALIZACAO + VL_CUSTO + DT_ENTRADA + (DT_SAIDA)</div>
-<div class="leitura"><b>Leitura:</b> ID_PRODUTO garante o vínculo 1:1 com PRODUTO; ID_FORNECEDOR identifica quem
-abasteceu aquele lote; (DT_SAIDA) é opcional, pois só é preenchida quando o lote se esgota.</div>
+<p class="subtitulo">Controle da quantidade comprada de cada produto, incluindo dados de: número do lote, data de validade, data de fabricação e quantidade comprada.</p>
+<div class="notacao">LOTE = @ID_LOTE + ID_COMPRA + ID_PRODUTO + NUM_LOTE + DT_VALIDADE + QT_COMPRADA + DT_ENTRADA + VL_CUSTO</div>
+<div class="leitura"><b>Leitura:</b> ID_PRODUTO liga o lote ao seu produto (um produto pode ter vários lotes); (DT_SAIDA) é opcional, pois só é preenchida quando o lote se esgota.</div>
 <table>
   <thead><tr><th>Nome do Campo</th><th>Tipo Físico</th><th>Obrigatório</th><th>Descrição / Relevância</th><th>Restrição / Chave</th></tr></thead>
   <tbody>
     <tr><td>ID_LOTE</td><td>integer</td><td>Sim</td><td>Identificador único do registro de lote.</td><td class="pk">Chave Primária (PK)</td></tr>
-    <tr><td>ID_PRODUTO</td><td>integer</td><td>Sim (único)</td><td>Produto ao qual este lote se refere; a unicidade garante o vínculo 1:1 com PRODUTO.</td><td class="fk">Chave Estrangeira (FK) → PRODUTO</td></tr>
-    <tr><td>ID_FORNECEDOR</td><td>integer</td><td>Sim</td><td>Fornecedor responsável pelo abastecimento deste lote.</td><td class="fk">Chave Estrangeira (FK) → FORNECEDOR</td></tr>
-    <tr><td>QT_ATUAL</td><td>integer</td><td>Sim</td><td>Quantidade atualmente disponível em lote.</td><td>Domínio: ≥ 0</td></tr>
-    <tr><td>DS_LOCALIZACAO</td><td>varchar(60)</td><td>Sim</td><td>Local físico onde o produto está armazenado (ex.: corredor, prateleira).</td><td>Not Null</td></tr>
-    <tr><td>VL_CUSTO</td><td>decimal(10,2)</td><td>Sim</td><td>Custo de aquisição deste lote.</td><td>Domínio: ≥ 0</td></tr>
-    <tr><td>DT_ENTRADA</td><td>date</td><td>Sim</td><td>Data em que o lote entrou no lote.</td><td>Not Null</td></tr>
-    <tr><td>DT_SAIDA</td><td>date</td><td>Não</td><td>Data em que o lote se esgotou/saiu do lote.</td><td>—</td></tr>
+     <tr><td>ID_COMPRA</td><td>integer</td><td>Sim</td><td>Identifica a compra que pertence aquele lote.</td><td class="fk">Chave Estrangeira (FK) → COMPRA</td></tr>
+    <tr><td>ID_PRODUTO</td><td>integer</td><td>Sim</td><td>Produto ao qual este lote se refere. Um produto pode ter vários lotes, mas cada lote pertence a um único produto.</td><td class="fk">Chave Estrangeira (FK) → PRODUTO</td></tr>
+    <tr><td>NUM_LOTE</td><td>varchar(20)</td><td>Sim</td><td>Númeração que vem junto ao lote para controle de: rastreabilidade, qualidade e controle</td><td>Not Null</td></tr>
+    <tr><td>DT_VALIDADE</td><td>date</td><td>Sim</td><td>Data limite para uso dos itens. Especificado pelo fornecedor.</td><td>Not Null</td></tr>
+    <tr><td>QT_COMPRADA</td><td>decimal (10,3)</td><td>Sim</td><td>Quantidade de itens adquirida em um lote.</td><td>Domínio: ≥ 0</td></tr>
+     <tr><td>VL_CUSTO</td><td>decimal (10,2)</td><td>Sim</td><td>Custo do lote para comprá-lo.</td><td>Domínio: ≥ 0</td></tr>
   </tbody>
 </table>
-<p class="indices"><b>Índices:</b> PK ID_LOTE; índice único em ID_PRODUTO (garante o 1:1); índice em ID_FORNECEDOR.</p>
+<p class="indices"><b>Índices:</b> PK ID_LOTE; índices em ID_PRODUTO e ID_COMPRA.</p>
 
 <table>
 <h2>5. Log de acesso (metadado operacional)</h2>
@@ -487,18 +610,20 @@ abasteceu aquele lote; (DT_SAIDA) é opcional, pois só é preenchida quando o l
   (metadado administrativo)</h2>
 <table>
   <thead><tr><th>Tabela</th><th>LER</th><th>INSERIR</th><th>ATUALIZAR</th><th>APAGAR</th></tr></thead>
-  <tr><td>CLIENTE</td><td>Balconista</td><td>Balconista</td><td>Balconista</td><td>Após dois anos sem interação ou atividade no sistema, fica inativo.</td></tr>
-  <tr><td>PET</td><td>Balconista,<br>Veterinário,<br>Tosador/Banhador</td><td>Balconista</td><td>Balconista,<br>Veterinário,<br>Tosador/Banhador</td><td>Nenhum papel - mesma regra do cliente.</td></tr>
-    <tr><td>HISTORICO</td><td>Balconista,<br>Veterinário,<br>Tosador/Banhador</td><td>Balconista,<br>Veterinário,<br>Tosador/Banhador</td><td>Balconista,<br>Veterinário,<br>Tosador/Banhador</td><td>Nenhum papel - mesma regra do cliente.</td></tr>
-    <tr><td>SERVICO</td><td>Balconista,<br>Veterinário,<br>Tosador/Banhador</td><td>Veterinário,<br>Tosador/Banhador</td><td>Veterinário,<br>Tosador/Banhador</td><td>Nenhum papel - mesma regra do cliente.</td></tr>
-    <tr><td>AGENDAMENTO</td><td>Balconista,<br>Veterinário,<br>Tosador/Banhador</td><td>Balconista</td><td>Balconista</td><td>Nenhum papel - mesma regra do cliente.</td></tr>
-    <tr><td>FUNCIONARIO</td><td>RH/Administrativo</td><td>RH/Administrativo</td><td>RH/Administrativo</td><td>RH/Administrativo (desligamento)</td></tr>
-    <tr><td>BALCONISTA</td><td>RH/Administrativo</td><td>RH/Administrativo</td><td>RH/Administrativo</td><td>RH/Administrativo (desligamento)</td></tr>
-    <tr><td>VENDA</td><td>Balconista</td><td>Balconista</td><td>Balconista</td><td>Nenhum papel - mesma regra do cliente.</td></tr>
-    <tr><td>PRODUTO</td><td>Balconista,<br>Administrativo,<br>Departamento de compras</td><td>Administrativo,<br>Departamento de compras</td><td>Administrativo,<br>Departamento de compras</td><td>Nenhum papel - mesma regra do cliente.</td></tr>
-    <tr><td>CATEGORIA_PRODUTO</td><td>Balconista,<br>Administrativo,<br>Departamento de compras</td><td>Administrativo,<br>Departamento de compras</td><td>Administrativo,<br>Departamento de compras</td><td>Nenhum papel - mesma regra do cliente.</td></tr>
-    <tr><td>FORNECEDOR</td><td>Administrativo,<br>Departamento de compras</td><td>Administrativo,<br>Departamento de compras</td><td>Administrativo,<br>Departamento de compras</td><td>Nenhum papel - mesma regra do cliente.</td></tr>
-    <tr><td>LOTE</td><td>Veterinário,<br>Balconista<br>Administrativo,<br> Departamento de compras</td><td>Administrativo,<br>Departamento de compras</td><td>Administrativo,<br> Departamento de compras</td><td>Nenhum papel - mesma regra do cliente.</td></tr>
+  <tr><td>CLIENTE</td><td>Funcionário: (Balconista)</td><td>Funcionário: (Balconista)</td><td>Funcionário: (Balconista)</td><td>Após dois anos sem interação ou atividade no sistema, fica inativo.</td></tr>
+  <tr><td>PET</td><td>Funcionários: (Balconista,<br>Veterinário,<br>Tosador,Banhador)</td><td>Funcionário: (Balconista)</td><td>Funcionários: (Balconista,<br>Veterinário,<br>Tosador,Banhador)</td><td>Nenhum papel - mesma regra do cliente.</td></tr>
+    <tr><td>HISTORICO</td><td>Funcionários: (Balconista,<br>Veterinário,<br>Tosador,Banhador)</td><td>Funcionários: (Balconista,<br>Veterinário,<br>Tosador/Banhador)</td><td>Funcionários: (Balconista,<br>Veterinário,<br>Tosador,Banhador)</td><td>Nenhum papel - mesma regra do cliente.</td></tr>
+    <tr><td>SERVICO</td><td>Funcionários: (Balconista,<br>Veterinário,<br>Tosador,Banhador)</td><td>Funcionários: (Veterinário,<br>Tosador,Banhador)</td><td>Funcionários: (Veterinário,<br>Tosador,Banhador)</td><td>Nenhum papel - mesma regra do cliente.</td></tr>
+    <tr><td>AGENDAMENTO</td><td>Funcionários: (Balconista,<br>Veterinário,<br>Tosador,Banhador)</td><td>Funcionário: (Balconista)</td><td>Funcionário: (Balconista)</td><td>Nenhum papel - mesma regra do cliente.</td></tr>
+    <tr><td>FUNCIONARIO</td><td>RH,Departamento administrativo</td><td>RH,Departamento administrativo</td><td>RH,Departamento administrativo</td><td>RH/Administrativo (desligamento)</td></tr>
+    <tr><td>VENDA</td><td>Funcionário: (Balconista)</td><td>Funcionário: (Balconista)</td><td>Funcionário: (Balconista)</td><td>Nenhum papel - mesma regra do cliente.</td></tr>
+    <tr><td>PRODUTO</td><td>Funcionário: (Balconista).<br> Departamento administrativo,<br>Departamento de compras</td><td>Departamento administrativo,<br>Departamento de compras</td><td>Departamento administrativo,<br>Departamento de compras</td><td>Nenhum papel - mesma regra do cliente.</td></tr>
+    <tr><td>CATEGORIA_PRODUTO</td><td>Funcionário: (Balconista).<br>Departamento administrativo,<br>Departamento de compras</td><td>Departamento administrativo,<br>Departamento de compras</td><td>Departamento administrativo,<br>Departamento de compras</td><td>Nenhum papel - mesma regra do cliente.</td></tr>
+    <tr><td>FORNECEDOR</td><td> Departamento administrativo,<br>Departamento de compras</td><td>Departamento administrativo,<br>Departamento de compras</td><td> Departamento administrativo,<br>Departamento de compras</td><td>Nenhum papel - mesma regra do cliente.</td></tr>
+    <tr><td>TRANSPORTE</td><td>Funcionário: (Balconista).<br><br></td><td>Funcionário: (Balconista).<br></td><td>Funcionário: (Balconista).<br></td><td>Nenhum papel - mesma regra do cliente.</td></tr>
+    <tr><td>ENTREGA</td><td>Funcionário: (Balconista).</td><td>Funcionário: (Balconista).</td><td>Funcionário: (Balconista).</td><td>Nenhum papel - mesma regra do cliente.</td></tr>
+    <tr><td>PAGAMENTO</td><td>Funcionário: (Balconista).</td><td>Funcionário: (Balconista).</td><td>Funcionário: (Balconista).</td><td>Nenhum papel - mesma regra do cliente.</td></tr>
+    <tr><td>COMPRA</td><td>Funcionário: (Balconista). Departamento de compras. Departamento Administrativo</td><td>Departamento Administrativo,<br>Departamento de compras</td><td>Administrativo,<br> Departamento de compras</td><td>Nenhum papel - mesma regra do cliente.</td></tr>
 </table>
   
 </body>
