@@ -83,9 +83,9 @@ A existência da organização e o acesso para a realização da pesquisa de cam
 - **Legenda das fotos** (arquivos JPG neste repositório): [foto 1](./mercadao-pet-1.jpeg) é a fachada da loja; [foto 2](./mercadao-pet-2.jpeg) e [foto 3](./mercadao-pet-3.jpeg) foram tiradas na entrada da loja durante a visita; [foto 4](./mercadao-pet-4.jpeg) foi tirada no interior da loja, no balcão, durante a visita.
 - **Imagens:** 
 <p align="center">
-  <img src="./mercadao-pet-1.jpeg" width="350" alt="Foto 1 - fachada do Mercadão Pet">
   <img src="./mercadao-pet-2.jpeg" width="350" alt="Foto 2 - entrada da loja durante a visita">
   <img src="./mercadao-pet-3.jpeg" width="350" alt="Foto 3 - entrada da loja durante a visita">
+  <img src="./mercadao-pet-1.jpeg" width="350" alt="Foto 1 - fachada do Mercadão Pet">
   <img src="./mercadao-pet-4.jpeg" width="350" alt="Foto 4 - balcão da loja durante a visita">
 </p>
 
